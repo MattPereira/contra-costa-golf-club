@@ -1,0 +1,13 @@
+
+# To dump prod database from railway into file
+pg_dump -U postgres -h containers-us-west-43.railway.app -p 7601 -W -F p railway > latest.dump
+
+
+
+
+# To pass data from dump file into empty local database
+psql -d ccgc_railway -f latest.dump
+
+
+
+# When to use the pg_restore command??

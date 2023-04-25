@@ -1,0 +1,2101 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.2
+-- Dumped by pg_dump version 14.6 (Ubuntu 14.6-0ubuntu0.22.04.1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: timescaledb; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS timescaledb WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION timescaledb; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION timescaledb IS 'Enables scalable inserts and complex queries for time-series data';
+
+
+--
+-- Name: heroku_ext; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA heroku_ext;
+
+
+ALTER SCHEMA heroku_ext OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: courses; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.courses (
+    handle text NOT NULL,
+    name text NOT NULL,
+    rating numeric NOT NULL,
+    slope integer NOT NULL,
+    img_url text
+);
+
+
+ALTER TABLE public.courses OWNER TO postgres;
+
+--
+-- Name: greenies; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.greenies (
+    id integer NOT NULL,
+    round_id integer NOT NULL,
+    hole_number integer NOT NULL,
+    feet integer NOT NULL,
+    inches integer NOT NULL
+);
+
+
+ALTER TABLE public.greenies OWNER TO postgres;
+
+--
+-- Name: greenies_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.greenies_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.greenies_id_seq OWNER TO postgres;
+
+--
+-- Name: greenies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.greenies_id_seq OWNED BY public.greenies.id;
+
+
+--
+-- Name: handicaps; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.handicaps (
+    course_handle text NOT NULL,
+    hole1 integer NOT NULL,
+    hole2 integer NOT NULL,
+    hole3 integer NOT NULL,
+    hole4 integer NOT NULL,
+    hole5 integer NOT NULL,
+    hole6 integer NOT NULL,
+    hole7 integer NOT NULL,
+    hole8 integer NOT NULL,
+    hole9 integer NOT NULL,
+    hole10 integer NOT NULL,
+    hole11 integer NOT NULL,
+    hole12 integer NOT NULL,
+    hole13 integer NOT NULL,
+    hole14 integer NOT NULL,
+    hole15 integer NOT NULL,
+    hole16 integer NOT NULL,
+    hole17 integer NOT NULL,
+    hole18 integer NOT NULL
+);
+
+
+ALTER TABLE public.handicaps OWNER TO postgres;
+
+--
+-- Name: pars; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pars (
+    course_handle text NOT NULL,
+    hole1 integer NOT NULL,
+    hole2 integer NOT NULL,
+    hole3 integer NOT NULL,
+    hole4 integer NOT NULL,
+    hole5 integer NOT NULL,
+    hole6 integer NOT NULL,
+    hole7 integer NOT NULL,
+    hole8 integer NOT NULL,
+    hole9 integer NOT NULL,
+    hole10 integer NOT NULL,
+    hole11 integer NOT NULL,
+    hole12 integer NOT NULL,
+    hole13 integer NOT NULL,
+    hole14 integer NOT NULL,
+    hole15 integer NOT NULL,
+    hole16 integer NOT NULL,
+    hole17 integer NOT NULL,
+    hole18 integer NOT NULL,
+    total integer NOT NULL
+);
+
+
+ALTER TABLE public.pars OWNER TO postgres;
+
+--
+-- Name: points; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.points (
+    round_id integer NOT NULL,
+    strokes integer DEFAULT 0 NOT NULL,
+    putts integer DEFAULT 0 NOT NULL,
+    greenies integer DEFAULT 0 NOT NULL,
+    pars integer DEFAULT 0 NOT NULL,
+    birdies integer DEFAULT 0 NOT NULL,
+    eagles integer DEFAULT 0 NOT NULL,
+    aces integer DEFAULT 0 NOT NULL,
+    participation integer DEFAULT 3 NOT NULL
+);
+
+
+ALTER TABLE public.points OWNER TO postgres;
+
+--
+-- Name: putts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.putts (
+    round_id integer NOT NULL,
+    hole1 integer,
+    hole2 integer,
+    hole3 integer,
+    hole4 integer,
+    hole5 integer,
+    hole6 integer,
+    hole7 integer,
+    hole8 integer,
+    hole9 integer,
+    hole10 integer,
+    hole11 integer,
+    hole12 integer,
+    hole13 integer,
+    hole14 integer,
+    hole15 integer,
+    hole16 integer,
+    hole17 integer,
+    hole18 integer
+);
+
+
+ALTER TABLE public.putts OWNER TO postgres;
+
+--
+-- Name: rounds; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.rounds (
+    id integer NOT NULL,
+    tournament_date date NOT NULL,
+    username character varying(30) NOT NULL,
+    total_strokes integer,
+    net_strokes integer,
+    total_putts integer,
+    player_index numeric,
+    score_differential numeric,
+    course_handicap integer
+);
+
+
+ALTER TABLE public.rounds OWNER TO postgres;
+
+--
+-- Name: rounds_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.rounds_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rounds_id_seq OWNER TO postgres;
+
+--
+-- Name: rounds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.rounds_id_seq OWNED BY public.rounds.id;
+
+
+--
+-- Name: strokes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.strokes (
+    round_id integer NOT NULL,
+    hole1 integer,
+    hole2 integer,
+    hole3 integer,
+    hole4 integer,
+    hole5 integer,
+    hole6 integer,
+    hole7 integer,
+    hole8 integer,
+    hole9 integer,
+    hole10 integer,
+    hole11 integer,
+    hole12 integer,
+    hole13 integer,
+    hole14 integer,
+    hole15 integer,
+    hole16 integer,
+    hole17 integer,
+    hole18 integer
+);
+
+
+ALTER TABLE public.strokes OWNER TO postgres;
+
+--
+-- Name: tournaments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tournaments (
+    date date NOT NULL,
+    course_handle text,
+    tour_years character varying(7) NOT NULL
+);
+
+
+ALTER TABLE public.tournaments OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    username character varying(30) NOT NULL,
+    email text NOT NULL,
+    password text NOT NULL,
+    first_name text NOT NULL,
+    last_name text NOT NULL,
+    is_admin boolean DEFAULT false NOT NULL,
+    CONSTRAINT users_email_check CHECK (("position"(email, '@'::text) > 1))
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: greenies id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.greenies ALTER COLUMN id SET DEFAULT nextval('public.greenies_id_seq'::regclass);
+
+
+--
+-- Name: rounds id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rounds ALTER COLUMN id SET DEFAULT nextval('public.rounds_id_seq'::regclass);
+
+
+--
+-- Data for Name: cache_inval_bgw_job; Type: TABLE DATA; Schema: _timescaledb_cache; Owner: postgres
+--
+
+COPY _timescaledb_cache.cache_inval_bgw_job  FROM stdin;
+\.
+
+
+--
+-- Data for Name: cache_inval_extension; Type: TABLE DATA; Schema: _timescaledb_cache; Owner: postgres
+--
+
+COPY _timescaledb_cache.cache_inval_extension  FROM stdin;
+\.
+
+
+--
+-- Data for Name: cache_inval_hypertable; Type: TABLE DATA; Schema: _timescaledb_cache; Owner: postgres
+--
+
+COPY _timescaledb_cache.cache_inval_hypertable  FROM stdin;
+\.
+
+
+--
+-- Data for Name: hypertable; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.hypertable (id, schema_name, table_name, associated_schema_name, associated_table_prefix, num_dimensions, chunk_sizing_func_schema, chunk_sizing_func_name, chunk_target_size, compression_state, compressed_hypertable_id, replication_factor) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chunk; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.chunk (id, hypertable_id, schema_name, table_name, compressed_chunk_id, dropped) FROM stdin;
+\.
+
+
+--
+-- Data for Name: dimension; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.dimension (id, hypertable_id, column_name, column_type, aligned, num_slices, partitioning_func_schema, partitioning_func, interval_length, integer_now_func_schema, integer_now_func) FROM stdin;
+\.
+
+
+--
+-- Data for Name: dimension_slice; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.dimension_slice (id, dimension_id, range_start, range_end) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chunk_constraint; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.chunk_constraint (chunk_id, dimension_slice_id, constraint_name, hypertable_constraint_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chunk_data_node; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.chunk_data_node (chunk_id, node_chunk_id, node_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: chunk_index; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.chunk_index (chunk_id, index_name, hypertable_id, hypertable_index_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: compression_chunk_size; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.compression_chunk_size (chunk_id, compressed_chunk_id, uncompressed_heap_size, uncompressed_toast_size, uncompressed_index_size, compressed_heap_size, compressed_toast_size, compressed_index_size, numrows_pre_compression, numrows_post_compression) FROM stdin;
+\.
+
+
+--
+-- Data for Name: continuous_agg; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.continuous_agg (mat_hypertable_id, raw_hypertable_id, user_view_schema, user_view_name, partial_view_schema, partial_view_name, bucket_width, direct_view_schema, direct_view_name, materialized_only) FROM stdin;
+\.
+
+
+--
+-- Data for Name: continuous_aggs_hypertable_invalidation_log; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.continuous_aggs_hypertable_invalidation_log (hypertable_id, lowest_modified_value, greatest_modified_value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: continuous_aggs_invalidation_threshold; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.continuous_aggs_invalidation_threshold (hypertable_id, watermark) FROM stdin;
+\.
+
+
+--
+-- Data for Name: continuous_aggs_materialization_invalidation_log; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.continuous_aggs_materialization_invalidation_log (materialization_id, lowest_modified_value, greatest_modified_value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: hypertable_compression; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.hypertable_compression (hypertable_id, attname, compression_algorithm_id, segmentby_column_index, orderby_column_index, orderby_asc, orderby_nullsfirst) FROM stdin;
+\.
+
+
+--
+-- Data for Name: hypertable_data_node; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.hypertable_data_node (hypertable_id, node_hypertable_id, node_name, block_chunks) FROM stdin;
+\.
+
+
+--
+-- Data for Name: metadata; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.metadata (key, value, include_in_telemetry) FROM stdin;
+exported_uuid	f9b1baa5-0b92-4f75-9a2d-c6d7573e83b7	t
+\.
+
+
+--
+-- Data for Name: remote_txn; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.remote_txn (data_node_name, remote_transaction_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tablespace; Type: TABLE DATA; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+COPY _timescaledb_catalog.tablespace (id, hypertable_id, tablespace_name) FROM stdin;
+\.
+
+
+--
+-- Data for Name: bgw_job; Type: TABLE DATA; Schema: _timescaledb_config; Owner: postgres
+--
+
+COPY _timescaledb_config.bgw_job (id, application_name, schedule_interval, max_runtime, max_retries, retry_period, proc_schema, proc_name, owner, scheduled, hypertable_id, config) FROM stdin;
+\.
+
+
+--
+-- Data for Name: courses; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.courses (handle, name, rating, slope, img_url) FROM stdin;
+paradise-valley	Paradise Valley Golf Course	70.4	125	/course-photos/paradise-valley.jpg
+wild-horse	Wild Horse Golf Course	68.4	120	/course-photos/wild-horse.jpg
+lone-tree	Lone Tree Golf Course	69.1	121	/course-photos/lone-tree.jpg
+franklin-canyon	Franklin Canyon Golf Course	69.6	127	/course-photos/franklin-canyon.jpg
+cypress-lakes	Cypress Lakes Golf Course	71.2	120	/course-photos/cypress-lakes.jpg
+yocha-dehe	Yocha Dehe Golf Club	71.4	131	/course-photos/yocha-dehe.jpg
+blue-rock-east	Blue Rock Springs East	68.4	121	/course-photos/blue-rock.jpg
+wolf-run	Wolf Run Golf Club	67.3	122	/course-photos/wolf-run.png
+red-hawk	Red Hawk Lakes Course	66.9	115	https://www.troon.com/wp-content/uploads/locations/1932/processed/e72a44bfb7c85b070369bbb7474a7ffe-full.jpg
+rooster-run	Rooster Run Golf Club	70.5	127	/course-photos/rooster-run.jpg
+grays-crossing	Gray's Crossing Golf Club	68.4	125	/course-photos/grays-crossing.jpeg
+rio-vista	Rio Vista Golf Club	69.7	124	/course-photos/rio-vista.jpg
+chardonnay-golf	Chardonnay Golf Club	68.9	122	/course-photos/chardonnay-golf.jpg
+racho-solano	Rancho Solano Golf Course	69.6	126	https://i.ytimg.com/vi/3hlLklfzqCI/maxresdefault.jpg
+\.
+
+
+--
+-- Data for Name: greenies; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.greenies (id, round_id, hole_number, feet, inches) FROM stdin;
+1	1	5	43	8
+2	1	7	31	6
+3	1	14	38	11
+4	3	17	32	0
+5	4	14	35	4
+6	6	5	11	0
+7	6	17	18	4
+8	8	5	45	10
+9	10	5	28	2
+10	10	14	23	4
+11	10	17	6	6
+12	16	2	43	7
+13	17	2	17	0
+14	18	11	14	1
+15	20	2	28	6
+16	21	2	27	1
+17	23	8	11	2
+18	23	16	16	0
+19	25	2	32	11
+20	25	11	22	1
+21	26	8	39	0
+22	27	7	17	10
+23	27	16	79	0
+24	28	7	33	3
+25	28	13	67	0
+26	28	16	50	0
+27	31	16	15	2
+28	32	13	79	0
+29	33	7	12	4
+30	33	13	31	9
+31	35	16	18	9
+32	44	8	28	7
+33	44	14	35	0
+34	45	11	26	7
+35	47	11	27	8
+36	48	14	33	2
+37	49	11	42	0
+38	50	11	23	5
+39	50	14	28	1
+40	51	12	32	10
+41	51	15	55	0
+42	52	3	54	0
+43	57	15	54	4
+44	58	3	22	1
+45	60	15	29	6
+46	61	8	16	2
+47	62	3	66	0
+48	66	4	10	7
+49	68	2	9	5
+50	68	11	31	3
+51	69	2	2	10
+52	71	4	38	5
+53	78	2	7	3
+54	82	2	39	0
+55	84	11	5	2
+56	86	2	25	7
+57	86	11	9	10
+58	88	11	50	0
+59	89	4	43	0
+60	89	14	24	2
+61	90	4	49	8
+62	90	6	18	7
+63	90	12	28	3
+64	91	12	31	5
+65	91	14	56	0
+66	92	4	60	0
+67	92	6	7	9
+68	92	14	90	0
+69	93	12	21	0
+70	93	14	84	0
+71	94	12	23	10
+72	94	14	28	0
+73	95	6	45	0
+74	95	12	27	10
+75	96	12	26	0
+76	96	14	40	0
+77	97	4	42	6
+78	97	12	36	9
+79	98	3	23	5
+80	98	15	66	0
+81	100	3	4	2
+82	103	3	26	3
+83	103	8	69	0
+84	104	3	18	2
+85	107	2	34	0
+86	108	2	30	0
+87	108	8	14	1
+88	109	16	19	1
+89	110	2	13	3
+90	110	8	50	0
+91	111	2	37	0
+92	111	8	42	0
+93	113	6	17	11
+94	114	2	33	2
+95	114	8	36	3
+96	111	16	4	4
+98	111	11	4	4
+99	117	6	18	1
+100	117	11	39	0
+101	116	11	24	0
+102	119	6	32	6
+103	119	11	40	3
+104	121	15	30	0
+105	123	11	41	11
+106	123	15	14	7
+107	127	14	63	0
+108	126	11	35	7
+109	126	14	38	10
+110	128	14	34	4
+111	129	11	33	3
+112	130	11	5	2
+113	131	14	62	0
+114	132	11	55	0
+115	132	14	60	0
+116	136	4	88	6
+117	137	4	19	0
+118	135	8	39	0
+119	137	8	6	0
+120	136	8	24	10
+122	141	4	54	5
+123	141	12	30	7
+124	140	17	29	11
+125	139	12	47	0
+126	145	4	22	10
+127	142	8	30	7
+128	142	12	70	0
+129	142	17	43	2
+130	145	8	45	5
+131	145	12	50	0
+132	145	17	20	1
+134	143	17	43	2
+133	143	12	22	3
+136	156	8	6	3
+137	156	11	66	0
+138	156	16	10	0
+140	159	8	27	5
+141	158	4	58	1
+142	158	8	16	1
+143	158	11	23	10
+144	161	11	17	3
+145	162	4	38	6
+146	162	8	5	8
+157	184	3	28	7
+147	155	4	33	8
+148	163	5	27	9
+149	170	8	30	4
+150	169	15	13	11
+151	168	5	21	11
+152	168	13	28	8
+153	171	8	31	0
+154	164	8	25	2
+155	164	13	1	8
+156	165	13	30	8
+158	174	5	43	8
+159	181	5	33	8
+160	183	5	124	3
+161	183	14	78	1
+162	174	16	34	7
+163	180	3	24	10
+164	182	3	20	7
+165	179	5	24	10
+166	179	8	60	0
+167	182	8	23	0
+168	182	12	15	10
+169	179	16	18	1
+170	182	16	17	4
+171	185	3	16	8
+172	185	5	27	0
+173	176	5	30	0
+174	185	8	5	0
+175	176	8	22	8
+176	175	12	72	0
+177	186	14	30	0
+178	185	14	36	0
+179	175	16	4	8
+180	181	8	32	0
+181	174	8	28	0
+183	194	12	24	8
+185	193	12	33	1
+186	201	8	35	5
+188	192	8	7	10
+189	195	3	42	0
+190	193	3	34	2
+191	192	3	16	8
+192	203	12	30	6
+194	199	15	33	8
+195	199	3	40	9
+196	203	8	20	2
+198	204	15	8	10
+199	204	8	23	8
+200	198	12	22	11
+201	198	3	26	0
+202	198	15	70	0
+203	206	15	35	0
+\.
+
+
+--
+-- Data for Name: handicaps; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.handicaps (course_handle, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18) FROM stdin;
+paradise-valley	5	7	17	9	1	3	11	15	13	4	10	18	6	14	16	8	12	2
+wild-horse	9	15	1	7	3	17	11	5	13	18	16	10	8	14	4	12	6	2
+lone-tree	1	13	17	9	7	15	3	11	5	16	12	2	4	18	6	8	10	14
+franklin-canyon	15	11	13	7	17	5	9	1	3	8	2	14	4	10	6	16	12	18
+cypress-lakes	13	11	17	3	1	7	9	15	5	6	16	14	10	18	12	2	4	8
+yocha-dehe	5	7	1	15	13	3	11	17	9	6	14	16	10	8	12	18	4	2
+blue-rock-east	9	17	7	3	1	11	13	15	5	12	16	4	10	18	2	14	6	8
+wolf-run	9	3	11	1	15	5	17	7	13	14	10	4	8	18	2	16	12	6
+red-hawk	11	13	1	5	9	17	7	15	3	12	14	8	18	16	6	10	4	2
+rooster-run	9	5	15	11	7	13	1	17	3	14	16	18	6	2	12	4	8	10
+paradise-valley	5	7	17	9	1	3	11	15	13	4	10	18	6	14	16	8	12	2
+wild-horse	9	15	1	7	3	17	11	5	13	18	16	10	8	14	4	12	6	2
+lone-tree	1	13	17	9	7	15	3	11	5	16	12	2	4	18	6	8	10	14
+franklin-canyon	15	11	13	7	17	5	9	1	3	8	2	14	4	10	6	16	12	18
+cypress-lakes	13	11	17	3	1	7	9	15	5	6	16	14	10	18	12	2	4	8
+yocha-dehe	5	7	1	15	13	3	11	17	9	6	14	16	10	8	12	18	4	2
+blue-rock-east	9	17	7	3	1	11	13	15	5	12	16	4	10	18	2	14	6	8
+wolf-run	9	3	11	1	15	5	17	7	13	14	10	4	8	18	2	16	12	6
+red-hawk	11	13	1	5	9	17	7	15	3	12	14	8	18	16	6	10	4	2
+rooster-run	9	5	15	11	7	13	1	17	3	14	16	18	6	2	12	4	8	10
+grays-crossing	13	11	7	15	3	17	5	9	1	14	16	12	8	18	10	6	4	2
+rio-vista	13	11	5	1	15	7	3	17	9	16	12	4	18	10	14	3	8	6
+chardonnay-golf	11	5	17	7	13	3	1	15	9	10	6	8	16	14	4	18	2	12
+racho-solano	3	15	1	13	7	17	5	11	9	8	2	4	6	14	18	16	12	10
+\.
+
+
+--
+-- Data for Name: pars; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pars (course_handle, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18, total) FROM stdin;
+paradise-valley	5	4	3	5	4	4	4	3	4	5	4	3	4	4	3	5	4	4	72
+wild-horse	4	4	4	3	5	3	5	4	4	4	4	3	5	3	4	4	5	4	72
+lone-tree	4	3	4	5	4	4	4	3	4	3	3	5	4	3	4	5	5	4	71
+franklin-canyon	5	3	4	3	4	3	5	4	5	4	3	4	5	4	4	4	3	5	72
+cypress-lakes	5	4	3	4	5	4	4	3	4	5	3	4	4	3	4	4	5	4	72
+yocha-dehe	4	5	4	3	4	5	3	4	4	5	4	4	3	4	4	3	5	4	72
+blue-rock-east	4	3	4	4	5	3	5	3	4	4	3	4	4	5	4	3	4	4	70
+wolf-run	4	5	4	4	3	4	3	5	4	4	4	4	4	3	5	4	3	5	72
+red-hawk	4	5	4	3	4	5	4	3	4	5	4	3	4	4	4	5	3	4	72
+rooster-run	4	5	4	4	4	3	4	3	5	5	3	4	4	4	3	4	4	5	72
+paradise-valley	5	4	3	5	4	4	4	3	4	5	4	3	4	4	3	5	4	4	72
+wild-horse	4	4	4	3	5	3	5	4	4	4	4	3	5	3	4	4	5	4	72
+lone-tree	4	3	4	5	4	4	4	3	4	3	3	5	4	3	4	5	5	4	71
+franklin-canyon	5	3	4	3	4	3	5	4	5	4	3	4	5	4	4	4	3	5	72
+cypress-lakes	5	4	3	4	5	4	4	3	4	5	3	4	4	3	4	4	5	4	72
+yocha-dehe	4	5	4	3	4	5	3	4	4	5	4	4	3	4	4	3	5	4	72
+blue-rock-east	4	3	4	4	5	3	5	3	4	4	3	4	4	5	4	3	4	4	70
+wolf-run	4	5	4	4	3	4	3	5	4	4	4	4	4	3	5	4	3	5	72
+red-hawk	4	5	4	3	4	5	4	3	4	5	4	3	4	4	4	5	3	4	72
+rooster-run	4	5	4	4	4	3	4	3	5	5	3	4	4	4	3	4	4	5	72
+grays-crossing	4	4	5	3	4	4	5	3	4	4	3	4	4	4	5	3	4	5	72
+rio-vista	4	5	4	5	3	4	4	3	4	4	4	4	3	5	3	4	5	4	72
+chardonnay-golf	4	4	3	5	3	4	5	3	5	5	4	3	4	3	5	3	4	5	72
+racho-solano	5	4	4	4	3	4	5	3	4	5	4	3	4	4	3	4	5	4	72
+\.
+
+
+--
+-- Data for Name: points; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.points (round_id, strokes, putts, greenies, pars, birdies, eagles, aces, participation) FROM stdin;
+109	15	4	2	2	0	0	0	3
+113	5	0	2	2	2	0	0	3
+114	0	0	2	5	0	0	0	3
+102	0	0	0	1	0	0	0	3
+107	10	0	1	4	0	0	0	3
+112	0	0	0	0	0	0	0	3
+108	0	6	3	5	0	0	0	3
+110	20	0	3	5	0	0	0	3
+103	15	4	2	4	0	0	0	3
+104	5	0	2	5	0	0	0	3
+105	20	0	0	3	0	0	0	3
+99	10	6	0	7	0	0	0	3
+89	20	6	2	11	0	0	0	3
+106	0	0	0	2	0	0	0	3
+98	25	0	2	8	0	0	0	3
+101	0	0	0	1	0	0	0	3
+100	0	2	3	2	0	0	0	3
+93	5	0	2	4	2	0	0	3
+94	0	0	2	5	2	0	0	3
+90	10	0	4	10	0	0	0	3
+92	0	0	5	7	0	0	0	3
+96	0	0	2	5	2	0	0	3
+87	0	0	0	3	2	0	0	3
+97	15	2	2	6	2	0	0	3
+95	0	0	2	6	2	0	0	3
+91	25	4	2	5	2	0	0	3
+84	0	0	3	5	2	4	0	3
+88	0	0	1	2	0	0	0	3
+76	0	6	0	6	0	0	0	3
+85	0	0	0	4	0	0	0	3
+79	20	4	0	2	6	4	0	3
+71	5	0	1	7	0	0	0	3
+82	15	0	1	3	6	0	0	3
+86	0	0	4	5	0	0	0	3
+80	0	0	0	3	2	4	0	3
+78	25	0	3	2	2	0	0	3
+75	5	0	0	2	4	0	0	3
+83	10	2	0	4	2	0	0	3
+74	0	0	0	4	2	0	0	3
+81	0	0	0	4	2	0	0	3
+77	0	0	0	3	0	0	0	3
+73	0	0	0	3	0	0	0	3
+68	0	0	4	2	0	0	0	3
+66	20	0	2	6	0	0	0	3
+64	15	6	0	3	0	0	0	3
+63	0	0	0	4	0	0	0	3
+61	0	2	2	1	4	0	0	3
+72	0	0	0	3	0	0	0	3
+70	10	0	0	0	2	0	0	3
+69	25	2	3	3	0	0	0	3
+67	0	4	0	2	0	0	0	3
+65	0	0	0	2	0	0	0	3
+54	0	0	0	2	0	0	0	3
+55	25	0	0	2	0	0	0	3
+59	0	0	0	1	0	0	0	3
+56	20	6	0	6	0	0	0	3
+58	0	0	1	2	2	0	0	3
+52	0	0	1	2	0	0	0	3
+53	0	4	0	4	0	0	0	3
+60	0	0	1	3	0	0	0	3
+62	10	0	1	3	0	0	0	3
+42	0	0	0	0	0	0	0	3
+51	15	0	2	6	2	0	0	3
+57	5	0	1	4	0	0	0	3
+46	15	6	0	4	2	0	0	3
+44	10	2	2	4	0	0	0	3
+41	0	0	0	5	0	0	0	3
+21	20	2	1	6	0	0	0	3
+50	0	0	2	5	0	0	0	3
+49	0	0	1	4	0	0	0	3
+48	5	0	1	4	0	0	0	3
+45	0	0	1	1	0	0	0	3
+43	20	4	0	6	0	0	0	3
+47	25	0	1	1	0	0	0	3
+31	0	0	2	1	0	0	0	3
+36	5	0	0	3	2	0	0	3
+32	15	2	1	3	0	0	0	3
+30	0	0	0	3	0	0	0	3
+40	0	4	0	5	2	0	0	3
+38	0	0	0	3	0	0	0	3
+34	0	0	0	5	0	0	0	3
+37	0	0	0	1	0	0	0	3
+27	0	0	3	5	0	0	0	3
+33	20	0	3	3	0	0	0	3
+28	0	0	3	5	0	0	0	3
+29	0	0	0	4	2	0	0	3
+39	10	0	0	1	4	0	0	3
+25	25	0	2	5	0	0	0	3
+15	0	0	0	4	0	0	0	3
+19	0	0	0	4	0	0	0	3
+16	0	0	1	2	0	0	0	3
+17	0	0	2	2	0	0	0	3
+24	5	0	0	6	0	0	0	3
+20	15	6	1	8	0	0	0	3
+18	0	0	2	2	0	0	0	3
+10	15	0	5	9	2	0	0	3
+23	0	0	4	4	0	0	0	3
+26	0	4	1	3	2	0	0	3
+22	10	0	0	7	0	0	0	3
+13	0	0	0	0	0	0	0	3
+5	0	0	0	1	0	0	0	3
+8	10	6	1	7	2	0	0	3
+7	25	4	0	8	0	0	0	3
+2	0	0	0	6	0	0	0	3
+12	5	0	0	6	2	0	0	3
+1	0	0	3	6	0	0	0	3
+3	20	0	1	8	0	0	0	3
+14	0	0	0	4	2	0	0	3
+9	0	2	0	3	0	0	0	3
+4	0	0	1	2	0	0	0	3
+11	0	0	0	0	2	0	0	3
+35	25	6	2	7	2	0	0	3
+6	0	0	4	3	0	0	0	3
+111	25	2	8	4	2	0	0	3
+118	5	0	0	1	0	0	0	3
+119	0	4	2	4	0	0	0	3
+120	0	0	0	3	0	0	0	3
+116	10	2	1	5	2	0	0	3
+122	0	0	0	1	0	0	0	3
+117	25	6	3	11	2	0	0	3
+121	15	0	1	8	0	0	0	3
+123	20	0	3	9	0	0	0	3
+142	5	6	3	8	0	4	0	3
+135	10	4	1	5	0	0	0	3
+139	0	2	1	4	0	0	0	3
+140	0	0	1	2	0	0	0	3
+145	25	0	3	10	2	0	0	3
+141	0	0	2	5	0	0	0	3
+137	20	0	5	6	2	0	0	3
+136	0	0	2	6	0	0	0	3
+143	15	0	2	4	0	0	0	3
+144	0	0	0	2	0	0	0	3
+207	5	0	0	3	0	0	0	3
+215	20	0	0	5	0	0	0	3
+209	10	0	0	3	2	0	0	3
+159	0	0	1	1	0	0	0	3
+158	20	0	4	4	0	0	0	3
+161	5	4	2	6	2	0	0	3
+162	25	0	4	5	0	4	0	3
+155	0	0	1	4	0	0	0	3
+217	25	6	0	0	0	0	0	3
+177	0	6	0	2	0	0	0	3
+167	5	6	0	5	0	0	0	3
+168	25	4	2	8	0	0	0	3
+164	15	2	5	7	0	0	0	3
+163	0	0	1	3	0	0	0	3
+171	0	0	1	1	0	0	0	3
+127	25	6	1	5	0	0	0	3
+126	5	4	2	6	0	0	0	3
+131	10	2	1	4	2	0	0	3
+125	0	0	0	8	2	0	0	3
+133	20	0	0	5	2	0	0	3
+124	0	0	0	6	2	0	0	3
+130	0	0	3	3	2	0	0	3
+129	15	0	1	7	0	0	0	3
+132	0	0	2	2	0	0	0	3
+134	0	0	0	6	0	0	0	3
+128	0	0	1	2	0	0	0	3
+169	20	0	2	2	0	0	0	3
+165	0	0	1	6	0	0	0	3
+170	10	0	1	5	0	0	0	3
+156	10	0	6	7	0	0	0	3
+181	0	4	2	6	0	0	0	3
+184	0	2	1	3	0	0	0	3
+179	10	0	4	3	0	0	0	3
+175	20	0	4	5	0	0	0	3
+176	0	0	2	6	0	0	0	3
+186	0	0	1	4	0	0	0	3
+174	25	0	3	3	0	0	0	3
+182	15	0	0	8	0	0	0	3
+183	0	0	2	4	0	0	0	3
+180	0	0	1	1	0	0	0	3
+185	5	0	7	5	2	0	0	3
+160	0	6	0	2	0	0	0	3
+157	15	2	0	1	0	4	0	3
+206	0	6	1	7	8	0	0	3
+201	0	4	1	7	2	0	0	3
+205	5	2	0	2	0	0	0	3
+200	10	0	0	4	6	0	0	3
+199	25	0	2	8	0	0	0	3
+204	0	0	4	4	0	0	0	3
+192	15	0	5	4	0	0	0	3
+194	20	0	1	6	2	0	0	3
+198	0	0	3	4	2	0	0	3
+195	0	0	1	0	2	0	0	3
+193	0	0	2	6	0	0	0	3
+203	0	0	1	2	0	0	0	3
+197	0	0	0	1	0	0	0	3
+213	25	6	0	2	0	0	0	3
+208	0	4	0	2	0	0	0	3
+216	0	2	0	4	0	0	0	3
+210	15	0	0	5	0	0	0	3
+\.
+
+
+--
+-- Data for Name: putts; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.putts (round_id, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18) FROM stdin;
+1	2	2	3	2	4	2	3	2	2	3	2	2	1	4	3	2	2	2
+2	2	2	3	3	2	2	3	2	3	2	3	2	3	1	2	1	3	1
+3	2	2	2	1	1	2	2	2	2	3	2	2	2	2	2	2	2	2
+4	2	2	2	3	2	3	2	2	3	2	2	2	1	3	3	3	2	2
+5	1	2	2	2	2	3	3	1	2	3	2	2	2	2	1	2	2	3
+6	2	2	1	2	2	2	2	2	1	3	1	2	3	3	3	2	3	2
+7	1	2	2	3	1	2	1	2	1	2	3	1	1	2	3	2	2	1
+8	1	1	2	1	2	2	1	2	1	3	2	2	2	2	2	2	1	2
+9	2	1	2	3	1	2	2	3	1	1	1	2	2	2	2	2	2	2
+10	1	1	2	3	2	2	1	2	1	1	2	2	2	2	3	1	2	3
+11	3	3	2	3	1	2	3	2	2	3	2	2	2	3	2	2	1	3
+12	2	2	2	3	1	1	3	2	2	3	1	2	2	2	2	1	2	3
+13	3	2	3	4	3	3	3	3	1	3	2	2	2	1	2	2	3	1
+14	2	3	2	3	1	2	3	1	1	2	3	3	2	2	2	2	2	3
+15	3	2	2	1	1	2	2	1	2	2	1	2	2	2	3	2	3	2
+16	2	2	2	2	3	2	2	1	2	2	2	2	2	1	1	2	3	3
+17	2	2	2	2	3	2	2	1	2	2	2	2	2	1	1	2	3	3
+18	3	2	2	2	2	2	2	2	3	2	2	2	2	2	2	2	3	1
+19	2	1	2	3	2	2	2	2	3	1	1	2	2	2	4	1	3	2
+20	2	2	1	2	1	1	0	2	2	2	2	1	2	1	1	2	3	1
+21	2	2	1	2	2	2	2	2	2	3	2	2	1	2	2	1	2	2
+22	1	3	3	3	2	1	3	1	1	1	2	1	2	2	2	2	3	2
+23	1	1	2	3	3	1	1	2	2	3	2	2	3	3	1	3	2	1
+24	3	2	2	2	2	3	1	2	1	2	2	2	1	2	2	2	2	1
+25	2	3	2	3	2	2	1	2	2	2	2	2	2	2	3	2	2	1
+26	3	2	1	2	1	2	2	3	2	3	2	1	1	2	2	1	2	2
+27	2	2	3	1	1	3	3	2	1	3	2	2	2	3	2	1	3	1
+28	1	2	2	2	2	2	2	1	2	3	1	1	3	3	2	3	2	2
+29	2	2	2	2	1	1	3	1	2	3	2	2	4	2	2	2	3	2
+30	3	2	2	2	1	2	3	2	2	2	2	3	2	2	2	1	3	2
+31	3	2	3	1	2	2	1	2	2	3	3	2	2	2	1	2	3	3
+32	1	3	2	2	1	2	2	2	2	3	1	2	2	2	2	2	2	2
+33	2	2	1	2	2	3	2	2	4	2	2	2	3	2	1	2	1	2
+34	2	3	1	2	1	2	2	3	3	3	2	1	1	1	1	4	2	1
+35	2	2	1	2	2	2	2	1	2	3	2	2	1	2	2	2	1	1
+36	2	2	4	3	1	2	3	2	2	3	3	2	1	3	1	1	1	2
+37	2	2	2	2	1	2	1	2	1	3	1	3	3	2	1	3	2	3
+38	2	2	3	3	2	3	3	2	3	3	2	2	2	2	2	2	3	3
+39	2	1	4	2	1	2	1	1	2	3	3	3	1	2	2	2	2	1
+40	2	2	1	1	2	2	2	1	2	2	3	3	1	2	3	2	2	2
+41	1	2	3	2	1	2	1	1	4	2	2	2	3	2	1	1	2	3
+42	2	1	3	1	3	1	3	2	3	2	2	2	3	2	2	2	3	1
+43	2	2	1	0	1	2	1	2	3	2	2	2	2	2	2	2	1	2
+44	1	2	2	2	1	2	1	2	2	2	1	2	2	3	2	1	2	3
+45	1	3	2	1	2	2	2	2	2	3	3	2	1	1	2	2	2	3
+46	2	2	0	2	1	2	2	2	2	1	2	1	1	2	3	1	2	1
+47	2	3	2	0	3	2	2	2	2	1	2	2	1	3	2	3	2	1
+48	1	2	2	2	2	2	2	2	2	1	2	2	2	2	2	2	2	2
+49	2	1	2	1	2	2	2	1	2	2	3	2	2	2	1	2	3	2
+50	1	2	1	1	1	1	2	1	2	2	2	2	2	2	1	2	1	1
+51	1	2	2	2	2	2	2	2	1	2	1	1	2	4	3	1	1	3
+52	4	1	3	1	2	2	1	2	2	2	3	2	3	2	2	2	2	2
+53	2	2	1	1	1	1	2	1	2	3	2	2	2	1	2	1	2	1
+54	3	1	2	2	2	2	2	2	2	2	2	1	2	2	2	2	2	1
+55	2	1	2	3	2	2	3	2	2	2	2	2	3	2	3	2	1	1
+56	1	0	2	3	1	1	1	1	1	2	2	3	2	2	1	1	2	2
+57	2	2	2	2	2	1	3	1	2	2	2	3	3	2	2	2	2	2
+58	2	1	3	2	3	2	2	1	4	2	2	3	2	2	3	1	1	2
+59	2	2	1	2	2	3	3	2	2	3	1	3	1	2	2	2	4	2
+60	1	3	3	1	0	1	4	1	2	2	2	2	3	1	2	4	2	1
+61	3	1	3	2	1	2	2	1	1	3	1	2	2	1	2	1	2	2
+62	2	2	2	3	1	2	3	2	2	3	2	2	1	3	2	1	1	2
+63	2	4	3	1	2	2	2	2	2	2	3	2	2	2	2	3	2	2
+64	3	2	2	2	1	1	2	3	2	1	1	1	2	1	3	2	2	2
+65	1	3	1	2	2	2	2	4	3	1	2	2	3	3	2	2	2	2
+66	2	3	2	2	3	2	2	3	2	2	2	2	2	2	3	2	3	2
+67	3	2	2	2	3	1	1	2	2	2	1	2	1	2	2	2	2	2
+68	3	3	2	2	3	1	4	2	3	3	2	3	2	2	2	2	3	3
+69	3	2	3	2	2	2	2	1	1	2	2	2	2	1	1	2	3	3
+70	2	2	3	3	2	2	3	2	1	2	2	2	3	2	1	2	3	1
+71	2	2	2	2	3	1	4	3	1	2	1	1	2	2	4	2	3	2
+72	3	3	2	2	2	4	3	3	2	2	1	3	4	2	2	3	2	1
+73	3	2	3	2	2	2	2	3	1	2	1	2	2	4	3	2	1	3
+74	2	2	2	2	2	2	2	1	3	2	2	2	2	1	2	2	3	3
+75	2	3	1	2	2	2	2	2	2	2	2	1	1	1	2	1	2	2
+76	1	2	2	2	2	2	1	1	2	1	1	2	3	1	2	2	2	2
+77	2	2	2	2	3	2	3	1	2	2	2	2	3	3	3	2	2	1
+78	2	1	2	1	3	3	1	0	2	2	3	2	2	2	1	2	2	2
+79	1	2	2	2	1	2	3	2	2	1	2	2	2	1	1	3	1	1
+80	3	2	2	2	2	2	1	2	2	1	2	3	2	2	3	4	1	1
+81	2	2	3	2	2	2	2	2	1	0	2	2	2	3	2	2	1	2
+82	2	2	1	2	3	2	2	2	1	1	4	1	2	1	2	1	2	1
+83	2	2	1	1	3	1	1	3	1	1	1	3	3	2	2	1	2	2
+84	2	2	3	2	2	2	1	2	2	1	3	1	2	2	2	2	2	1
+85	2	2	2	2	2	3	2	2	2	0	2	2	2	2	2	3	3	1
+86	2	2	2	2	3	2	2	2	4	1	2	2	2	1	2	3	3	4
+87	3	2	2	1	2	1	2	2	3	1	3	1	2	1	2	2	2	1
+88	1	2	2	2	1	2	1	2	4	1	3	2	2	2	2	2	3	3
+89	1	2	2	3	2	1	2	0	1	2	2	2	2	2	2	2	2	3
+90	3	2	2	2	1	2	2	2	3	3	2	2	3	2	2	2	2	3
+91	2	1	3	2	2	2	1	2	1	2	2	2	3	2	3	2	2	2
+92	2	1	3	3	2	2	2	2	2	2	2	2	2	3	2	2	3	1
+93	2	2	2	3	2	2	3	2	1	3	2	2	2	4	2	2	2	2
+94	2	2	3	2	2	2	2	2	1	2	2	2	2	3	3	1	3	2
+95	2	2	2	2	3	3	3	2	2	2	1	3	2	1	2	2	1	3
+96	2	4	3	2	2	2	3	1	1	3	2	2	3	2	2	1	2	1
+97	1	3	2	4	2	1	2	2	2	2	3	2	2	2	2	2	2	2
+98	2	2	2	2	1	1	2	3	2	2	3	2	1	2	3	2	1	3
+99	2	1	2	1	3	1	2	2	2	2	2	2	3	1	1	2	1	2
+100	2	2	2	2	2	2	1	2	2	1	1	2	2	2	2	2	2	3
+101	2	2	2	2	2	3	1	2	2	3	2	2	2	2	3	1	3	2
+102	2	3	1	2	2	2	2	1	3	2	2	2	1	3	1	2	2	2
+103	2	2	2	2	3	2	1	3	1	2	1	2	2	2	2	1	2	1
+104	2	2	3	3	2	2	1	2	3	2	3	2	3	2	2	1	2	2
+105	1	3	2	2	2	1	2	2	2	1	2	2	3	2	1	2	3	2
+106	1	1	2	2	3	2	2	2	1	2	2	2	2	3	2	2	1	4
+107	1	3	2	1	2	2	2	1	2	2	2	3	3	2	1	2	2	3
+108	1	2	2	2	1	3	2	2	2	2	3	2	1	2	1	2	2	2
+109	1	2	1	1	2	2	2	2	2	3	1	2	1	3	1	4	2	2
+110	2	2	2	3	3	2	2	2	3	2	3	2	1	1	2	2	1	3
+111	2	2	2	4	2	1	1	2	3	3	2	1	0	1	1	4	2	2
+112	2	3	3	2	2	3	3	2	2	2	2	1	3	2	1	6	1	2
+113	2	3	2	1	2	3	2	2	2	1	2	1	2	2	1	4	1	3
+114	2	3	2	2	2	1	2	2	2	3	2	3	2	2	2	2	2	1
+116	2	2	2	2	2	1	1	2	3	2	2	2	2	1	2	2	1	2
+117	1	3	2	2	2	2	1	1	1	1	2	2	0	2	3	2	2	2
+118	2	2	2	2	2	2	2	2	1	3	2	3	3	3	2	1	2	3
+119	1	2	2	2	1	2	1	2	1	2	3	2	2	2	2	1	1	3
+120	2	2	3	2	2	2	2	2	0	2	2	2	1	2	2	1	3	3
+121	3	2	2	1	1	2	2	1	2	2	3	2	1	3	2	2	2	1
+122	2	2	2	2	2	2	1	2	4	3	2	2	2	3	2	2	2	2
+123	2	1	2	2	2	2	2	2	1	2	2	3	1	0	2	2	2	3
+124	1	1	2	2	2	2	1	1	2	3	1	2	2	2	2	2	2	2
+125	2	1	1	1	1	2	2	1	2	2	2	2	2	1	2	3	2	3
+126	2	2	2	1	2	2	1	1	1	2	3	1	1	2	2	2	2	2
+127	1	2	2	2	0	1	2	2	1	1	1	2	1	2	1	3	2	2
+128	2	4	1	2	2	2	2	3	3	2	2	2	2	3	2	1	1	2
+129	2	2	1	2	2	2	2	2	1	3	2	2	2	1	2	2	2	2
+130	1	2	2	1	2	2	1	2	2	2	1	2	3	2	2	2	1	2
+131	1	2	2	2	2	2	2	3	1	1	1	0	2	3	2	1	2	2
+132	3	3	1	2	2	2	1	2	2	2	3	2	1	3	1	2	2	1
+133	2	2	1	1	1	2	2	2	3	1	2	2	2	1	2	2	2	2
+134	2	3	1	1	2	2	3	2	2	1	2	3	1	2	2	2	2	2
+137	2	2	3	2	1	2	2	1	2	3	3	2	3	2	1	2	2	2
+135	2	1	1	1	2	1	2	2	2	3	3	2	3	2	2	1	2	1
+136	2	2	2	3	2	2	3	2	3	2	3	1	2	2	1	2	1	2
+139	1	2	2	0	2	2	2	2	3	3	2	4	2	2	1	1	2	2
+142	0	2	2	1	3	3	2	2	2	1	1	2	2	2	2	2	2	1
+140	2	2	2	1	3	2	2	2	2	1	3	2	2	2	1	3	2	1
+143	2	2	3	2	3	1	1	3	3	3	2	2	1	2	3	2	2	1
+141	1	1	2	3	3	1	1	1	2	2	2	2	2	3	3	2	2	3
+144	3	3	3	2	3	2	1	2	2	1	3	2	4	1	2	2	2	2
+145	1	2	3	2	2	2	2	2	3	1	1	3	2	1	2	3	2	2
+1	2	2	3	2	4	2	3	2	2	3	2	2	1	4	3	2	2	2
+2	2	2	3	3	2	2	3	2	3	2	3	2	3	1	2	1	3	1
+3	2	2	2	1	1	2	2	2	2	3	2	2	2	2	2	2	2	2
+4	2	2	2	3	2	3	2	2	3	2	2	2	1	3	3	3	2	2
+5	1	2	2	2	2	3	3	1	2	3	2	2	2	2	1	2	2	3
+6	2	2	1	2	2	2	2	2	1	3	1	2	3	3	3	2	3	2
+7	1	2	2	3	1	2	1	2	1	2	3	1	1	2	3	2	2	1
+8	1	1	2	1	2	2	1	2	1	3	2	2	2	2	2	2	1	2
+9	2	1	2	3	1	2	2	3	1	1	1	2	2	2	2	2	2	2
+10	1	1	2	3	2	2	1	2	1	1	2	2	2	2	3	1	2	3
+11	3	3	2	3	1	2	3	2	2	3	2	2	2	3	2	2	1	3
+12	2	2	2	3	1	1	3	2	2	3	1	2	2	2	2	1	2	3
+13	3	2	3	4	3	3	3	3	1	3	2	2	2	1	2	2	3	1
+14	2	3	2	3	1	2	3	1	1	2	3	3	2	2	2	2	2	3
+15	3	2	2	1	1	2	2	1	2	2	1	2	2	2	3	2	3	2
+16	2	2	2	2	3	2	2	1	2	2	2	2	2	1	1	2	3	3
+17	2	2	2	2	3	2	2	1	2	2	2	2	2	1	1	2	3	3
+18	3	2	2	2	2	2	2	2	3	2	2	2	2	2	2	2	3	1
+19	2	1	2	3	2	2	2	2	3	1	1	2	2	2	4	1	3	2
+20	2	2	1	2	1	1	0	2	2	2	2	1	2	1	1	2	3	1
+21	2	2	1	2	2	2	2	2	2	3	2	2	1	2	2	1	2	2
+22	1	3	3	3	2	1	3	1	1	1	2	1	2	2	2	2	3	2
+23	1	1	2	3	3	1	1	2	2	3	2	2	3	3	1	3	2	1
+24	3	2	2	2	2	3	1	2	1	2	2	2	1	2	2	2	2	1
+25	2	3	2	3	2	2	1	2	2	2	2	2	2	2	3	2	2	1
+26	3	2	1	2	1	2	2	3	2	3	2	1	1	2	2	1	2	2
+27	2	2	3	1	1	3	3	2	1	3	2	2	2	3	2	1	3	1
+28	1	2	2	2	2	2	2	1	2	3	1	1	3	3	2	3	2	2
+29	2	2	2	2	1	1	3	1	2	3	2	2	4	2	2	2	3	2
+30	3	2	2	2	1	2	3	2	2	2	2	3	2	2	2	1	3	2
+31	3	2	3	1	2	2	1	2	2	3	3	2	2	2	1	2	3	3
+32	1	3	2	2	1	2	2	2	2	3	1	2	2	2	2	2	2	2
+33	2	2	1	2	2	3	2	2	4	2	2	2	3	2	1	2	1	2
+34	2	3	1	2	1	2	2	3	3	3	2	1	1	1	1	4	2	1
+35	2	2	1	2	2	2	2	1	2	3	2	2	1	2	2	2	1	1
+36	2	2	4	3	1	2	3	2	2	3	3	2	1	3	1	1	1	2
+37	2	2	2	2	1	2	1	2	1	3	1	3	3	2	1	3	2	3
+38	2	2	3	3	2	3	3	2	3	3	2	2	2	2	2	2	3	3
+39	2	1	4	2	1	2	1	1	2	3	3	3	1	2	2	2	2	1
+40	2	2	1	1	2	2	2	1	2	2	3	3	1	2	3	2	2	2
+41	1	2	3	2	1	2	1	1	4	2	2	2	3	2	1	1	2	3
+42	2	1	3	1	3	1	3	2	3	2	2	2	3	2	2	2	3	1
+43	2	2	1	0	1	2	1	2	3	2	2	2	2	2	2	2	1	2
+44	1	2	2	2	1	2	1	2	2	2	1	2	2	3	2	1	2	3
+45	1	3	2	1	2	2	2	2	2	3	3	2	1	1	2	2	2	3
+46	2	2	0	2	1	2	2	2	2	1	2	1	1	2	3	1	2	1
+47	2	3	2	0	3	2	2	2	2	1	2	2	1	3	2	3	2	1
+48	1	2	2	2	2	2	2	2	2	1	2	2	2	2	2	2	2	2
+49	2	1	2	1	2	2	2	1	2	2	3	2	2	2	1	2	3	2
+50	1	2	1	1	1	1	2	1	2	2	2	2	2	2	1	2	1	1
+51	1	2	2	2	2	2	2	2	1	2	1	1	2	4	3	1	1	3
+52	4	1	3	1	2	2	1	2	2	2	3	2	3	2	2	2	2	2
+53	2	2	1	1	1	1	2	1	2	3	2	2	2	1	2	1	2	1
+54	3	1	2	2	2	2	2	2	2	2	2	1	2	2	2	2	2	1
+55	2	1	2	3	2	2	3	2	2	2	2	2	3	2	3	2	1	1
+56	1	0	2	3	1	1	1	1	1	2	2	3	2	2	1	1	2	2
+57	2	2	2	2	2	1	3	1	2	2	2	3	3	2	2	2	2	2
+58	2	1	3	2	3	2	2	1	4	2	2	3	2	2	3	1	1	2
+59	2	2	1	2	2	3	3	2	2	3	1	3	1	2	2	2	4	2
+60	1	3	3	1	0	1	4	1	2	2	2	2	3	1	2	4	2	1
+61	3	1	3	2	1	2	2	1	1	3	1	2	2	1	2	1	2	2
+62	2	2	2	3	1	2	3	2	2	3	2	2	1	3	2	1	1	2
+63	2	4	3	1	2	2	2	2	2	2	3	2	2	2	2	3	2	2
+64	3	2	2	2	1	1	2	3	2	1	1	1	2	1	3	2	2	2
+65	1	3	1	2	2	2	2	4	3	1	2	2	3	3	2	2	2	2
+66	2	3	2	2	3	2	2	3	2	2	2	2	2	2	3	2	3	2
+67	3	2	2	2	3	1	1	2	2	2	1	2	1	2	2	2	2	2
+68	3	3	2	2	3	1	4	2	3	3	2	3	2	2	2	2	3	3
+69	3	2	3	2	2	2	2	1	1	2	2	2	2	1	1	2	3	3
+70	2	2	3	3	2	2	3	2	1	2	2	2	3	2	1	2	3	1
+71	2	2	2	2	3	1	4	3	1	2	1	1	2	2	4	2	3	2
+72	3	3	2	2	2	4	3	3	2	2	1	3	4	2	2	3	2	1
+73	3	2	3	2	2	2	2	3	1	2	1	2	2	4	3	2	1	3
+74	2	2	2	2	2	2	2	1	3	2	2	2	2	1	2	2	3	3
+75	2	3	1	2	2	2	2	2	2	2	2	1	1	1	2	1	2	2
+76	1	2	2	2	2	2	1	1	2	1	1	2	3	1	2	2	2	2
+77	2	2	2	2	3	2	3	1	2	2	2	2	3	3	3	2	2	1
+78	2	1	2	1	3	3	1	0	2	2	3	2	2	2	1	2	2	2
+79	1	2	2	2	1	2	3	2	2	1	2	2	2	1	1	3	1	1
+80	3	2	2	2	2	2	1	2	2	1	2	3	2	2	3	4	1	1
+81	2	2	3	2	2	2	2	2	1	0	2	2	2	3	2	2	1	2
+82	2	2	1	2	3	2	2	2	1	1	4	1	2	1	2	1	2	1
+83	2	2	1	1	3	1	1	3	1	1	1	3	3	2	2	1	2	2
+84	2	2	3	2	2	2	1	2	2	1	3	1	2	2	2	2	2	1
+85	2	2	2	2	2	3	2	2	2	0	2	2	2	2	2	3	3	1
+86	2	2	2	2	3	2	2	2	4	1	2	2	2	1	2	3	3	4
+87	3	2	2	1	2	1	2	2	3	1	3	1	2	1	2	2	2	1
+88	1	2	2	2	1	2	1	2	4	1	3	2	2	2	2	2	3	3
+89	1	2	2	3	2	1	2	0	1	2	2	2	2	2	2	2	2	3
+90	3	2	2	2	1	2	2	2	3	3	2	2	3	2	2	2	2	3
+91	2	1	3	2	2	2	1	2	1	2	2	2	3	2	3	2	2	2
+92	2	1	3	3	2	2	2	2	2	2	2	2	2	3	2	2	3	1
+93	2	2	2	3	2	2	3	2	1	3	2	2	2	4	2	2	2	2
+94	2	2	3	2	2	2	2	2	1	2	2	2	2	3	3	1	3	2
+95	2	2	2	2	3	3	3	2	2	2	1	3	2	1	2	2	1	3
+96	2	4	3	2	2	2	3	1	1	3	2	2	3	2	2	1	2	1
+97	1	3	2	4	2	1	2	2	2	2	3	2	2	2	2	2	2	2
+98	2	2	2	2	1	1	2	3	2	2	3	2	1	2	3	2	1	3
+99	2	1	2	1	3	1	2	2	2	2	2	2	3	1	1	2	1	2
+100	2	2	2	2	2	2	1	2	2	1	1	2	2	2	2	2	2	3
+101	2	2	2	2	2	3	1	2	2	3	2	2	2	2	3	1	3	2
+102	2	3	1	2	2	2	2	1	3	2	2	2	1	3	1	2	2	2
+103	2	2	2	2	3	2	1	3	1	2	1	2	2	2	2	1	2	1
+104	2	2	3	3	2	2	1	2	3	2	3	2	3	2	2	1	2	2
+105	1	3	2	2	2	1	2	2	2	1	2	2	3	2	1	2	3	2
+106	1	1	2	2	3	2	2	2	1	2	2	2	2	3	2	2	1	4
+107	1	3	2	1	2	2	2	1	2	2	2	3	3	2	1	2	2	3
+108	1	2	2	2	1	3	2	2	2	2	3	2	1	2	1	2	2	2
+109	1	2	1	1	2	2	2	2	2	3	1	2	1	3	1	4	2	2
+110	2	2	2	3	3	2	2	2	3	2	3	2	1	1	2	2	1	3
+111	2	2	2	4	2	1	1	2	3	3	2	1	0	1	1	4	2	2
+112	2	3	3	2	2	3	3	2	2	2	2	1	3	2	1	6	1	2
+113	2	3	2	1	2	3	2	2	2	1	2	1	2	2	1	4	1	3
+114	2	3	2	2	2	1	2	2	2	3	2	3	2	2	2	2	2	1
+116	2	2	2	2	2	1	1	2	3	2	2	2	2	1	2	2	1	2
+117	1	3	2	2	2	2	1	1	1	1	2	2	0	2	3	2	2	2
+118	2	2	2	2	2	2	2	2	1	3	2	3	3	3	2	1	2	3
+119	1	2	2	2	1	2	1	2	1	2	3	2	2	2	2	1	1	3
+120	2	2	3	2	2	2	2	2	0	2	2	2	1	2	2	1	3	3
+121	3	2	2	1	1	2	2	1	2	2	3	2	1	3	2	2	2	1
+122	2	2	2	2	2	2	1	2	4	3	2	2	2	3	2	2	2	2
+123	2	1	2	2	2	2	2	2	1	2	2	3	1	0	2	2	2	3
+124	1	1	2	2	2	2	1	1	2	3	1	2	2	2	2	2	2	2
+125	2	1	1	1	1	2	2	1	2	2	2	2	2	1	2	3	2	3
+126	2	2	2	1	2	2	1	1	1	2	3	1	1	2	2	2	2	2
+127	1	2	2	2	0	1	2	2	1	1	1	2	1	2	1	3	2	2
+128	2	4	1	2	2	2	2	3	3	2	2	2	2	3	2	1	1	2
+129	2	2	1	2	2	2	2	2	1	3	2	2	2	1	2	2	2	2
+130	1	2	2	1	2	2	1	2	2	2	1	2	3	2	2	2	1	2
+131	1	2	2	2	2	2	2	3	1	1	1	0	2	3	2	1	2	2
+132	3	3	1	2	2	2	1	2	2	2	3	2	1	3	1	2	2	1
+133	2	2	1	1	1	2	2	2	3	1	2	2	2	1	2	2	2	2
+134	2	3	1	1	2	2	3	2	2	1	2	3	1	2	2	2	2	2
+137	2	2	3	2	1	2	2	1	2	3	3	2	3	2	1	2	2	2
+135	2	1	1	1	2	1	2	2	2	3	3	2	3	2	2	1	2	1
+136	2	2	2	3	2	2	3	2	3	2	3	1	2	2	1	2	1	2
+139	1	2	2	0	2	2	2	2	3	3	2	4	2	2	1	1	2	2
+142	0	2	2	1	3	3	2	2	2	1	1	2	2	2	2	2	2	1
+140	2	2	2	1	3	2	2	2	2	1	3	2	2	2	1	3	2	1
+143	2	2	3	2	3	1	1	3	3	3	2	2	1	2	3	2	2	1
+141	1	1	2	3	3	1	1	1	2	2	2	2	2	3	3	2	2	3
+144	3	3	3	2	3	2	1	2	2	1	3	2	4	1	2	2	2	2
+145	1	2	3	2	2	2	2	2	3	1	1	3	2	1	2	3	2	2
+160	1	1	3	2	3	2	2	3	1	1	1	2	2	1	3	2	2	1
+156	1	2	2	2	3	3	2	3	1	1	3	3	1	1	3	2	2	1
+155	2	2	2	2	3	2	1	3	2	0	3	3	2	2	1	2	3	2
+157	2	2	2	2	1	2	2	2	0	1	2	2	3	2	2	2	3	2
+158	2	2	2	3	3	3	2	2	2	2	2	3	2	1	2	2	2	2
+159	2	2	3	2	3	2	1	2	2	1	2	3	2	2	3	2	2	2
+161	2	2	2	1	2	2	1	3	2	3	1	1	2	2	2	2	2	2
+162	2	3	0	2	2	2	2	2	2	2	3	2	2	2	2	3	2	2
+164	2	1	2	1	2	3	1	3	2	2	2	2	2	1	3	2	2	2
+163	2	3	2	2	4	2	2	2	2	1	2	1	2	2	1	2	2	1
+169	2	3	2	3	3	2	2	2	2	3	2	3	1	3	2	2	1	1
+165	2	2	2	2	2	2	1	2	2	3	2	3	3	2	2	2	2	3
+170	2	2	1	2	2	2	2	2	3	2	3	3	3	2	3	1	2	2
+167	2	1	2	1	1	2	1	2	3	2	2	1	1	2	1	2	2	2
+171	1	2	1	1	2	2	2	3	3	3	2	2	3	2	2	2	2	2
+168	2	1	2	2	2	2	2	2	1	3	1	2	2	1	3	1	2	2
+192	2	1	1	2	3	2	3	2	2	2	3	2	2	2	2	2	1	2
+174	2	2	2	2	2	3	2	3	1	2	2	1	2	1	2	2	3	3
+181	2	2	1	1	2	2	2	4	2	2	2	1	2	1	2	1	2	2
+183	2	3	2	2	4	4	2	1	2	2	1	2	3	3	1	2	3	1
+184	2	2	2	2	2	2	1	3	2	3	1	2	1	1	1	3	2	2
+179	2	2	2	2	2	3	2	2	1	2	2	1	1	1	3	3	1	2
+186	3	2	1	2	1	1	2	2	1	3	3	2	2	2	3	2	2	2
+185	4	2	3	2	2	3	2	1	2	2	1	3	2	3	2	2	3	2
+176	3	3	1	2	2	3	2	2	2	2	1	2	1	1	3	1	3	2
+175	3	2	1	3	1	2	2	2	2	1	2	3	1	1	2	2	2	2
+180	2	1	3	1	2	3	2	3	2	3	3	3	2	2	2	3	2	2
+177	2	2	1	2	2	3	1	0	1	2	3	1	2	2	1	2	2	2
+182	4	2	2	2	1	2	2	2	2	2	2	2	1	2	3	2	2	2
+201	2	1	2	1	2	2	2	1	2	1	1	1	1	2	2	2	1	3
+195	2	2	2	3	1	2	2	3	1	2	1	1	3	3	2	2	3	2
+193	2	2	3	2	3	1	3	2	2	2	1	3	1	2	3	2	2	3
+204	3	2	2	2	2	3	2	3	2	1	1	1	3	2	3	2	1	1
+197	2	2	2	2	3	3	4	2	1	2	2	2	3	3	2	3	1	3
+199	2	1	2	1	1	2	4	2	3	2	2	2	1	1	2	2	2	2
+203	3	1	1	2	2	2	4	3	3	2	3	3	2	2	2	1	2	2
+198	2	1	2	1	3	2	2	2	2	2	3	4	2	2	2	1	1	2
+200	1	3	3	2	2	2	2	2	3	1	2	2	2	1	1	1	2	1
+206	1	1	2	1	2	2	0	1	2	1	1	2	2	1	2	2	1	3
+205	2	1	2	2	2	1	2	1	3	1	1	3	2	2	1	2	2	2
+208	1	1	2	2	2	2	2	2	2	2	2	1	1	2	2	1	2	2
+215	3	2	1	3	2	2	1	2	2	2	2	2	2	2	2	2	2	2
+209	2	1	2	2	2	2	3	2	2	1	2	2	3	3	1	3	3	2
+210	3	2	1	1	2	2	2	1	2	2	3	1	1	2	2	1	2	2
+207	2	3	2	2	1	2	2	2	1	2	2	2	2	2	2	2	2	2
+213	1	2	2	1	2	2	1	2	1	1	2	2	2	2	2	3	0	2
+216	1	1	1	2	1	2	2	2	2	1	3	2	2	2	2	1	2	2
+217	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+194	4	2	2	1	2	1	2	0	2	2	2	3	2	3	2	3	1	2
+\.
+
+
+--
+-- Data for Name: rounds; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rounds (id, tournament_date, username, total_strokes, net_strokes, total_putts, player_index, score_differential, course_handicap) FROM stdin;
+1	2021-09-12	tom-moore	90	78	43	11.6	21.0	13
+2	2021-09-12	dave-pereira	103	88	40	14.7	31.2	16
+3	2021-09-12	carrol-strickland	84	70	35	14.3	15.5	15
+4	2021-09-12	jose-argenal	98	80	41	17.8	27.5	19
+5	2021-09-12	dave-wallace	113	89	37	24.0	40.5	26
+6	2021-09-12	steve-etingoff	95	75	38	20.2	25.7	22
+7	2021-09-12	dean-rogers	89	68	32	21.0	20.1	23
+8	2021-09-12	tim-corbett	88	71	31	16.9	17.3	18
+9	2021-09-12	randy-felix	98	82	33	16.0	26.6	17
+10	2021-09-12	jerry-guevara	82	71	33	10.7	12.7	12
+11	2021-09-12	dennis-flannery	99	85	41	14.3	28.4	15
+12	2021-09-12	mike-p	93	73	36	20.2	23.8	22
+13	2021-09-12	brian-moore	128	101	43	27.3	55.3	29
+14	2021-09-12	bruce	100	84	39	16.2	26.6	17
+15	2021-10-09	dave-pereira	94	85	35	8.8	22.0	9
+16	2021-10-09	carrol-strickland	98	88	36	10.5	24.8	11
+17	2021-10-09	jose-argenal	96	80	36	15.6	24.8	17
+18	2021-10-09	steve-etingoff	92	76	38	16.5	22.0	18
+19	2021-10-09	dean-rogers	101	80	37	20.7	29.5	22
+20	2021-10-09	tim-corbett	84	71	28	12.9	13.6	14
+21	2021-10-09	randy-felix	84	69	34	15.3	14.6	16
+22	2021-10-09	dennis-flannery	87	73	35	14.2	17.4	15
+23	2021-10-09	vern-taylor	96	78	36	17.8	24.8	19
+24	2021-10-09	mike-p	90	74	34	16.5	20.2	18
+25	2021-10-09	charlie	89	68	37	20.7	19.2	22
+26	2021-10-09	matt-pereira	91	77	34	14.0	20.2	15
+27	2021-11-20	tom-moore	92	82	37	10.5	17.4	12
+28	2021-11-20	dave-pereira	90	81	36	8.8	16.5	10
+29	2021-11-20	carrol-strickland	92	85	38	7.3	16.5	8
+30	2021-11-20	jose-argenal	99	81	38	18.0	25.5	20
+31	2021-11-20	dave-wallace	132	107	39	25.3	47.0	28
+32	2021-11-20	steve-etingoff	90	73	35	17.0	18.3	19
+33	2021-11-20	dean-rogers	91	70	37	20.7	19.2	23
+34	2021-11-20	randy-felix	94	79	35	14.6	21.9	16
+35	2021-11-20	dennis-flannery	86	70	32	15.8	14.7	18
+36	2021-11-20	vern-taylor	101	77	38	24.3	27.3	27
+37	2021-11-20	patrick	106	90	36	15.6	30.9	17
+38	2021-11-20	mike-p	103	87	44	16.5	29.1	18
+39	2021-11-20	charlie	95	75	35	20.0	22.8	22
+40	2021-11-20	matt-pereira	95	81	35	14.0	21.9	16
+41	2021-12-19	dave-pereira	94	81	35	13.1	21.9	15
+42	2021-12-19	dave-wallace	114	84	38	29.7	39.8	33
+43	2021-12-19	steve-etingoff	89	70	31	19.1	17.4	21
+44	2021-12-19	dean-rogers	94	75	33	18.8	21.0	21
+45	2021-12-19	randy-felix	106	91	36	14.6	30.9	16
+46	2021-12-19	dennis-flannery	88	74	29	14.5	16.5	16
+47	2021-12-19	brian-moore	102	54	35	48.2	29.1	54
+48	2021-12-19	mike-p	95	77	34	18.1	22.8	20
+49	2021-12-19	bruce	94	80	34	14.3	21.0	16
+50	2021-12-19	bill	94	80	34	14.3	21.0	16
+51	2022-01-09	tom-moore	88	76	34	11.9	15.9	13
+52	2022-01-09	dave-pereira	97	79	38	18.4	23.1	20
+53	2022-01-09	carrol-strickland	94	83	29	11.2	18.6	12
+54	2022-01-09	jose-argenal	105	82	34	23.1	31.3	25
+55	2022-01-09	dave-wallace	100	64	37	36.0	26.8	40
+56	2022-01-09	dean-rogers	92	73	28	18.8	16.8	21
+57	2022-01-09	dennis-flannery	92	77	37	15.0	19.5	16
+58	2022-01-09	patrick	92	77	38	14.8	19.5	16
+59	2022-01-09	brian-moore	108	77	39	31.2	34.1	34
+60	2022-01-09	bruce	107	93	35	14.3	30.4	16
+61	2022-01-09	fritz	93	78	32	15.2	20.4	17
+62	2022-01-09	dan	98	76	36	22.0	24.1	24
+63	2022-02-20	tom-moore	96	83	40	12.8	21.3	14
+64	2022-02-20	dave-pereira	95	77	33	18.4	20.4	20
+65	2022-02-20	dave-wallace	113	81	39	32.0	35.0	35
+66	2022-02-20	steve-etingoff	93	76	41	17.1	20.4	19
+67	2022-02-20	dean-rogers	101	84	34	17.3	26.8	19
+68	2022-02-20	tim-corbett	100	88	45	11.8	24.1	13
+69	2022-02-20	randy-felix	92	75	36	17.5	19.5	19
+70	2022-02-20	vern-taylor	97	79	38	17.8	24.1	20
+71	2022-02-20	bruce	95	81	39	14.3	18.6	16
+72	2022-02-20	bill	95	87	44	8.4	19.5	9
+73	2022-02-20	fritz	98	88	40	9.8	22.2	11
+74	2022-03-20	tom-moore	96	83	37	13.5	23.7	14
+75	2022-03-20	dave-pereira	91	75	32	15.6	19.8	16
+76	2022-03-20	carrol-strickland	92	81	31	11.2	19.8	12
+77	2022-03-20	jose-argenal	100	77	39	23.1	28.5	24
+78	2022-03-20	dave-wallace	102	66	33	35.9	30.4	37
+79	2022-03-20	steve-etingoff	87	70	31	17.1	15.9	18
+80	2022-03-20	tim-corbett	96	85	37	11.1	23.7	11
+81	2022-03-20	randy-felix	96	80	34	16.4	24.6	17
+82	2022-03-20	dennis-flannery	89	74	32	15.0	17.9	16
+83	2022-03-20	vern-taylor	95	74	32	21.4	23.7	22
+84	2022-03-20	patrick	93	78	34	14.8	20.8	15
+85	2022-03-20	brian-moore	116	85	36	31.2	43.9	32
+86	2022-03-20	mike-p	98	77	41	20.6	26.6	21
+87	2022-03-20	bruce	102	85	33	16.9	28.5	17
+88	2022-03-20	charlie	114	94	37	19.9	42.0	21
+89	2022-04-10	dave-pereira	80	63	33	17.4	9.4	19
+90	2022-04-10	carrol-strickland	83	68	40	15.4	12.1	17
+91	2022-04-10	dave-wallace	94	58	36	35.9	22.3	39
+92	2022-04-10	steve-etingoff	87	71	38	16.0	15.8	17
+93	2022-04-10	randy-felix	90	70	40	19.9	18.6	22
+94	2022-04-10	dennis-flannery	88	73	38	15.0	16.8	16
+95	2022-04-10	vern-taylor	93	70	38	22.9	17.7	25
+96	2022-04-10	mike-p	91	70	38	20.6	18.6	22
+97	2022-04-10	bruce	84	66	38	18.4	13.1	20
+98	2022-05-15	tom-moore	87	69	36	18.4	14.9	20
+99	2022-05-15	dave-pereira	89	75	32	14.0	13.1	15
+100	2022-05-15	dave-wallace	104	77	34	27.5	28.6	30
+101	2022-05-15	steve-etingoff	98	83	38	15.3	25.0	17
+102	2022-05-15	randy-felix	95	77	35	18.0	21.3	20
+103	2022-05-15	dennis-flannery	89	74	33	15.0	16.8	16
+104	2022-05-15	mike-p	96	76	39	19.9	23.1	22
+105	2022-05-15	brian-moore	103	72	35	31.2	29.5	34
+106	2022-05-15	bruce	104	89	36	15.2	28.6	17
+107	2022-06-26	dave-pereira	90	76	36	14.0	19.2	15
+108	2022-06-26	carrol-strickland	91	77	34	13.9	20.2	15
+109	2022-06-26	jose-argenal	99	75	34	24.1	28.6	26
+110	2022-06-26	steve-etingoff	88	73	38	15.3	17.4	16
+111	2022-06-26	randy-felix	90	72	35	18.3	18.3	20
+112	2022-06-26	brian-moore	119	88	42	31.2	46.3	33
+113	2022-06-26	mike-p	96	76	36	19.9	25.8	21
+114	2022-06-26	bruce	100	85	37	15.2	24.8	16
+116	2022-07-17	dave-pereira	87	74	33	11.3	14.7	13
+117	2022-07-17	tom-moore	78	66	31	10.8	6.7	12
+118	2022-07-17	jose-argenal	104	74	39	27.0	29.8	30
+119	2022-07-17	steve-etingoff	94	76	32	15.9	20.9	18
+120	2022-07-17	randy-felix	99	78	35	18.5	25.4	21
+121	2022-07-17	patrick	91	70	34	18.9	18.2	21
+122	2022-07-17	brian-moore	111	75	39	31.8	36	36
+123	2022-07-17	mike-p	90	70	33	18.0	17.4	20
+124	2022-08-14	tom-moore	86	75	32	10.3	13.9	11
+125	2022-08-14	dave-pereira	87	75	32	11.3	14.9	12
+126	2022-08-14	carrol-strickland	88	73	31	13.9	15.8	15
+127	2022-08-14	jose-argenal	89	65	28	22.6	16.8	24
+128	2022-08-14	dave-wallace	101	74	38	25.2	28.1	27
+129	2022-08-14	steve-etingoff	86	70	34	14.9	13.9	16
+130	2022-08-14	dean-rogers	94	75	32	18.0	21.5	19
+131	2022-08-14	randy-felix	89	70	31	17.6	16.8	19
+132	2022-08-14	patrick	96	76	35	18.9	23.4	20
+133	2022-08-14	mike-p	86	69	32	15.6	13.9	17
+134	2022-08-14	bruce	94	76	35	17.3	21.5	18
+137	2022-09-10	matt-pereira	92	71	37	21.0	24.7	21
+136	2022-09-10	tom-moore	96	79	37	16.6	28.6	17
+139	2022-09-10	randy-felix	96	78	35	17.6	28.6	18
+140	2022-09-10	dave-wallace	109	83	35	25.2	41.4	26
+141	2022-09-10	steve-etingoff	97	81	36	15.6	29.6	16
+142	2022-09-10	carrol-strickland	91	77	32	13.9	23.7	14
+143	2022-09-10	jose-argenal	98	75	38	22.6	30.6	23
+144	2022-09-10	patrick	96	77	40	18.9	28.6	19
+145	2022-09-10	jerry-guevara	82	68	36	13.8	14.8	14
+135	2022-09-10	dave-pereira	96	76	33	19.3	28.6	20
+193	2022-12-11	tom-moore	90	72	39	16.7	17.7	18
+156	2022-09-11	tom-moore	90	79	36	10.3	19.5	11
+155	2022-09-11	dave-pereira	103	87	37	14.8	31.3	16
+157	2022-09-11	randy-felix	96	77	34	17.6	25	19
+158	2022-09-11	steve-etingoff	91	74	39	15.6	20.4	17
+159	2022-09-11	dave-wallace	121	93	38	25.2	47.6	28
+160	2022-09-11	jose-argenal	105	80	33	22.7	33.1	25
+161	2022-09-11	jerry-guevara	95	80	34	13.8	24	15
+162	2022-09-11	patrick	89	67	37	19.5	18.6	22
+169	2022-10-15	brian-moore	101	65	39	32.8	28.5	36
+163	2022-10-15	dave-pereira	97	81	35	14.8	24.9	16
+170	2022-10-15	vern-taylor	91	68	39	20.7	19.4	23
+167	2022-10-15	dennis-flannery	90	72	30	16.8	18.5	18
+164	2022-10-15	steve-etingoff	86	67	35	17.1	14.9	19
+171	2022-10-15	dave-wallace	112	81	37	28.4	38.5	31
+165	2022-10-15	carrol-strickland	89	74	39	13.9	17.6	15
+168	2022-10-15	randy-felix	85	62	33	20.9	13.9	23
+174	2022-11-13	dave-pereira	90	69	37	19.9	19.5	21
+181	2022-11-13	tom-moore	90	79	33	10.3	19.5	11
+183	2022-11-13	dennis-flannery	95	77	40	16.8	24.2	18
+184	2022-11-13	brian-moore	113	82	34	29.0	40.8	31
+179	2022-11-13	carrol-strickland	93	75	34	16.7	22.3	18
+186	2022-11-13	tim-wallace	96	82	36	12.6	25.1	14
+185	2022-11-13	dean-rogers	95	75	41	18.9	24.2	20
+176	2022-11-13	steve-etingoff	92	76	36	14.4	21.4	16
+175	2022-11-13	randy-felix	90	73	34	15.4	19.5	17
+180	2022-11-13	jose-argenal	101	76	41	23.3	29.7	25
+177	2022-11-13	dave-wallace	116	80	31	33.3	43.6	36
+182	2022-11-13	bruce	92	73	37	17.3	21.4	19
+194	2022-12-11	dennis-flannery	85	66	36	16.8	13.2	19
+192	2022-12-11	dave-pereira	91	66	36	22.2	18.6	25
+204	2022-12-11	carrol-strickland	90	72	36	16.7	17.7	18
+201	2022-12-11	brian-tilley	86	78	29	7.0	14.1	8
+203	2022-12-11	mike-p	102	85	40	15.6	28.6	17
+197	2022-12-11	jose-argenal	103	77	42	23.3	29.5	26
+195	2022-12-11	brian-moore	121	85	37	32.3	45.7	36
+199	2022-12-11	steve-etingoff	84	65	34	17.6	12.3	19
+198	2022-12-11	randy-felix	92	74	36	16.7	19.5	18
+200	2022-12-11	fritz	87	67	33	17.7	15	20
+206	2022-12-11	bob-milano	77	74	27	3.0	6	3
+205	2022-12-11	bill	91	70	32	19.1	18.6	21
+208	2023-02-04	randy-felix	101	83	31	16.7	29.8	18
+207	2023-02-04	steve-etingoff	95	80	35	13.6	24.2	15
+215	2023-02-04	tom-moore	91	71	36	18.6	20.5	20
+213	2023-02-04	dave-wallace	111	68	30	40.0	39.1	43
+209	2023-02-04	fritz	97	78	38	17.7	26.1	19
+210	2023-02-04	mike-p	91	74	32	15.6	20.5	17
+216	2023-02-04	dan-burk	99	84	31	13.9	27.9	15
+217	2023-02-26	dave-pereira	0	\N	0	19.1	\N	21
+\.
+
+
+--
+-- Data for Name: strokes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.strokes (round_id, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18) FROM stdin;
+1	4	5	5	7	5	6	4	5	4	5	5	5	4	5	6	5	5	5
+2	4	5	5	7	5	6	4	5	4	5	5	5	4	5	6	5	5	5
+3	4	5	4	5	4	6	4	5	6	5	5	5	5	4	5	4	3	5
+4	6	6	5	6	4	7	4	6	7	5	5	5	4	4	8	6	5	5
+5	5	7	7	6	4	7	6	5	7	8	5	6	6	4	9	6	6	9
+6	4	6	4	5	3	5	4	6	5	7	5	7	6	5	8	5	4	6
+7	4	7	5	7	3	6	3	6	4	4	5	4	5	4	8	4	5	5
+8	4	4	6	6	3	5	3	5	4	5	5	6	5	5	9	5	3	5
+9	6	5	5	9	4	6	4	6	6	4	5	7	6	4	6	6	3	6
+10	4	5	5	6	3	5	3	6	3	4	5	5	4	3	8	4	3	6
+11	5	6	8	5	4	5	5	4	5	7	6	5	5	5	7	5	6	6
+12	4	6	7	5	3	4	5	5	8	6	3	7	6	4	6	4	3	7
+13	5	7	8	6	6	8	8	8	6	8	8	9	7	5	7	8	6	8
+14	9	7	5	5	3	6	7	4	4	5	7	9	5	3	5	5	4	7
+15	6	5	4	5	5	4	5	5	5	5	3	6	6	6	6	4	7	7
+16	7	3	5	5	8	4	7	3	6	5	5	6	6	6	6	4	5	5
+17	7	3	5	5	8	4	7	3	6	5	5	6	6	6	6	4	5	5
+18	6	4	5	6	7	4	6	4	6	6	3	6	5	6	5	4	5	4
+19	5	3	5	8	8	5	8	5	7	5	3	6	5	5	9	4	6	4
+20	5	3	4	4	5	3	7	4	8	5	4	4	5	6	4	4	5	4
+21	5	3	5	5	6	4	5	4	5	6	4	4	4	6	5	3	4	6
+22	4	5	6	6	5	3	6	5	4	4	5	4	5	5	6	4	5	5
+23	5	3	7	8	7	3	6	3	6	6	4	5	6	6	7	4	6	4
+24	6	4	4	5	5	5	7	4	7	4	4	7	5	5	5	5	4	4
+25	4	5	5	6	5	5	6	4	5	5	3	4	5	7	6	5	4	5
+26	7	4	5	5	5	4	8	4	5	6	4	6	3	6	5	6	4	4
+27	6	5	6	3	5	6	4	4	4	9	5	5	4	5	5	3	8	5
+28	4	5	5	4	5	6	3	4	5	6	4	5	4	5	7	4	7	7
+29	5	5	4	4	3	5	6	4	5	7	5	5	5	5	5	4	10	5
+30	8	6	7	5	4	6	5	4	6	5	5	7	4	6	5	4	7	5
+31	7	7	10	4	6	9	9	6	7	9	9	10	4	8	6	3	9	9
+32	6	6	5	4	6	6	4	5	6	6	4	5	3	5	5	4	6	4
+33	5	5	4	5	5	6	4	5	7	6	5	5	4	5	5	5	5	5
+34	6	7	4	4	4	7	4	6	7	6	5	5	3	6	5	6	5	4
+35	4	6	4	4	6	5	4	3	4	6	5	6	3	4	6	3	6	7
+36	5	6	9	7	7	5	5	5	5	6	7	5	3	7	4	4	4	7
+37	5	7	7	4	7	5	4	5	6	6	7	7	5	6	5	5	9	6
+38	6	5	6	6	4	6	5	6	6	6	7	6	5	5	4	6	8	6
+39	5	4	7	4	5	6	4	3	6	6	8	7	3	5	6	5	6	5
+40	7	6	5	5	4	4	3	4	5	5	8	7	5	5	5	5	5	7
+41	7	5	5	6	5	4	5	4	6	6	6	4	6	3	5	5	5	7
+42	7	9	5	5	8	6	7	4	9	6	4	6	9	4	5	6	8	6
+43	7	4	5	4	6	4	4	4	6	8	4	5	5	4	5	4	5	5
+44	5	7	4	5	6	5	5	3	6	6	3	5	6	4	6	4	6	8
+45	7	6	4	6	9	5	6	5	7	7	4	6	5	3	6	7	7	6
+46	5	5	3	4	6	6	3	4	5	7	3	5	6	5	5	5	6	5
+47	5	5	4	7	7	6	7	4	5	6	4	6	5	5	6	8	7	5
+48	5	5	6	5	6	4	6	5	5	6	3	5	7	3	5	6	7	6
+49	6	4	5	4	6	4	5	4	6	6	4	6	6	4	4	6	8	6
+50	5	5	3	5	6	4	5	3	6	7	3	6	5	4	5	6	6	5
+51	6	4	4	6	6	5	4	5	4	5	4	2	7	6	4	5	5	6
+52	8	5	4	5	5	5	6	5	4	7	7	4	6	5	4	7	5	5
+53	6	6	4	5	5	4	5	3	5	7	5	4	5	5	4	5	6	10
+54	8	8	7	7	6	5	4	4	6	6	5	3	5	7	6	6	6	6
+55	7	4	4	6	6	7	7	4	5	8	6	4	7	5	5	6	5	4
+56	6	5	4	9	5	4	4	3	4	5	5	5	8	5	3	6	6	5
+57	6	5	4	6	6	4	5	3	5	5	6	6	5	5	3	7	6	5
+58	6	5	4	6	5	4	4	5	6	6	6	5	5	5	5	4	6	5
+59	6	8	6	8	5	7	7	4	4	8	6	6	6	6	4	7	5	5
+60	7	7	6	5	6	7	6	5	6	6	6	4	7	6	3	10	6	4
+61	7	7	6	6	6	5	5	2	5	6	3	4	6	5	4	5	6	5
+62	6	6	3	6	7	7	5	4	5	9	6	4	4	7	4	5	5	5
+63	6	6	8	3	4	4	6	6	6	5	8	4	6	5	5	5	4	5
+64	6	4	5	4	4	4	7	5	6	4	5	4	8	5	8	5	4	7
+65	8	5	4	4	5	5	6	10	8	7	4	5	5	7	6	12	4	8
+66	5	5	5	3	5	4	5	7	7	5	4	5	5	6	7	4	6	5
+67	7	5	5	4	7	6	7	8	6	4	4	5	6	4	5	7	4	7
+68	6	4	5	4	5	5	7	6	6	5	3	9	6	5	7	4	5	8
+69	7	3	6	4	5	4	6	4	6	5	4	6	6	4	5	5	6	6
+70	6	4	6	6	5	5	7	5	7	5	4	5	6	5	5	5	7	4
+71	5	4	11	3	5	3	7	6	5	5	3	5	6	6	7	4	5	5
+72	7	4	5	3	5	5	6	6	8	5	4	5	9	4	5	5	4	5
+73	6	5	6	5	4	4	7	5	8	5	4	7	7	7	5	5	3	5
+74	5	7	8	5	4	5	5	7	6	5	5	5	5	5	4	4	6	5
+75	5	5	7	5	6	6	5	7	5	4	4	4	5	4	5	5	4	5
+76	6	4	8	5	4	5	5	5	5	5	3	5	7	4	6	5	5	5
+77	6	4	6	6	6	6	6	6	5	6	4	5	6	6	6	5	5	6
+78	6	7	7	6	6	6	6	4	6	6	4	5	6	6	6	5	4	6
+79	4	4	7	4	3	5	7	5	6	4	5	5	5	5	3	7	3	5
+80	7	4	6	4	6	4	5	6	4	6	5	6	6	5	7	8	3	4
+81	6	5	7	5	4	6	6	5	4	5	5	5	6	6	5	6	4	6
+82	5	4	7	5	5	4	6	7	3	5	5	5	5	5	5	4	4	5
+83	5	5	6	4	5	4	7	6	6	5	3	6	7	5	4	6	5	6
+84	8	3	7	5	4	7	5	6	5	5	6	3	6	5	4	4	5	5
+85	6	7	9	5	4	7	6	9	9	4	7	5	6	7	7	8	5	5
+86	5	3	8	5	5	5	7	7	6	5	3	5	6	5	4	6	6	7
+87	6	5	6	5	4	6	5	7	5	6	5	9	6	5	6	5	4	7
+88	6	3	6	5	5	6	5	6	7	9	5	8	8	6	6	6	9	8
+89	4	4	4	4	6	3	6	4	4	5	4	4	5	3	4	5	5	6
+90	6	6	4	3	5	3	5	4	5	6	4	3	6	4	5	4	5	5
+91	7	4	5	7	7	5	6	5	3	6	4	3	9	3	5	5	5	5
+92	6	4	5	4	6	3	7	5	4	4	5	5	5	4	4	4	7	5
+93	5	5	5	5	6	5	6	4	3	6	4	3	7	5	5	6	6	4
+94	4	5	5	4	7	6	5	6	3	4	4	3	6	4	6	5	6	5
+95	6	5	4	4	10	4	6	5	10	4	4	4	5	3	6	4	4	5
+96	5	9	6	5	7	4	6	4	3	5	4	3	5	3	5	5	6	6
+97	5	5	5	5	6	4	5	4	4	4	4	3	6	4	6	3	6	5
+98	6	4	3	5	4	4	5	5	5	5	6	4	4	6	4	7	4	6
+99	6	4	4	5	5	6	4	4	4	6	5	4	5	4	3	11	4	5
+100	5	6	3	7	5	6	5	5	6	7	10	5	6	6	4	6	5	7
+101	7	5	4	6	5	6	5	5	5	7	4	4	5	5	6	6	7	6
+102	6	6	3	6	5	5	6	4	8	6	5	4	5	6	4	6	5	5
+103	6	4	3	7	5	6	5	4	5	6	5	4	5	5	4	5	4	6
+104	5	5	4	8	4	6	4	5	5	7	6	4	6	4	4	5	8	6
+105	6	7	5	6	8	8	5	4	6	5	4	6	5	6	3	9	5	5
+106	6	7	5	7	6	8	4	5	5	6	5	5	5	7	5	6	4	8
+107	5	4	5	5	6	4	8	5	6	4	4	6	6	5	4	4	4	5
+108	4	3	5	6	5	5	8	3	5	6	5	6	5	5	5	4	5	6
+109	7	4	6	4	6	4	7	6	8	5	3	5	5	7	6	5	5	6
+110	5	3	5	6	8	4	6	3	6	5	5	4	4	5	5	4	5	5
+111	5	3	5	9	6	3	6	3	5	5	4	6	3	7	4	6	5	5
+112	5	7	10	7	6	4	7	6	8	6	6	6	7	6	6	9	7	6
+113	6	6	5	4	6	4	10	5	7	5	4	3	5	6	4	6	5	5
+114	8	4	5	6	6	3	9	3	5	5	5	6	4	5	7	9	4	6
+116	5	6	5	5	5	3	5	4	6	5	2	8	4	4	4	5	4	7
+117	5	7	4	4	5	3	4	3	6	5	3	4	3	5	4	4	4	5
+118	6	7	5	6	6	4	5	4	7	6	5	6	5	8	9	4	5	6
+119	5	6	6	5	5	3	4	5	7	6	4	5	5	7	5	4	4	8
+120	6	6	7	4	5	4	7	4	5	6	6	5	4	6	4	6	7	7
+121	6	6	6	4	4	4	7	3	7	6	5	6	4	7	3	4	4	5
+122	7	8	6	5	7	4	6	5	9	8	6	5	6	7	6	5	4	7
+123	7	5	7	4	5	6	6	4	5	5	3	6	4	4	3	4	5	7
+124	5	4	5	5	7	4	3	3	5	6	4	6	5	3	6	4	6	5
+125	5	5	3	3	6	5	4	3	4	8	4	5	6	3	4	6	5	8
+126	5	5	4	5	5	5	5	3	5	5	4	4	5	3	5	5	8	7
+127	6	5	4	6	6	4	5	4	4	5	3	6	5	4	4	6	6	6
+128	7	7	5	5	6	6	6	5	6	5	5	5	5	4	7	4	7	6
+129	5	4	3	6	7	6	5	4	5	6	3	5	4	3	4	5	6	5
+130	7	5	4	5	8	7	5	5	6	5	2	5	6	4	5	4	5	6
+131	5	5	5	5	6	6	6	5	5	4	3	4	5	3	5	5	6	6
+132	7	5	4	5	7	6	5	5	6	5	4	6	5	4	5	7	5	5
+133	6	5	2	5	6	5	5	3	5	6	3	5	4	3	5	5	5	8
+134	6	6	3	5	6	6	6	5	4	5	3	8	4	3	5	6	6	7
+137	6	8	7	3	4	7	4	2	5	6	6	3	7	4	4	6	5	5
+135	5	5	5	5	5	6	6	3	6	5	5	5	7	5	4	7	8	4
+136	6	6	4	4	4	6	11	3	6	5	6	4	7	6	4	6	3	5
+139	4	6	7	3	6	6	5	6	5	7	6	5	5	5	4	5	6	5
+142	5	6	15	3	6	2	5	3	5	5	4	3	6	5	4	7	3	4
+140	5	7	5	5	7	12	7	4	6	8	7	4	6	5	4	8	3	6
+143	7	7	8	4	7	5	5	5	6	6	5	3	4	6	5	6	3	6
+141	4	5	4	4	6	8	4	4	7	6	7	3	6	6	8	6	4	5
+144	5	6	6	4	6	5	5	4	5	5	5	4	6	5	6	7	7	5
+145	4	5	7	3	4	6	4	3	5	5	4	4	4	3	6	7	3	5
+1	4	5	5	7	5	6	4	5	4	5	5	5	4	5	6	5	5	5
+2	4	5	5	7	5	6	4	5	4	5	5	5	4	5	6	5	5	5
+3	4	5	4	5	4	6	4	5	6	5	5	5	5	4	5	4	3	5
+4	6	6	5	6	4	7	4	6	7	5	5	5	4	4	8	6	5	5
+5	5	7	7	6	4	7	6	5	7	8	5	6	6	4	9	6	6	9
+6	4	6	4	5	3	5	4	6	5	7	5	7	6	5	8	5	4	6
+7	4	7	5	7	3	6	3	6	4	4	5	4	5	4	8	4	5	5
+8	4	4	6	6	3	5	3	5	4	5	5	6	5	5	9	5	3	5
+9	6	5	5	9	4	6	4	6	6	4	5	7	6	4	6	6	3	6
+10	4	5	5	6	3	5	3	6	3	4	5	5	4	3	8	4	3	6
+11	5	6	8	5	4	5	5	4	5	7	6	5	5	5	7	5	6	6
+12	4	6	7	5	3	4	5	5	8	6	3	7	6	4	6	4	3	7
+13	5	7	8	6	6	8	8	8	6	8	8	9	7	5	7	8	6	8
+14	9	7	5	5	3	6	7	4	4	5	7	9	5	3	5	5	4	7
+15	6	5	4	5	5	4	5	5	5	5	3	6	6	6	6	4	7	7
+16	7	3	5	5	8	4	7	3	6	5	5	6	6	6	6	4	5	5
+17	7	3	5	5	8	4	7	3	6	5	5	6	6	6	6	4	5	5
+18	6	4	5	6	7	4	6	4	6	6	3	6	5	6	5	4	5	4
+19	5	3	5	8	8	5	8	5	7	5	3	6	5	5	9	4	6	4
+20	5	3	4	4	5	3	7	4	8	5	4	4	5	6	4	4	5	4
+21	5	3	5	5	6	4	5	4	5	6	4	4	4	6	5	3	4	6
+22	4	5	6	6	5	3	6	5	4	4	5	4	5	5	6	4	5	5
+23	5	3	7	8	7	3	6	3	6	6	4	5	6	6	7	4	6	4
+24	6	4	4	5	5	5	7	4	7	4	4	7	5	5	5	5	4	4
+25	4	5	5	6	5	5	6	4	5	5	3	4	5	7	6	5	4	5
+26	7	4	5	5	5	4	8	4	5	6	4	6	3	6	5	6	4	4
+27	6	5	6	3	5	6	4	4	4	9	5	5	4	5	5	3	8	5
+28	4	5	5	4	5	6	3	4	5	6	4	5	4	5	7	4	7	7
+29	5	5	4	4	3	5	6	4	5	7	5	5	5	5	5	4	10	5
+30	8	6	7	5	4	6	5	4	6	5	5	7	4	6	5	4	7	5
+31	7	7	10	4	6	9	9	6	7	9	9	10	4	8	6	3	9	9
+32	6	6	5	4	6	6	4	5	6	6	4	5	3	5	5	4	6	4
+33	5	5	4	5	5	6	4	5	7	6	5	5	4	5	5	5	5	5
+34	6	7	4	4	4	7	4	6	7	6	5	5	3	6	5	6	5	4
+35	4	6	4	4	6	5	4	3	4	6	5	6	3	4	6	3	6	7
+36	5	6	9	7	7	5	5	5	5	6	7	5	3	7	4	4	4	7
+37	5	7	7	4	7	5	4	5	6	6	7	7	5	6	5	5	9	6
+38	6	5	6	6	4	6	5	6	6	6	7	6	5	5	4	6	8	6
+39	5	4	7	4	5	6	4	3	6	6	8	7	3	5	6	5	6	5
+40	7	6	5	5	4	4	3	4	5	5	8	7	5	5	5	5	5	7
+41	7	5	5	6	5	4	5	4	6	6	6	4	6	3	5	5	5	7
+42	7	9	5	5	8	6	7	4	9	6	4	6	9	4	5	6	8	6
+43	7	4	5	4	6	4	4	4	6	8	4	5	5	4	5	4	5	5
+44	5	7	4	5	6	5	5	3	6	6	3	5	6	4	6	4	6	8
+45	7	6	4	6	9	5	6	5	7	7	4	6	5	3	6	7	7	6
+46	5	5	3	4	6	6	3	4	5	7	3	5	6	5	5	5	6	5
+47	5	5	4	7	7	6	7	4	5	6	4	6	5	5	6	8	7	5
+48	5	5	6	5	6	4	6	5	5	6	3	5	7	3	5	6	7	6
+49	6	4	5	4	6	4	5	4	6	6	4	6	6	4	4	6	8	6
+50	5	5	3	5	6	4	5	3	6	7	3	6	5	4	5	6	6	5
+51	6	4	4	6	6	5	4	5	4	5	4	2	7	6	4	5	5	6
+52	8	5	4	5	5	5	6	5	4	7	7	4	6	5	4	7	5	5
+53	6	6	4	5	5	4	5	3	5	7	5	4	5	5	4	5	6	10
+54	8	8	7	7	6	5	4	4	6	6	5	3	5	7	6	6	6	6
+55	7	4	4	6	6	7	7	4	5	8	6	4	7	5	5	6	5	4
+56	6	5	4	9	5	4	4	3	4	5	5	5	8	5	3	6	6	5
+57	6	5	4	6	6	4	5	3	5	5	6	6	5	5	3	7	6	5
+58	6	5	4	6	5	4	4	5	6	6	6	5	5	5	5	4	6	5
+59	6	8	6	8	5	7	7	4	4	8	6	6	6	6	4	7	5	5
+60	7	7	6	5	6	7	6	5	6	6	6	4	7	6	3	10	6	4
+61	7	7	6	6	6	5	5	2	5	6	3	4	6	5	4	5	6	5
+62	6	6	3	6	7	7	5	4	5	9	6	4	4	7	4	5	5	5
+63	6	6	8	3	4	4	6	6	6	5	8	4	6	5	5	5	4	5
+64	6	4	5	4	4	4	7	5	6	4	5	4	8	5	8	5	4	7
+65	8	5	4	4	5	5	6	10	8	7	4	5	5	7	6	12	4	8
+66	5	5	5	3	5	4	5	7	7	5	4	5	5	6	7	4	6	5
+67	7	5	5	4	7	6	7	8	6	4	4	5	6	4	5	7	4	7
+68	6	4	5	4	5	5	7	6	6	5	3	9	6	5	7	4	5	8
+69	7	3	6	4	5	4	6	4	6	5	4	6	6	4	5	5	6	6
+70	6	4	6	6	5	5	7	5	7	5	4	5	6	5	5	5	7	4
+71	5	4	11	3	5	3	7	6	5	5	3	5	6	6	7	4	5	5
+72	7	4	5	3	5	5	6	6	8	5	4	5	9	4	5	5	4	5
+73	6	5	6	5	4	4	7	5	8	5	4	7	7	7	5	5	3	5
+74	5	7	8	5	4	5	5	7	6	5	5	5	5	5	4	4	6	5
+75	5	5	7	5	6	6	5	7	5	4	4	4	5	4	5	5	4	5
+76	6	4	8	5	4	5	5	5	5	5	3	5	7	4	6	5	5	5
+77	6	4	6	6	6	6	6	6	5	6	4	5	6	6	6	5	5	6
+78	6	7	7	6	6	6	6	4	6	6	4	5	6	6	6	5	4	6
+79	4	4	7	4	3	5	7	5	6	4	5	5	5	5	3	7	3	5
+80	7	4	6	4	6	4	5	6	4	6	5	6	6	5	7	8	3	4
+81	6	5	7	5	4	6	6	5	4	5	5	5	6	6	5	6	4	6
+82	5	4	7	5	5	4	6	7	3	5	5	5	5	5	5	4	4	5
+83	5	5	6	4	5	4	7	6	6	5	3	6	7	5	4	6	5	6
+84	8	3	7	5	4	7	5	6	5	5	6	3	6	5	4	4	5	5
+85	6	7	9	5	4	7	6	9	9	4	7	5	6	7	7	8	5	5
+86	5	3	8	5	5	5	7	7	6	5	3	5	6	5	4	6	6	7
+87	6	5	6	5	4	6	5	7	5	6	5	9	6	5	6	5	4	7
+88	6	3	6	5	5	6	5	6	7	9	5	8	8	6	6	6	9	8
+89	4	4	4	4	6	3	6	4	4	5	4	4	5	3	4	5	5	6
+90	6	6	4	3	5	3	5	4	5	6	4	3	6	4	5	4	5	5
+91	7	4	5	7	7	5	6	5	3	6	4	3	9	3	5	5	5	5
+92	6	4	5	4	6	3	7	5	4	4	5	5	5	4	4	4	7	5
+93	5	5	5	5	6	5	6	4	3	6	4	3	7	5	5	6	6	4
+94	4	5	5	4	7	6	5	6	3	4	4	3	6	4	6	5	6	5
+95	6	5	4	4	10	4	6	5	10	4	4	4	5	3	6	4	4	5
+96	5	9	6	5	7	4	6	4	3	5	4	3	5	3	5	5	6	6
+97	5	5	5	5	6	4	5	4	4	4	4	3	6	4	6	3	6	5
+98	6	4	3	5	4	4	5	5	5	5	6	4	4	6	4	7	4	6
+99	6	4	4	5	5	6	4	4	4	6	5	4	5	4	3	11	4	5
+100	5	6	3	7	5	6	5	5	6	7	10	5	6	6	4	6	5	7
+101	7	5	4	6	5	6	5	5	5	7	4	4	5	5	6	6	7	6
+102	6	6	3	6	5	5	6	4	8	6	5	4	5	6	4	6	5	5
+103	6	4	3	7	5	6	5	4	5	6	5	4	5	5	4	5	4	6
+104	5	5	4	8	4	6	4	5	5	7	6	4	6	4	4	5	8	6
+105	6	7	5	6	8	8	5	4	6	5	4	6	5	6	3	9	5	5
+106	6	7	5	7	6	8	4	5	5	6	5	5	5	7	5	6	4	8
+107	5	4	5	5	6	4	8	5	6	4	4	6	6	5	4	4	4	5
+108	4	3	5	6	5	5	8	3	5	6	5	6	5	5	5	4	5	6
+109	7	4	6	4	6	4	7	6	8	5	3	5	5	7	6	5	5	6
+110	5	3	5	6	8	4	6	3	6	5	5	4	4	5	5	4	5	5
+111	5	3	5	9	6	3	6	3	5	5	4	6	3	7	4	6	5	5
+112	5	7	10	7	6	4	7	6	8	6	6	6	7	6	6	9	7	6
+113	6	6	5	4	6	4	10	5	7	5	4	3	5	6	4	6	5	5
+114	8	4	5	6	6	3	9	3	5	5	5	6	4	5	7	9	4	6
+116	5	6	5	5	5	3	5	4	6	5	2	8	4	4	4	5	4	7
+117	5	7	4	4	5	3	4	3	6	5	3	4	3	5	4	4	4	5
+118	6	7	5	6	6	4	5	4	7	6	5	6	5	8	9	4	5	6
+119	5	6	6	5	5	3	4	5	7	6	4	5	5	7	5	4	4	8
+120	6	6	7	4	5	4	7	4	5	6	6	5	4	6	4	6	7	7
+121	6	6	6	4	4	4	7	3	7	6	5	6	4	7	3	4	4	5
+122	7	8	6	5	7	4	6	5	9	8	6	5	6	7	6	5	4	7
+123	7	5	7	4	5	6	6	4	5	5	3	6	4	4	3	4	5	7
+124	5	4	5	5	7	4	3	3	5	6	4	6	5	3	6	4	6	5
+125	5	5	3	3	6	5	4	3	4	8	4	5	6	3	4	6	5	8
+126	5	5	4	5	5	5	5	3	5	5	4	4	5	3	5	5	8	7
+127	6	5	4	6	6	4	5	4	4	5	3	6	5	4	4	6	6	6
+128	7	7	5	5	6	6	6	5	6	5	5	5	5	4	7	4	7	6
+129	5	4	3	6	7	6	5	4	5	6	3	5	4	3	4	5	6	5
+130	7	5	4	5	8	7	5	5	6	5	2	5	6	4	5	4	5	6
+131	5	5	5	5	6	6	6	5	5	4	3	4	5	3	5	5	6	6
+132	7	5	4	5	7	6	5	5	6	5	4	6	5	4	5	7	5	5
+133	6	5	2	5	6	5	5	3	5	6	3	5	4	3	5	5	5	8
+134	6	6	3	5	6	6	6	5	4	5	3	8	4	3	5	6	6	7
+137	6	8	7	3	4	7	4	2	5	6	6	3	7	4	4	6	5	5
+135	5	5	5	5	5	6	6	3	6	5	5	5	7	5	4	7	8	4
+136	6	6	4	4	4	6	11	3	6	5	6	4	7	6	4	6	3	5
+139	4	6	7	3	6	6	5	6	5	7	6	5	5	5	4	5	6	5
+142	5	6	15	3	6	2	5	3	5	5	4	3	6	5	4	7	3	4
+140	5	7	5	5	7	12	7	4	6	8	7	4	6	5	4	8	3	6
+143	7	7	8	4	7	5	5	5	6	6	5	3	4	6	5	6	3	6
+141	4	5	4	4	6	8	4	4	7	6	7	3	6	6	8	6	4	5
+144	5	6	6	4	6	5	5	4	5	5	5	4	6	5	6	7	7	5
+145	4	5	7	3	4	6	4	3	5	5	4	4	4	3	6	7	3	5
+160	6	8	7	5	7	5	7	5	7	4	4	7	6	4	7	4	6	6
+156	4	5	7	4	6	5	5	4	5	4	4	5	4	4	7	3	9	5
+155	5	6	6	3	7	4	6	5	7	4	6	7	10	6	5	4	6	6
+157	5	5	7	5	5	2	6	4	5	6	3	5	8	6	6	4	7	7
+158	4	5	6	4	5	6	6	3	5	5	3	6	7	4	7	4	5	6
+159	6	8	9	4	8	5	6	3	9	8	5	9	6	5	8	5	6	11
+161	5	4	5	4	5	4	6	5	5	6	2	4	12	4	5	6	6	7
+162	5	5	3	3	4	4	7	3	6	5	5	5	5	6	5	6	6	6
+164	5	5	4	7	4	5	5	4	5	6	5	4	3	5	5	4	5	5
+163	7	7	5	8	5	7	4	4	5	4	6	5	4	5	5	5	6	5
+169	5	9	6	9	6	6	6	4	5	5	5	6	4	6	3	4	7	5
+165	4	5	6	6	4	7	4	4	5	5	4	5	4	5	4	5	5	7
+170	6	5	4	7	5	5	4	3	6	6	5	5	5	6	4	4	6	5
+167	8	5	6	6	5	5	5	4	5	4	5	5	4	5	4	4	5	5
+171	4	10	5	7	5	9	5	4	5	6	6	5	5	9	4	6	8	9
+168	5	7	4	6	3	4	5	4	4	5	5	4	3	5	5	4	6	6
+192	6	5	4	5	6	6	5	4	5	9	5	3	5	5	3	5	5	5
+174	5	5	5	6	3	5	6	4	6	5	5	4	5	4	6	3	7	6
+181	5	4	3	6	3	5	7	5	7	5	5	4	7	3	6	3	5	7
+183	5	5	4	5	5	6	7	6	6	5	4	4	6	4	5	5	6	7
+184	5	6	3	5	4	7	8	7	5	7	7	4	8	6	8	7	7	9
+179	5	5	4	5	3	6	6	4	6	6	5	4	5	3	10	4	6	6
+186	5	5	3	7	3	4	6	4	6	7	8	5	5	3	8	4	6	7
+185	9	5	4	6	3	6	7	2	6	6	7	6	6	3	5	3	6	5
+176	6	6	3	6	3	6	7	4	7	5	4	4	4	3	6	4	8	6
+175	5	5	3	7	3	4	7	4	7	6	5	4	5	4	8	3	5	5
+180	8	5	4	8	5	6	5	5	6	7	6	5	5	4	6	5	5	6
+177	5	7	3	6	6	10	9	3	7	9	8	5	6	5	9	4	7	7
+182	8	5	3	10	3	4	7	3	6	5	6	3	4	5	6	3	5	6
+201	7	5	4	4	4	5	6	4	4	6	5	5	4	4	3	5	4	7
+195	8	6	6	8	7	7	7	6	5	10	5	2	8	10	5	7	8	6
+193	5	5	4	6	6	6	6	4	4	8	4	4	4	5	5	5	4	5
+204	7	4	4	5	5	5	4	4	5	6	5	4	6	4	4	8	5	5
+197	6	6	6	6	6	5	6	5	4	8	5	5	6	6	4	8	5	6
+199	6	4	3	5	4	5	6	4	5	6	6	4	4	4	3	6	5	4
+203	7	4	5	7	5	7	6	4	5	5	7	4	6	7	4	7	6	6
+198	7	7	3	6	6	6	4	4	5	5	6	5	5	5	3	6	3	6
+200	5	6	6	6	6	5	5	4	8	4	4	4	4	3	4	4	4	5
+206	5	5	4	4	4	5	3	3	4	4	4	4	6	3	3	6	4	6
+205	6	5	5	6	5	4	5	3	5	7	5	5	5	5	4	6	5	5
+208	6	3	5	6	6	4	6	4	6	6	4	8	6	6	6	6	6	7
+215	6	4	4	7	4	5	4	4	5	6	4	5	6	4	5	7	5	6
+209	6	2	6	5	4	5	6	6	5	4	4	6	6	5	7	9	7	4
+210	7	3	4	7	4	5	5	4	7	4	4	6	5	3	6	7	6	4
+207	5	5	5	7	5	4	5	6	4	6	4	6	6	4	5	7	5	6
+213	5	5	7	5	7	6	7	3	5	4	7	12	6	6	6	8	6	6
+216	5	3	4	6	5	4	6	4	6	5	7	8	6	5	8	5	6	6
+217	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+194	7	5	3	5	5	4	4	2	4	6	6	4	5	5	4	6	4	6
+\.
+
+
+--
+-- Data for Name: tournaments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tournaments (date, course_handle, tour_years) FROM stdin;
+2022-06-26	blue-rock-east	2021-22
+2022-05-15	paradise-valley	2021-22
+2022-04-10	wild-horse	2021-22
+2022-03-20	lone-tree	2021-22
+2022-02-20	franklin-canyon	2021-22
+2022-01-09	paradise-valley	2021-22
+2021-12-19	cypress-lakes	2021-22
+2021-11-20	yocha-dehe	2021-22
+2021-10-09	blue-rock-east	2021-22
+2021-09-12	wolf-run	2021-22
+2022-07-17	rooster-run	2021-22
+2022-08-14	cypress-lakes	2021-22
+2022-09-10	red-hawk	2021-22
+2022-09-11	grays-crossing	2022-23
+2022-10-15	rio-vista	2022-23
+2022-11-13	chardonnay-golf	2022-23
+2022-12-11	paradise-valley	2022-23
+2023-02-04	lone-tree	2023-24
+2023-02-26	racho-solano	2023-24
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (username, email, password, first_name, last_name, is_admin) FROM stdin;
+tom-moore	moore.tom@comcast.net	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Tom	Moore	f
+brian-moore	bmoore427@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Brian	Moore	f
+dave-pereira	davep@tbs.org	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Dave	Pereira	t
+matt-pereira	ramchips99@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Matt	Pereira	t
+vern-taylor	vernt@tbs.org	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Vern	Taylor	f
+carrol-strickland	carrmari@sbcglobal.net	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Carrol	Strickland	f
+jose-argenal	argenalwelding@yahoo.ca	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Jose	Argenal	f
+dave-wallace	overrks@yahoo.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Dave	Wallace	f
+steve-etingoff	sjmme@aol.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Steve	Etingoff	f
+dean-rogers	rogersroofing@comcast.net	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Dean	Rogers	f
+tim-corbett	tjcorbett@sbcglobal.net	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Tim	Corbett	f
+jerry-guevara	jguevara_1956@yahoo.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Jerry	Guevara	f
+mike-p	mike@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Mike	P	f
+bruce	bruce@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Bruce	Foobar	f
+charlie	charlie@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Charlie	Foobar	f
+patrick	patrick@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Patrick	Foobar	f
+bill	bill@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Bill	Foobar	f
+fritz	fritz@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Fritz	Foobar	f
+dan	dan@gmail.com	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Dan	Foobar	f
+dennis-flannery	dennis2207@me.com	$2b$12$4tQPcPvJK0SIynKkw7ynAeu3A8wtOg8YjjjuT0kzYWcMQZwu9taPK	Dennis	Flannery	t
+tim-wallace	overrks@yahoo.com	$2b$12$7bdY3VB5xN7mryrpr2ebS.rjbnygP6sQAhNEXTpy7hGwDD8QKaNMS	Tim	Wallace	f
+brian-tilley	b_tilley@pacbell.net	$2b$12$dnbi84rh9ye3m9Hu4sdBlejq1MENo84ny6BnV/7O6afHV5NxUadpe	Brian	Tilley	f
+randy-felix	rpfelix@att.net	$2b$12$AZH7virni5jlTTiGgEg4zu3lSvAw68qVEfSIOjJ3RqtbJbdW/Oi5q	Randy	Felix	f
+bob-milano	bob@terrafirma1995.com	$2b$12$CBi9ZtqpdwLa00pjQu.aR.u7kOKdJnItxu79Fq4PTyNOjQuYoZ1cy	Bob	Milano	f
+dan-burk	burks5@aol.com	$2b$12$Ry2c6LgxnH99Su7sSlS9Qu67QhktlQ2a5.7sbZZlaG4xmvDBWqmKW	Dan	Burk	f
+\.
+
+
+--
+-- Name: chunk_constraint_name; Type: SEQUENCE SET; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_catalog.chunk_constraint_name', 1, false);
+
+
+--
+-- Name: chunk_id_seq; Type: SEQUENCE SET; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_catalog.chunk_id_seq', 1, false);
+
+
+--
+-- Name: dimension_id_seq; Type: SEQUENCE SET; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_catalog.dimension_id_seq', 1, false);
+
+
+--
+-- Name: dimension_slice_id_seq; Type: SEQUENCE SET; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_catalog.dimension_slice_id_seq', 1, false);
+
+
+--
+-- Name: hypertable_id_seq; Type: SEQUENCE SET; Schema: _timescaledb_catalog; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_catalog.hypertable_id_seq', 1, false);
+
+
+--
+-- Name: bgw_job_id_seq; Type: SEQUENCE SET; Schema: _timescaledb_config; Owner: postgres
+--
+
+SELECT pg_catalog.setval('_timescaledb_config.bgw_job_id_seq', 1000, false);
+
+
+--
+-- Name: greenies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.greenies_id_seq', 203, true);
+
+
+--
+-- Name: rounds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.rounds_id_seq', 219, true);
+
+
+--
+-- Name: courses courses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses
+    ADD CONSTRAINT courses_pkey PRIMARY KEY (handle);
+
+
+--
+-- Name: greenies greenies_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.greenies
+    ADD CONSTRAINT greenies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: points points_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.points
+    ADD CONSTRAINT points_pkey PRIMARY KEY (round_id);
+
+
+--
+-- Name: rounds rounds_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rounds
+    ADD CONSTRAINT rounds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tournaments tournaments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tournaments
+    ADD CONSTRAINT tournaments_pkey PRIMARY KEY (date);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
+
+
+--
+-- Name: greenies greenies_round_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.greenies
+    ADD CONSTRAINT greenies_round_id_fkey FOREIGN KEY (round_id) REFERENCES public.rounds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: handicaps handicaps_course_handle_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.handicaps
+    ADD CONSTRAINT handicaps_course_handle_fkey FOREIGN KEY (course_handle) REFERENCES public.courses(handle) ON DELETE CASCADE;
+
+
+--
+-- Name: pars pars_course_handle_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pars
+    ADD CONSTRAINT pars_course_handle_fkey FOREIGN KEY (course_handle) REFERENCES public.courses(handle) ON DELETE CASCADE;
+
+
+--
+-- Name: points points_round_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.points
+    ADD CONSTRAINT points_round_id_fkey FOREIGN KEY (round_id) REFERENCES public.rounds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: putts putts_round_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.putts
+    ADD CONSTRAINT putts_round_id_fkey FOREIGN KEY (round_id) REFERENCES public.rounds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: rounds rounds_tournament_date_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rounds
+    ADD CONSTRAINT rounds_tournament_date_fkey FOREIGN KEY (tournament_date) REFERENCES public.tournaments(date);
+
+
+--
+-- Name: rounds rounds_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rounds
+    ADD CONSTRAINT rounds_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+
+
+--
+-- Name: strokes strokes_round_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.strokes
+    ADD CONSTRAINT strokes_round_id_fkey FOREIGN KEY (round_id) REFERENCES public.rounds(id) ON DELETE CASCADE;
+
+
+--
+-- Name: tournaments tournaments_course_handle_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tournaments
+    ADD CONSTRAINT tournaments_course_handle_fkey FOREIGN KEY (course_handle) REFERENCES public.courses(handle);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

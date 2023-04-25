@@ -1,0 +1,440 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "title": "Root Schema",
+    "type": "object",
+    "default": {},
+    "required": [
+        "strokes",
+        "putts"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "strokes": {
+            "title": "The strokes Schema",
+            "type": "object",
+            "default": {},
+            "required": [
+                "hole1",
+                "hole2",
+                "hole3",
+                "hole4",
+                "hole5",
+                "hole6",
+                "hole7",
+                "hole8",
+                "hole9",
+                "hole10",
+                "hole11",
+                "hole12",
+                "hole13",
+                "hole14",
+                "hole15",
+                "hole16",
+                "hole17",
+                "hole18"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "hole1": {
+                    "title": "The hole1 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole2": {
+                    "title": "The hole2 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole3": {
+                    "title": "The hole3 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole4": {
+                    "title": "The hole4 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole5": {
+                    "title": "The hole5 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole6": {
+                    "title": "The hole6 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole7": {
+                    "title": "The hole7 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole8": {
+                    "title": "The hole8 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole9": {
+                    "title": "The hole9 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole10": {
+                    "title": "The hole10 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole11": {
+                    "title": "The hole11 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole12": {
+                    "title": "The hole12 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole13": {
+                    "title": "The hole13 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole14": {
+                    "title": "The hole14 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole15": {
+                    "title": "The hole15 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole16": {
+                    "title": "The hole16 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole17": {
+                    "title": "The hole17 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                },
+                "hole18": {
+                    "title": "The hole18 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        6
+                    ]
+                }
+            },
+            "examples": [{
+                "hole1": 6,
+                "hole2": 6,
+                "hole3": 6,
+                "hole4": 6,
+                "hole5": 6,
+                "hole6": 6,
+                "hole7": 6,
+                "hole8": 6,
+                "hole9": 6,
+                "hole10": 6,
+                "hole11": 6,
+                "hole12": 6,
+                "hole13": 6,
+                "hole14": 6,
+                "hole15": 6,
+                "hole16": 6,
+                "hole17": 6,
+                "hole18": 6
+            }]
+        },
+        "putts": {
+            "title": "The putts Schema",
+            "type": "object",
+            "default": {},
+            "required": [
+                "hole1",
+                "hole2",
+                "hole3",
+                "hole4",
+                "hole5",
+                "hole6",
+                "hole7",
+                "hole8",
+                "hole9",
+                "hole10",
+                "hole11",
+                "hole12",
+                "hole13",
+                "hole14",
+                "hole15",
+                "hole16",
+                "hole17",
+                "hole18"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "hole1": {
+                    "title": "The hole1 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole2": {
+                    "title": "The hole2 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole3": {
+                    "title": "The hole3 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole4": {
+                    "title": "The hole4 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole5": {
+                    "title": "The hole5 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole6": {
+                    "title": "The hole6 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole7": {
+                    "title": "The hole7 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole8": {
+                    "title": "The hole8 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole9": {
+                    "title": "The hole9 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole10": {
+                    "title": "The hole10 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole11": {
+                    "title": "The hole11 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole12": {
+                    "title": "The hole12 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole13": {
+                    "title": "The hole13 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole14": {
+                    "title": "The hole14 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole15": {
+                    "title": "The hole15 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole16": {
+                    "title": "The hole16 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole17": {
+                    "title": "The hole17 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                },
+                "hole18": {
+                    "title": "The hole18 Schema",
+                    "type": "integer",
+                    "default": 0,
+                    "examples": [
+                        3
+                    ]
+                }
+            },
+            "examples": [{
+                "hole1": 3,
+                "hole2": 3,
+                "hole3": 3,
+                "hole4": 3,
+                "hole5": 3,
+                "hole6": 3,
+                "hole7": 3,
+                "hole8": 3,
+                "hole9": 3,
+                "hole10": 3,
+                "hole11": 3,
+                "hole12": 3,
+                "hole13": 3,
+                "hole14": 3,
+                "hole15": 3,
+                "hole16": 3,
+                "hole17": 3,
+                "hole18": 3
+            }]
+        }
+    },
+    "examples": [{
+        "strokes": {
+            "hole1": 6,
+            "hole2": 6,
+            "hole3": 6,
+            "hole4": 6,
+            "hole5": 6,
+            "hole6": 6,
+            "hole7": 6,
+            "hole8": 6,
+            "hole9": 6,
+            "hole10": 6,
+            "hole11": 6,
+            "hole12": 6,
+            "hole13": 6,
+            "hole14": 6,
+            "hole15": 6,
+            "hole16": 6,
+            "hole17": 6,
+            "hole18": 6
+        },
+        "putts": {
+            "hole1": 3,
+            "hole2": 3,
+            "hole3": 3,
+            "hole4": 3,
+            "hole5": 3,
+            "hole6": 3,
+            "hole7": 3,
+            "hole8": 3,
+            "hole9": 3,
+            "hole10": 3,
+            "hole11": 3,
+            "hole12": 3,
+            "hole13": 3,
+            "hole14": 3,
+            "hole15": 3,
+            "hole16": 3,
+            "hole17": 3,
+            "hole18": 3
+        }
+    }]
+}

@@ -1,0 +1,55 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "title": "Root Schema",
+    "type": "object",
+    "default": {},
+    "additionalProperties": false,
+
+    "required": [
+        "roundId",
+        "holeNumber",
+        "feet",
+        "inches"
+    ],
+    "properties": {
+        "roundId": {
+            "title": "The roundId Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        },
+        "holeNumber": {
+            "title": "The holeNumber Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        },
+        "feet": {
+            "title": "The feet Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        },
+        "inches": {
+            "title": "The inches Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        }
+    },
+    "examples": [{
+        "roundId": 11,
+        "holeNumber": 11,
+        "feet": 11,
+        "inches": 11
+    }]
+}

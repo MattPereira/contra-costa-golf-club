@@ -1,0 +1,45 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "title": "Root Schema",
+    "type": "object",
+    "default": {},
+    "additionalProperties": false,
+
+    "required": [
+        "date",
+        "courseHandle",
+        "tourYears"
+    ],
+    "properties": {
+        "date": {
+            "title": "The date Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "2022-01-01"
+            ]
+        },
+        "courseHandle": {
+            "title": "The courseHandle Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "lone-tree"
+            ]
+        },
+        "tourYears": {
+            "title": "The tourYears Schema",
+            "type": "string",
+            "default": "",
+            "examples": [
+                "2021-22"
+            ]
+        }
+    },
+    "examples": [{
+        "date": "2022-01-01",
+        "courseHandle": "lone-tree",
+        "tourYears": "2021-22"
+    }]
+}

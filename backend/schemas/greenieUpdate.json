@@ -1,0 +1,35 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "title": "Root Schema",
+    "type": "object",
+    "default": {},
+    "additionalProperties": false,
+
+    "required": [
+        "feet",
+        "inches"
+    ],
+    "properties": {
+        "feet": {
+            "title": "The feet Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        },
+        "inches": {
+            "title": "The inches Schema",
+            "type": "integer",
+            "default": 0,
+            "examples": [
+                11
+            ]
+        }
+    },
+    "examples": [{
+        "feet": 11,
+        "inches": 11
+    }]
+}

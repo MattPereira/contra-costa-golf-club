@@ -1,0 +1,39 @@
+{
+  "name": "ccgc-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "jest -i",
+    "deploy": "git push heroku main",
+    "resetDb": "heroku pg:reset",
+    "uploadDb": "heroku pg:push ccgc DATABSE_URL -a contra-costa-golf-club",
+    "config": "heroku config:set PGSSLMODE=no-verify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MattPereira/CCGC-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MattPereira/CCGC-backend/issues"
+  },
+  "homepage": "https://github.com/MattPereira/CCGC-backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonschema": "^1.4.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.10.0",
+    "postgres-date": "^2.1.0",
+    "supertest": "^6.2.3"
+  }
+}

@@ -1,0 +1,142 @@
+users
+-
+username VARCHAR(30) PK
+email TEXT
+password TEXT
+first_name TEXT
+last_name TEXT
+is_admin BOOLEAN
+
+
+
+strokes
+-
+round_id INTEGER FK >- rounds.id
+hole1 INTEGER
+hole2 INTEGER
+hole3 INTEGER
+hole4 INTEGER
+hole5 INTEGER
+hole6 INTEGER
+hole7 INTEGER
+hole8 INTEGER
+hole9 INTEGER
+hole10 INTEGER
+hole11 INTEGER
+hole12 INTEGER
+hole13 INTEGER
+hole14 INTEGER
+hole15 INTEGER
+hole16 INTEGER
+hole17 INTEGER
+hole18 INTEGER
+
+putts
+-
+round_id INTEGER FK >- rounds.id
+hole1 INTEGER
+hole2 INTEGER
+hole3 INTEGER
+hole4 INTEGER
+hole5 INTEGER
+hole6 INTEGER
+hole7 INTEGER
+hole8 INTEGER
+hole9 INTEGER
+hole10 INTEGER
+hole11 INTEGER
+hole12 INTEGER
+hole13 INTEGER
+hole14 INTEGER
+hole15 INTEGER
+hole16 INTEGER
+hole17 INTEGER
+hole18 INTEGER
+
+
+
+rounds
+-
+id SERIAL PK
+tournament_date DATE FK >- tournaments.date
+username VARCHAR(30) FK >- users.username
+total_strokes INTEGER
+net_strokes INTEGER
+total_putts INTEGER
+player_index DECIMAL
+score_differential DECIMAL
+course_handicap INTEGER
+# course_handle TEXT FK >- courses.handle
+
+
+
+tournaments
+-
+date DATE PK
+course_handle TEXT FK >- courses.handle
+tour_years VARCHAR(7) 
+
+
+
+courses
+-
+handle TEXT PK
+name TEXT 
+rating DECIMAL
+slope INTEGER
+img_url TEXT
+
+
+pars
+-
+course_handle TEXT PK FK >- courses.handle
+hole1 INTEGER
+hole2 INTEGER
+hole3 INTEGER
+hole4 INTEGER
+hole5 INTEGER
+hole6 INTEGER
+hole7 INTEGER
+hole8 INTEGER
+hole9 INTEGER
+hole10 INTEGER
+hole11 INTEGER
+hole12 INTEGER
+hole13 INTEGER
+hole14 INTEGER
+hole15 INTEGER
+hole16 INTEGER
+hole17 INTEGER
+hole18 INTEGER
+total INTEGER
+
+
+handicaps
+-
+course_handle TEXT PK FK >- courses.handle
+hole1 INTEGER
+hole2 INTEGER
+hole3 INTEGER
+hole4 INTEGER
+hole5 INTEGER
+hole6 INTEGER
+hole7 INTEGER
+hole8 INTEGER
+hole9 INTEGER
+hole10 INTEGER
+hole11 INTEGER
+hole12 INTEGER
+hole13 INTEGER
+hole14 INTEGER
+hole15 INTEGER
+hole16 INTEGER
+hole17 INTEGER
+hole18 INTEGER
+
+greenies
+-
+id SERIAL PK
+round_id INTEGER FK >- rounds.id
+hole_number INTEGER
+feet INTEGER
+inches INTEGER
