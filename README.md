@@ -1,9 +1,9 @@
 
 # [Contra Costa Golf Club](https://ccgc.vercel.app/)
 
-|     Logo        |     Live Site        |   Repositories    |
-| ----------- | ----------- | --------        |
-| [<img src="https://i.ibb.co/72nKCSf/ccgc-Logo11.png" width="200" height="250"/>](https://ccgc.vercel.app/)  | <p> [https://ccgc.vercel.app/](https://ccgc.vercel.app/)</p>    |       <p>[Frontend](https://github.com/MattPereira/ccgc-frontend)</p><p>[Backend](https://github.com/MattPereira/ccgc-backend)</p>         |
+|     Logo        |     Live Site        |
+| ----------- | ----------- |
+| [<img src="https://i.ibb.co/72nKCSf/ccgc-Logo11.png" width="200" height="250"/>](https://ccgc.vercel.app/)  | <p> [https://ccgc.app/](https://ccgc.app/)</p>    |
 
 
 
