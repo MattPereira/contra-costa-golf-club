@@ -19,17 +19,16 @@ function getDatabaseUri() {
 // Speed up bcrypt during tests, since the algorithm safety isn't being tested
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
 
-console.log("CONFIG LOGS".green);
+console.log("ENV VARS".green);
 console.log("-----");
 console.log("NODE_ENV", process.env.NODE_ENV);
-console.log("DATABASE_URL", process.env.DATABASE_URL);
 console.log("PGDATABASE", process.env.PGDATABASE);
 console.log("PGHOST", process.env.PGHOST);
 console.log("PGPORT", process.env.PGPORT);
 console.log("PGUSER", process.env.PGUSER);
 console.log("-----");
 console.log("PORT:".yellow, PORT.toString());
-console.log("DatabaseUri:".yellow, getDatabaseUri());
+// console.log("DATABASE_URL", process.env.DATABASE_URL);
 console.log("-----");
 
 module.exports = {

@@ -24,7 +24,7 @@ export default function PageHero({
       color: "black",
       borderColor: "white",
     },
-    minidth: "138.906px",
+    minWidth: "138.906px",
     borderRadius: "30px",
     margin: "0rem 0.5rem",
   });
@@ -68,7 +68,7 @@ export default function PageHero({
   );
 
   return (
-    <Box sx={{ p: { xs: 0, sm: 1.5 } }}>
+    <Box sx={{ p: { xs: 0, sm: 1 } }}>
       <Paper
         sx={{
           height: { xs: "175px", sm: "275px" },
@@ -78,7 +78,6 @@ export default function PageHero({
           justifyContent: "center",
           alignItems: "center",
           background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) center / cover no-repeat`,
-          padding: "0.5rem",
         }}
       >
         <Box>

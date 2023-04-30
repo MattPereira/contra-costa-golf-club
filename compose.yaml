@@ -12,6 +12,7 @@ services:
       - 5432
     # environment variables set here will be implimented by docker compose build
     # i. e. the name of database will be golf-db and the password will be pineapple
+    # also the default POSTGRES_USER is "postgres"
     environment:
       POSTGRES_PASSWORD: pineapple
       POSTGRES_DB: golf-db
