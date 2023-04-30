@@ -6,13 +6,21 @@ const { getDatabaseUri } = require("./config");
 // Create a pg.Client instance
 let db;
 
-db = new Pool({
-  connectionString: getDatabaseUri(),
-  connectionTimeoutMillis: 10000,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
+// Only use SSL in production, can't get SSL to work in local docker container for now
+if (process.env.NODE_ENV === "production") {
+  db = new Pool({
+    connectionString: getDatabaseUri(),
+    connectionTimeoutMillis: 10000,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  });
+} else {
+  db = new Pool({
+    connectionString: getDatabaseUri(),
+    connectionTimeoutMillis: 10000,
+  });
+}
 
 db.connect((err) => {
   if (err) {
