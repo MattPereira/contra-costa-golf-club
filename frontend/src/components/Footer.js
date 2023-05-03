@@ -14,8 +14,7 @@ function Footer() {
       sx={{
         bgcolor: "black",
         borderRadius: "30px",
-        py: 2,
-        mb: 1,
+        py: { xs: 1, md: 2 },
         mx: 1,
       }}
     >
@@ -46,7 +45,7 @@ function Footer() {
         <Grid item md={4} className="footer-body">
           <Grid container justifyContent="center" spacing={3}>
             <Grid item>
-              <a href="https://matt-pereira.surge.sh">
+              <a href="https://matt-pereira.vercel.app">
                 <SvgIcon sx={{ fontSize: "32px" }}>
                   <MPLogo />
                 </SvgIcon>

@@ -9,7 +9,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Router from "./router/Router";
 import Navigation from "./components/Navigation";
 import LoadingSpinner from "./components/LoadingSpinner";
-// import Footer from "./components/Common/Footer";
+import Footer from "./components/Footer";
 
 import { ThemeProvider, Box } from "@mui/material";
 import theme from "./theme";
@@ -127,15 +127,27 @@ function App() {
             <Box
               sx={{
                 display: { xs: "block", md: "flex" },
-                height: "100%",
+                height: "100vh",
               }}
             >
               <Box>
                 <Navigation logout={logout} />
               </Box>
-              <Box sx={{ width: "100%", height: "100vh" }}>
-                <Router login={login} register={register} />
-                {/* <Footer /> */}
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Box>
+                  <Router login={login} register={register} />
+                </Box>
+                <Box sx={{ pb: 1 }}>
+                  <Footer />
+                </Box>
               </Box>
             </Box>
           </ScrollToTop>
