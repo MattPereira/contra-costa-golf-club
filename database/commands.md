@@ -12,7 +12,7 @@
 # DOCKER DUMP FILE SETUP
 
 1. GET DUMP FILE INTO DOCKER CONTAINER ( MUST BE IN SAME DIRECTORY AS DUMP FILE )
-    - `docker cp latest.dump container_id:/latest.dump`
+    - `docker cp prod.dump container_id:/prod.dump`
 
-2. USE DUMP FILE TO POPULATE DATABASE IN DOCKER CONTAINER
-    - `psql -U postgres -d ccgc-db -f latest.dump`
+2. USE DUMP FILE TO POPULATE DATABASE (RUN INSIDE DOCKER CONTAINER TERMINAL )
+    - `psql -U postgres -d golf-db -f prod.dump`

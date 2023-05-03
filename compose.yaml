@@ -27,59 +27,37 @@ services:
       context: ./backend
       dockerfile: ../backend/Dockerfile
     container_name: express
+    # Volumes allow backend changes to take effect inside container without having to rebuild the image
     volumes:
       - ./backend/:/code
+      - ./backend/package.json:/code/package.json
+      - ./backend/package-lock.json:/code/package-lock.json
     command: npm run dev
     ports:
       - 3001:3001
     environment:
       NODE_ENV: development
+      # Figure out how to use .env file instead?
       # postgres://username:password@host:port/database
       DATABASE_URL: postgres://postgres:pineapple@postgres:5432/golf-db
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
+  react:
+    build:
+      context: ./frontend
+      dockerfile: ../frontend/Dockerfile
+    container_name: react
+    ports:
+      - 3000:3000
+    # Volumes allow for frontend changes to be seen in running container without having to rebuild the image 
+    volumes:
+      - ./frontend/src:/code/src
+      - /code/node_modules
+    depends_on:
+      - express
+
+# This particular volume keeps database data persistent even if the container is deleted
 volumes:
   db-data:
-
-
-
-
-    # If your application exposes a port, uncomment the following lines and change
-    # the port numbers as needed. The first number is the host port and the second
-    # is the port inside the container.
-    # ports:
-      # - 8080:8080
-
-    # The commented out section below is an example of how to define a PostgreSQL
-    # database that your application can use. `depends_on` tells Docker Compose to
-    # start the database before your application. The `db-data` volume persists the
-    # database data between container restarts. The `db-password` secret is used
-    # to set the database password. You must create `db/password.txt` and add
-    # a password of your choosing to it before running `docker-compose up`.
-    #     depends_on:
-    #       db:
-    #         condition: service_healthy
-    #   db:
-    #     image: postgres
-    #     restart: always
-    #     user: postgres
-    #     secrets:
-    #       - db-password
-    #     volumes:
-    #       - db-data:/var/lib/postgresql/data
-    #     environment:
-    #       - POSTGRES_DB=example
-    #       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-    #     expose:
-    #       - 5432
-    #     healthcheck:
-    #       test: [ "CMD", "pg_isready" ]
-    #       interval: 10s
-    #       timeout: 5s
-    #       retries: 5
-    # volumes:
-    #   db-data:
-    # secrets:
-    #   db-password:
-    #     file: db/password.txt
