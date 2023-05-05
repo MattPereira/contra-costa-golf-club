@@ -42,6 +42,9 @@ let theme = createTheme({
         root: {
           fontFamily: "Cubano",
           fontSize: "1.25rem",
+          "&:hover": {
+            color: "white",
+          },
         },
       },
     },

@@ -57,12 +57,9 @@ export default function StandingsDetails() {
     <Box>
       <PageHero title="Tour Standings" backgroundImage={standingsImage} />
 
-      <Container sx={{ py: 5 }}>
-        <Grid container justifyContent="center">
+      <Container>
+        <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
-              Rankings
-            </Typography>
             <TabContext value={value}>
               <Box>
                 <TabList
@@ -74,13 +71,13 @@ export default function StandingsDetails() {
                     label="2022"
                     value="1"
                     onClick={() => setTourYear("2021-22")}
-                    sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
+                    sx={{ fontFamily: "Cubano", fontSize: "1.5rem" }}
                   />
                   <Tab
                     label="2023"
                     value="2"
                     onClick={() => setTourYear("2022-23")}
-                    sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
+                    sx={{ fontFamily: "Cubano", fontSize: "1.5rem" }}
                   />
                 </TabList>
               </Box>
@@ -107,7 +104,7 @@ export function RankingsTable({ data }) {
       <thead>
         <tr className="table-dark">
           <th>POS</th>
-          <th>NAME</th>
+          <th className="text-start">NAME</th>
           <th className="d-none d-md-table-cell">PLY</th>
           <th>STR</th>
           <th>PUT</th>
@@ -123,7 +120,7 @@ export function RankingsTable({ data }) {
         {data.map((row, idx) => (
           <tr key={row.username}>
             <th>{idx + 1}</th>
-            <th>
+            <th className="text-start">
               {row.roundId ? (
                 <Link
                   to={`/rounds/${row.roundId}`}
@@ -164,7 +161,7 @@ function PointsTables() {
   return (
     <>
       <Typography variant="h3" gutterBottom>
-        Points
+        Points Wiki
       </Typography>
 
       <TabContext value={value}>

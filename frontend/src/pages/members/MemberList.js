@@ -46,7 +46,7 @@ const MemberList = () => {
           Round Averages
         </Typography>
         <Row className="justify-content-center">
-          <Col md={10} lg={8}>
+          <Col md={10} lg={6}>
             {members.length ? (
               <Table
                 bordered
@@ -58,7 +58,7 @@ const MemberList = () => {
               >
                 <thead>
                   <tr className="table-dark">
-                    <th>NAME</th>
+                    <th className="text-start">NAME</th>
                     <th>RND</th>
                     <th>STR</th>
                     <th>PUT</th>
@@ -68,7 +68,7 @@ const MemberList = () => {
                 <tbody>
                   {members.map((m) => (
                     <tr key={m.username}>
-                      <th>
+                      <th className="text-start">
                         <Link
                           to={`/members/${m.username}`}
                           className="text-decoration-none"

@@ -12,8 +12,17 @@ html,body {
 th {
     white-space: nowrap;
     overflow: hidden;
+    font-family: cubano;
+    font-weight: normal;
+    font-size: 20px;
 }
 
 input[type="number"] {
     text-align: center;
   }
+
+td {
+    font-family: Itim;
+    /* font-weight: bold; */
+    font-size: 20px;
+}

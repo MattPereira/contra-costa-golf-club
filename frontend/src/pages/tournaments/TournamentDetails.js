@@ -5,7 +5,6 @@ import CcgcApi from "../../api/api";
 import UserContext from "../../lib/UserContext";
 
 import { RankingsTable } from "../standings/StandingsDetails";
-import GreenieCardList from "../../components/GreenieCardList";
 
 import PageHero from "../../components/PageHero";
 
@@ -31,9 +30,8 @@ import { styled } from "@mui/material/styles";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-
-import EditIcon from "@mui/icons-material/Edit";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 
 /** Tournament details page.
  *
@@ -112,7 +110,7 @@ export default function TournamentDetails() {
             <TabList
               centered
               onChange={handleChange}
-              aria-label="lab API tabs example"
+              aria-label="tournament details tabs"
             >
               <StyledTab label="Scores" value="1" />
               <StyledTab label="Greenies" value="2" />
@@ -121,23 +119,13 @@ export default function TournamentDetails() {
             </TabList>
           </Box>
           <TabPanel sx={{ px: 0 }} value="1">
-            <ScoresTable data={scoresLeaderboard} type="strokes" />
+            <ScoresTab
+              data={scoresLeaderboard}
+              tournamentDate={tournamentDate}
+            />
           </TabPanel>
           <TabPanel sx={{ px: 0 }} value="2">
-            {greenies.length ? (
-              <>
-                <div className="d-lg-none">
-                  <GreeniesTable greenies={greenies} />
-                </div>
-                <div className="d-none d-lg-block">
-                  <GreenieCardList greenies={greenies} />
-                </div>
-              </>
-            ) : (
-              <Box sx={{ textAlign: "center" }}>
-                <Typography variant="p">No greenies yet!</Typography>
-              </Box>
-            )}
+            <GreeniesTab greenies={greenies} tournamentDate={tournamentDate} />
           </TabPanel>
           <TabPanel sx={{ px: 0 }} value="3">
             <SkinsTable
@@ -159,120 +147,169 @@ export default function TournamentDetails() {
   );
 }
 
-function ScoresTable({ data, type }) {
+function ScoresTab({ data, tournamentDate }) {
   //only show edit button if user is logged in
   const { currentUser } = useContext(UserContext);
 
   return (
-    <BootstrapTable
-      responsive
-      bordered
-      striped
-      variant="light"
-      className="text-center"
-      style={{ fontSize: "18px", fontFamily: "cubano" }}
-    >
-      <thead className="table-dark">
-        <tr>
-          {/* <th>NO</th> */}
-          <th className="text-start fw-normal">PLAYER</th>
-          {Array.from({ length: 18 }, (_, i) => (
-            <th key={i + 1} className="d-none d-sm-table-cell">
-              {i + 1}
-            </th>
-          ))}
-          <th className="fw-normal">TOT</th>
-          {type === "strokes" ? (
-            <>
-              <th className="fw-normal">HCP</th>
-              <th className="fw-normal">NET</th>
-              <th className="fw-normal">PUT</th>
-            </>
-          ) : null}
-
-          {currentUser && (
-            <th className="fw-normal">
-              <BorderColorIcon />
-            </th>
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((r, idx) => (
-          <tr key={r.id}>
-            {/* <th>{idx + 1}</th> */}
-            <th className="text-start">
-              <Link to={`/rounds/${r.id}`} className="text-decoration-none">
-                <Typography sx={{ fontFamily: "Cubano", fontSize: "18px" }}>
-                  {r.firstName} {r.lastName[0]}
-                </Typography>
-              </Link>
-            </th>
-            {Object.values(r.strokes || r.putts).map((s, idx) => (
-              <td key={idx} className="d-none d-sm-table-cell">
-                {s}
-              </td>
+    <>
+      <BootstrapTable
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+        style={{ fontSize: "18px", fontFamily: "cubano" }}
+      >
+        <thead className="table-dark">
+          <tr>
+            {/* <th>NO</th> */}
+            <th className="text-start fw-normal">PLAYER</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1} className="d-none d-sm-table-cell">
+                {i + 1}
+              </th>
             ))}
-            {type === "strokes" ? (
-              <>
-                <td>{r.totalStrokes}</td>
-                <td>{r.courseHandicap}</td>
-                <td>{r.netStrokes}</td>
-                <td>{r.totalPutts}</td>
-              </>
-            ) : (
-              <td>{r.totalPutts}</td>
-            )}
+            <th className="fw-normal">TOT</th>
+            <th className="fw-normal">HCP</th>
+            <th className="fw-normal">NET</th>
+            <th className="fw-normal">PUT</th>
             {currentUser && (
-              <td>
-                <Button
-                  to={`/rounds/update/${r.id}`}
-                  component={Link}
-                  // variant="outlined"
-                  sx={{ p: 0.5, minWidth: "auto" }}
-                >
-                  <BorderColorIcon />
-                </Button>
-              </td>
+              <th className="fw-normal">
+                <BorderColorIcon />
+              </th>
             )}
           </tr>
-        ))}
-      </tbody>
-    </BootstrapTable>
+        </thead>
+        <tbody>
+          {data.map((r, idx) => (
+            <tr key={r.id}>
+              {/* <th>{idx + 1}</th> */}
+              <th className="text-start">
+                <Link to={`/rounds/${r.id}`} className="text-decoration-none">
+                  <Typography sx={{ fontFamily: "Cubano", fontSize: "18px" }}>
+                    {r.firstName} {r.lastName[0]}
+                  </Typography>
+                </Link>
+              </th>
+              {Object.values(r.strokes || r.putts).map((s, idx) => (
+                <td key={idx} className="d-none d-sm-table-cell">
+                  {s}
+                </td>
+              ))}
+              <td>{r.totalStrokes}</td>
+              <td>{r.courseHandicap}</td>
+              <td>{r.netStrokes}</td>
+              <td>{r.totalPutts}</td>
+              {currentUser && (
+                <td>
+                  <Button
+                    to={`/rounds/update/${r.id}`}
+                    component={Link}
+                    // variant="outlined"
+                    sx={{ p: 0.5, minWidth: "auto" }}
+                  >
+                    <BorderColorIcon />
+                  </Button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </BootstrapTable>
+      {currentUser && (
+        <Box sx={{ display: "flex", justifyContent: "end" }}>
+          <Button
+            variant="contained"
+            component={Link}
+            to={`/rounds/create/${tournamentDate}`}
+          >
+            <AddCircleOutlineIcon />{" "}
+            <Box component="span" sx={{ ml: 0.5 }}>
+              Round
+            </Box>
+          </Button>
+        </Box>
+      )}
+    </>
   );
 }
 
-function GreeniesTable({ greenies }) {
+function GreeniesTab({ greenies, tournamentDate }) {
+  const { currentUser } = useContext(UserContext);
+
   console.log("GREENIES", greenies);
-  return greenies.length ? (
-    <BootstrapTable striped bordered>
-      <thead className="table-dark">
-        <tr>
-          <th>PLAYER</th>
-          <th>HOLE</th>
-          <th>FEET</th>
-          <th>INCH</th>
-        </tr>
-      </thead>
-      <tbody>
-        {greenies.map((g) => (
-          <tr key={g.id}>
-            <th>
-              <Link
-                to={`/rounds/${g.roundId}`}
-                className="text-decoration-none"
-              >
-                {`${g.firstName} ${g.lastName[0]}`}
-              </Link>
-            </th>
-            <td>#{g.holeNumber}</td>
-            <td>{g.feet}</td>
-            <td>{g.inches}</td>
-          </tr>
-        ))}
-      </tbody>
-    </BootstrapTable>
-  ) : null;
+  return (
+    <Box>
+      <>
+        <Grid container justifyContent="center">
+          <Grid item xs={12} md={6}>
+            <BootstrapTable striped bordered className="text-center">
+              <thead className="table-dark">
+                <tr>
+                  <th className="text-start">PLAYER</th>
+                  <th>HOLE</th>
+                  <th>FEET</th>
+                  <th>INCH</th>
+                  {currentUser && (
+                    <th className="fw-normal">
+                      <BorderColorIcon />
+                    </th>
+                  )}
+                </tr>
+              </thead>
+              {greenies.length ? (
+                <tbody>
+                  {greenies.map((g) => (
+                    <tr key={g.id}>
+                      <th className="text-start">
+                        <Link
+                          to={`/rounds/${g.roundId}`}
+                          className="text-decoration-none"
+                        >
+                          {`${g.firstName} ${g.lastName[0]}`}
+                        </Link>
+                      </th>
+                      <td>#{g.holeNumber}</td>
+                      <td>{g.feet}'</td>
+                      <td>{g.inches}"</td>
+                      {currentUser && (
+                        <td>
+                          <Button
+                            to={`/greenies/update/${g.id}`}
+                            component={Link}
+                            // variant="outlined"
+                            sx={{ p: 0.5, minWidth: "auto" }}
+                          >
+                            <BorderColorIcon />
+                          </Button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              ) : null}
+            </BootstrapTable>
+            {currentUser && (
+              <Box sx={{ display: "flex", justifyContent: "end" }}>
+                <Button
+                  variant="contained"
+                  component={Link}
+                  color="success"
+                  to={`/greenies/create/${tournamentDate}`}
+                >
+                  <AddCircleOutlineIcon />{" "}
+                  <Box component="span" sx={{ ml: 0.5 }}>
+                    Greenie
+                  </Box>
+                </Button>
+              </Box>
+            )}
+          </Grid>
+        </Grid>
+      </>
+    </Box>
+  );
 }
 
 /******************* SKINS TABLE ********************/
@@ -480,7 +517,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
               <thead className="table-dark">
                 <tr>
                   <th>POS</th>
-                  <th>NAME</th>
+                  <th className="text-start">NAME</th>
                   <th>NET</th>
                 </tr>
               </thead>
@@ -488,8 +525,10 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
                 {strokesWinners.length &&
                   strokesWinners.map((player, idx) => (
                     <tr key={idx}>
-                      <td>{idx + 1}</td>
-                      <td>{player.firstName}</td>
+                      <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+                      <td style={{ textAlign: "start", fontFamily: "cubano" }}>
+                        {player.firstName + " " + player.lastName}
+                      </td>
                       <td>{player.netStrokes}</td>
                     </tr>
                   ))}
@@ -510,7 +549,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
               <thead className="table-dark">
                 <tr>
                   <th>POS</th>
-                  <th>NAME</th>
+                  <th className="text-start">NAME</th>
                   <th>TOT</th>
                 </tr>
               </thead>
@@ -518,8 +557,12 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
                 {puttsWinners.length >= 3
                   ? puttsWinners.map((winner, idx) => (
                       <tr key={idx}>
-                        <td>{idx + 1}</td>
-                        <td>{winner.firstName}</td>
+                        <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+                        <td
+                          style={{ fontFamily: "cubano", textAlign: "start" }}
+                        >
+                          {winner.firstName}
+                        </td>
                         <td>{winner.totalPutts}</td>
                       </tr>
                     ))

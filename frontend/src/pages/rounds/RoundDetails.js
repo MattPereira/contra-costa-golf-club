@@ -143,6 +143,11 @@ export default function RoundDetails() {
         tournamentDate={date}
         isRoundHero={true}
       />
+      <Box sx={{ py: 1, bgcolor: "black", color: "white" }}>
+        <Typography variant="h3" align="center">
+          {date}
+        </Typography>
+      </Box>
       <Container sx={{ pb: 3 }}>
         <TabContext value={value}>
           <Box sx={{ mt: 2 }}>

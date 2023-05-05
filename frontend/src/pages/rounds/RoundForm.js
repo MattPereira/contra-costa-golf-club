@@ -270,7 +270,7 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
         title={round ? "Update Round" : "Create Round"}
         backgroundImage={round ? round.courseImg : courseImg}
       />
-      <Box sx={{ bgcolor: "primary.main", color: "white", py: 1 }}>
+      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
         <Typography variant="h4" align="center">
           {tournamentDate}
         </Typography>
@@ -298,13 +298,13 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                   </Typography>
                   <FormControl fullWidth>
                     <InputLabel id="username" htmlFor="username">
-                      Player
+                      Player Name
                     </InputLabel>
 
                     <Select
                       id="username"
                       name="username"
-                      label="Player"
+                      label="Player Name"
                       onChange={handleChange}
                       value={formData.username}
                       required
