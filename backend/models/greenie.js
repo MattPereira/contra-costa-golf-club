@@ -24,7 +24,9 @@ class Greenie {
     );
 
     if (duplicateCheck.rows[0])
-      throw new BadRequestError(`Only allowed to submit one greenie per hole`);
+      throw new BadRequestError(
+        `Each player is only allowed to submit one greenie per hole`
+      );
 
     const greenieRes = await db.query(
       `INSERT INTO greenies

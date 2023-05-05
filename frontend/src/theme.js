@@ -13,7 +13,7 @@ let theme = createTheme({
     h1: {
       fontFamily: "Cubano",
       marginBottom: "1rem",
-      fontSize: "5rem",
+      fontSize: "6rem",
       textAlign: "center",
     },
     h2: {
@@ -40,10 +40,8 @@ let theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: "30px",
           fontFamily: "Cubano",
-          fontSize: "1.2rem",
-          "&:hover": { color: "white" },
+          fontSize: "1.25rem",
         },
       },
     },

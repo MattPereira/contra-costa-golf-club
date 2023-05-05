@@ -54,7 +54,11 @@ export default function GreenieCreate() {
 
   return (
     <div>
-      <GreenieForm par3HoleNums={par3HoleNums} usernames={usernames} />
+      <GreenieForm
+        par3HoleNums={par3HoleNums}
+        usernames={usernames}
+        courseImg={tournament.courseImg}
+      />
     </div>
   );
 }

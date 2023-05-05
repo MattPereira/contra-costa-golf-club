@@ -4,15 +4,27 @@ import { useParams, useNavigate } from "react-router-dom";
 import CcgcApi from "../../api/api";
 import { Link } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { styled } from "@mui/material/styles";
 
-import { Typography, Button, Container, Grid, Box, Modal } from "@mui/material";
+import {
+  Typography,
+  Button,
+  Container,
+  Grid,
+  Box,
+  Modal,
+  TableBody,
+  TableCell,
+  TableRow,
+  TableContainer,
+  Paper,
+  Table,
+} from "@mui/material";
 
-import GreenieCard from "../../components/GreenieCard";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 
 import PageHero from "../../components/PageHero";
-import greenieImage from "../../assets/greenie.webp";
 
 /** Greenie details page.
  *
@@ -110,35 +122,71 @@ export default function GreenieDetails() {
     </Box>
   );
 
+  const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
+    backgroundColor: "black",
+    color: theme.palette.common.white,
+    fontFamily: "Cubano",
+    fontSize: 25,
+  }));
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontFamily: "Cubano",
+    fontSize: 25,
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    border: "2px solid black",
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
   return (
     <Box>
       <PageHero
         title="Greenie Details"
-        backgroundImage={greenieImage}
+        backgroundImage={greenie.courseImg}
         alt="golf course"
       />
-      <Container sx={{ pb: 5 }}>
-        <Button
-          variant="contained"
-          size="large"
-          color="dark"
-          sx={{
-            color: "white",
-            width: "100%",
-            fontFamily: "cubano",
-            fontSize: "1.4rem",
-            borderRadius: "20px",
-            mt: 1,
-            mb: 2,
-          }}
-          component={Link}
-          to={`/tournaments/${tournamentDate}`}
-        >
-          {tournamentDate}
-        </Button>
+
+      <Container sx={{ my: 3 }}>
         <Grid container justifyContent="center">
-          <Grid item xs={12} sm={9} md={6} lg={5} align="center">
-            <GreenieCard greenie={greenie} />
+          <Grid item xs={12} sm={10} md={8} lg={6} align="center">
+            <TableContainer component={Paper} elevation={0}>
+              <Table sx={{ border: "2px solid black" }}>
+                <TableBody>
+                  <StyledTableRow>
+                    <StyledHeaderCell>Name</StyledHeaderCell>
+                    <StyledTableCell sx={{ border: "none" }}>
+                      {greenie.firstName + " " + greenie.lastName}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledHeaderCell>Date</StyledHeaderCell>
+                    <StyledTableCell>
+                      <Link to={`/tournaments/${tournamentDate}`}>
+                        {tournamentDate}
+                      </Link>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledHeaderCell>Course</StyledHeaderCell>
+                    <StyledTableCell>{greenie.courseName}</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledHeaderCell>Hole</StyledHeaderCell>
+                    <StyledTableCell># {greenie.holeNumber}</StyledTableCell>
+                  </StyledTableRow>
+                  <StyledTableRow>
+                    <StyledHeaderCell>Distance</StyledHeaderCell>
+                    <StyledTableCell>
+                      {greenie.feet + " ft " + greenie.inches + " in"}
+                    </StyledTableCell>
+                  </StyledTableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
             <Box>{currentUser ? memberButtons : null}</Box>
           </Grid>
         </Grid>

@@ -5,7 +5,6 @@ import CcgcApi from "../../api/api";
 import UserContext from "../../lib/UserContext";
 
 import { RankingsTable } from "../standings/StandingsDetails";
-// import GreenieTable from "../../components/Greenies/GreenieTable";
 import GreenieCardList from "../../components/GreenieCardList";
 
 import PageHero from "../../components/PageHero";
@@ -34,6 +33,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 
 import EditIcon from "@mui/icons-material/Edit";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 
 /** Tournament details page.
  *
@@ -101,7 +101,7 @@ export default function TournamentDetails() {
         tournamentDate={date}
         hasScores={tournament.scoresLeaderboard.length ? true : false}
       />
-      <Box sx={{ bgcolor: "primary.main", color: "white", py: 1 }}>
+      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
         <Typography variant="h4" align="center">
           {tournamentDate}
         </Typography>
@@ -170,28 +170,29 @@ function ScoresTable({ data, type }) {
       striped
       variant="light"
       className="text-center"
+      style={{ fontSize: "18px", fontFamily: "cubano" }}
     >
       <thead className="table-dark">
         <tr>
-          <th>NO</th>
-          <th>PLAYER</th>
+          {/* <th>NO</th> */}
+          <th className="text-start fw-normal">PLAYER</th>
           {Array.from({ length: 18 }, (_, i) => (
             <th key={i + 1} className="d-none d-sm-table-cell">
               {i + 1}
             </th>
           ))}
-          <th>TOT</th>
+          <th className="fw-normal">TOT</th>
           {type === "strokes" ? (
             <>
-              <th>HCP</th>
-              <th>NET</th>
-              <th>PUT</th>
+              <th className="fw-normal">HCP</th>
+              <th className="fw-normal">NET</th>
+              <th className="fw-normal">PUT</th>
             </>
           ) : null}
 
           {currentUser && (
-            <th>
-              <EditIcon />
+            <th className="fw-normal">
+              <BorderColorIcon />
             </th>
           )}
         </tr>
@@ -199,10 +200,12 @@ function ScoresTable({ data, type }) {
       <tbody>
         {data.map((r, idx) => (
           <tr key={r.id}>
-            <th>{idx + 1}</th>
-            <th>
+            {/* <th>{idx + 1}</th> */}
+            <th className="text-start">
               <Link to={`/rounds/${r.id}`} className="text-decoration-none">
-                {r.firstName} {r.lastName[0]}
+                <Typography sx={{ fontFamily: "Cubano", fontSize: "18px" }}>
+                  {r.firstName} {r.lastName[0]}
+                </Typography>
               </Link>
             </th>
             {Object.values(r.strokes || r.putts).map((s, idx) => (
@@ -225,10 +228,10 @@ function ScoresTable({ data, type }) {
                 <Button
                   to={`/rounds/update/${r.id}`}
                   component={Link}
-                  variant="contained"
+                  // variant="outlined"
                   sx={{ p: 0.5, minWidth: "auto" }}
                 >
-                  <EditIcon fontSize="small" />
+                  <BorderColorIcon />
                 </Button>
               </td>
             )}

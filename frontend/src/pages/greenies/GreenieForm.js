@@ -1,13 +1,25 @@
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Form, Row, Col } from "react-bootstrap";
-import { useTheme } from "@mui/material/styles";
+import { Form } from "react-bootstrap";
 
-import { Button, Typography, Alert, Box, Container } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Alert,
+  Box,
+  Container,
+  Grid,
+  Paper,
+  TextField,
+  FormControl,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormHelperText,
+} from "@mui/material";
 
 import PageHero from "../../components/PageHero";
-import greenieImage from "../../assets/greenie.webp";
 
 /** Form to create a new greenie
  *
@@ -21,7 +33,7 @@ import greenieImage from "../../assets/greenie.webp";
  * Routes -> NewGreenie -> NewGreenieForm
  */
 
-const GreenieForm = ({ par3HoleNums, usernames, greenie }) => {
+const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
   let navigate = useNavigate();
   const { date } = useParams();
 
@@ -33,8 +45,8 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie }) => {
   //dynamically set initial state of formData based on whether creating or updating
   //a greenie by looking to see if greenie is passed in as a prop
   const [formData, setFormData] = useState({
-    roundId: greenie ? greenie.roundId : usernames[0][0],
-    holeNumber: greenie ? greenie.holeNumber : par3HoleNums[0],
+    roundId: greenie ? greenie.roundId : "",
+    holeNumber: greenie ? greenie.holeNumber : "",
     feet: greenie ? greenie.feet : "",
     inches: greenie ? greenie.inches : "",
   });
@@ -89,7 +101,6 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie }) => {
         await CcgcApi.createGreenie(newGreenieData);
       }
     } catch (errors) {
-      debugger;
       setFormErrors(errors);
       return;
     }
@@ -101,8 +112,6 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie }) => {
       navigate(`/tournaments/${date}`);
     }
   };
-
-  const theme = useTheme();
 
   const tournamentDate = new Date(
     date || greenie.tournamentDate
@@ -117,157 +126,144 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie }) => {
   return (
     <Box>
       <PageHero
-        backgroundImage={greenieImage}
-        title={greenie ? "Edit Greenie" : "New Greenie"}
+        backgroundImage={greenie ? greenie.courseImg : courseImg}
+        title={greenie ? "Update Greenie" : "Create Greenie"}
       />
-      <Container sx={{ pb: 5, pt: 3 }}>
-        <div className="row justify-content-center">
-          <div className="col-sm-10 col-md-8 col-lg-6">
-            <Card>
-              <Box
-                sx={{
-                  bgcolor: theme.palette.dark.main,
-                  borderRadius: "4px 4px 0 0",
-                }}
-              >
-                <Typography
-                  variant="h3"
-                  align="center"
-                  sx={{ color: "white", py: 1 }}
-                >
-                  {tournamentDate}
-                </Typography>
-              </Box>
-              <Card.Body>
-                <Form onSubmit={handleSubmit} className="p-3">
-                  <Row className="mb-3 align-items-center">
-                    <Col xs={2}>
-                      <Form.Label htmlFor="roundId" className="mb-0">
-                        <b>Name</b>
-                      </Form.Label>
-                    </Col>
-                    <Col xs={10}>
-                      {greenie ? (
-                        <Form.Control
-                          value={greenie.firstName + " " + greenie.lastName}
-                          className="text-center"
-                          readOnly
-                        ></Form.Control>
-                      ) : (
-                        <Form.Select
-                          name="roundId"
-                          id="roundId"
-                          value={formData.roundId}
-                          onChange={handleChange}
-                        >
-                          {usernames.map((user) => (
-                            <option key={user[0]} value={user[0]}>
-                              {user[1]
-                                .split("-")
-                                .map((n) => n[0].toUpperCase() + n.slice(1))
-                                .join(" ")}
-                            </option>
-                          ))}
-                        </Form.Select>
-                      )}
-                    </Col>
-                  </Row>
-
-                  <Row className="mb-3 align-items-center">
-                    <Col xs={2}>
-                      <Form.Label htmlFor="holeNumber" className="mb-0">
-                        <b>Hole</b>
-                      </Form.Label>
-                    </Col>
-                    <Col xs={10}>
-                      {greenie ? (
-                        <Form.Control
-                          id="holeNumber"
-                          name="holeNumber"
-                          type="number"
-                          value={greenie.holeNumber}
-                          required
-                          readOnly
-                        />
-                      ) : (
-                        <Form.Select
-                          className="form-control"
-                          id="holeNumber"
-                          name="holeNumber"
-                          type="select"
-                          onChange={handleChange}
-                          value={formData.holeNumber}
-                          required
-                        >
-                          {par3HoleNums.map((num) => (
-                            <option key={num} value={num}>
-                              {num}
-                            </option>
-                          ))}
-                        </Form.Select>
-                      )}
-                    </Col>
-                  </Row>
-
-                  <Row className="mb-3 align-items-center">
-                    <Col xs={2}>
-                      <Form.Label htmlFor="feet" className="mb-0">
-                        <b>Feet</b>
-                      </Form.Label>
-                    </Col>
-                    <Col xs={10}>
-                      <Form.Control
-                        className="form-control"
-                        id="feet"
-                        name="feet"
-                        type="number"
-                        min="0"
-                        onChange={handleChange}
-                        value={formData.feet}
-                        required
+      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
+        <Typography variant="h3" align="center">
+          {tournamentDate}
+        </Typography>
+      </Box>
+      <Container>
+        <Grid container justifyContent="center">
+          <Grid item>
+            <Paper elevation={0} sx={{ my: 5 }}>
+              <form onSubmit={handleSubmit}>
+                <Box sx={{ mb: 3 }}>
+                  {greenie ? (
+                    <>
+                      <TextField
+                        fullWidth
+                        label="Player Name"
+                        readOnly
+                        sx={{ textAlign: "center" }}
+                        value={greenie.firstName + " " + greenie.lastName}
                       />
-                    </Col>
-                  </Row>
-
-                  <Row className="mb-3 align-items-center">
-                    <Col xs={2}>
-                      <Form.Label htmlFor="inches" className="mb-0">
-                        <b>Inches</b>
-                      </Form.Label>
-                    </Col>
-                    <Col xs={10}>
-                      <Form.Control
-                        className="form-control"
-                        id="inches"
-                        name="inches"
-                        type="number"
-                        min="0"
-                        max="11"
+                      <FormHelperText>Disabled</FormHelperText>
+                    </>
+                  ) : (
+                    <FormControl fullWidth>
+                      <InputLabel id="playerName">Player Name</InputLabel>
+                      <Select
+                        labelId="playerName"
+                        label="Player Name"
+                        name="roundId"
+                        id="roundId"
+                        value={formData.roundId}
                         onChange={handleChange}
-                        value={formData.inches}
                         required
+                      >
+                        {usernames.map((user) => (
+                          <MenuItem key={user[0]} value={user[0]}>
+                            {user[1]
+                              .split("-")
+                              .map((n) => n[0].toUpperCase() + n.slice(1))
+                              .join(" ")}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  {greenie ? (
+                    <>
+                      <TextField
+                        fullWidth
+                        label="Hole Number"
+                        id="holeNumber"
+                        name="holeNumber"
+                        type="number"
+                        value={greenie.holeNumber}
                       />
-                    </Col>
-                  </Row>
+                      <FormHelperText>Disabled</FormHelperText>
+                    </>
+                  ) : (
+                    <FormControl fullWidth>
+                      <InputLabel id="holeNumber">Hole Number</InputLabel>
+                      <Select
+                        labelId="holeNumber"
+                        label="Hole Number"
+                        id="holeNumber"
+                        name="holeNumber"
+                        onChange={handleChange}
+                        value={formData.holeNumber}
+                        required
+                      >
+                        {par3HoleNums.map((num) => (
+                          <MenuItem key={num} value={num}>
+                            {num}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                </Box>
 
-                  {formErrors.length
-                    ? formErrors.map((err) => (
-                        <Alert key={err} variant="danger">
-                          {err}
-                        </Alert>
-                      ))
-                    : null}
+                <Grid container spacing={4} sx={{ mb: 3 }}>
+                  <Grid item xs={6}>
+                    <TextField
+                      id="feet"
+                      name="feet"
+                      type="number"
+                      label="Feet"
+                      min="0"
+                      max="500"
+                      onChange={handleChange}
+                      value={formData.feet}
+                      required
+                    />
+                    <FormHelperText>Required</FormHelperText>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Inches"
+                      id="inches"
+                      name="inches"
+                      type="number"
+                      min="0"
+                      max="11"
+                      onChange={handleChange}
+                      value={formData.inches}
+                      required
+                    />
+                    <FormHelperText>Required</FormHelperText>
+                  </Grid>
+                </Grid>
 
-                  <div className="text-end">
-                    <Button variant="contained" type="submit">
-                      Submit
-                    </Button>
-                  </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </div>
-        </div>
+                <Box sx={{ display: "flex", justifyContent: "end", mb: 3 }}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    type="submit"
+                    size="large"
+                  >
+                    Submit
+                  </Button>
+                </Box>
+
+                {formErrors.length
+                  ? formErrors.map((err) => (
+                      <Alert key={err} severity="error">
+                        {err}
+                      </Alert>
+                    ))
+                  : null}
+              </form>
+            </Paper>
+          </Grid>
+        </Grid>
       </Container>
     </Box>
   );
