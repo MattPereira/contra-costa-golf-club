@@ -514,7 +514,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
               <tbody>
                 {puttsWinners.length >= 3
                   ? puttsWinners.map((winner, idx) => (
-                      <tr>
+                      <tr key={idx}>
                         <td>{idx + 1}</td>
                         <td>{winner.firstName}</td>
                         <td>{winner.totalPutts}</td>

@@ -4,11 +4,11 @@ import ccgcLogo from "../assets/ccgc_logo_nav.png";
 
 export default function SiteHero() {
   return (
-    <Box sx={{ p: 1.5 }}>
+    <Box>
       <Paper
         sx={{
           height: { xs: "150px", sm: "275px" },
-          borderRadius: "30px",
+          borderRadius: "0px",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",

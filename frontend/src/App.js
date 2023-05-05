@@ -145,7 +145,7 @@ function App() {
                 <Box>
                   <Router login={login} register={register} />
                 </Box>
-                <Box sx={{ pb: 1 }}>
+                <Box>
                   <Footer />
                 </Box>
               </Box>

@@ -68,16 +68,18 @@ export default function PageHero({
   );
 
   return (
-    <Box sx={{ p: { xs: 0, sm: 1 } }}>
+    <Box>
       <Paper
         sx={{
           height: { xs: "175px", sm: "275px" },
-          borderRadius: { xs: "0px", sm: "30px" },
           display: "flex",
+          borderRadius: "0px",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) center / cover no-repeat`,
+          background: backgroundImage
+            ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) center / cover no-repeat`
+            : "black",
         }}
       >
         <Box>

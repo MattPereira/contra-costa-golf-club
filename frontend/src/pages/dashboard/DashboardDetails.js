@@ -1,7 +1,5 @@
+// External imports
 import React, { useState, useEffect } from "react";
-import CcgcApi from "../../api/api";
-import LoadingSpinner from "../../components/LoadingSpinner";
-
 import { Link } from "react-router-dom";
 import { styled } from "@mui/system";
 import {
@@ -13,17 +11,18 @@ import {
   Tab,
   Button,
 } from "@mui/material";
-
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import SiteHero from "../../components/SiteHero";
+// Internal imports
+import PageHero from "../../components/PageHero";
 import Modal from "../../components/Modal";
-
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+import CcgcApi from "../../api/api";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 /** DASHBOARD PAGE
  *
@@ -143,7 +142,7 @@ export default function Dashboard() {
 
   return (
     <Box>
-      <SiteHero title="Dashboard" />
+      <PageHero title="Dashboard" />
       <Container sx={{ pt: 2, pb: 5, textAlign: "center" }}>
         <TabContext value={value}>
           <Box>

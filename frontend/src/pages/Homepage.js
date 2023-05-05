@@ -18,8 +18,6 @@ import { Link } from "react-router-dom";
  *
  * displays cards for "current events" and "club resources"
  *
- * displays footer at bottom of page??
- *
  * Router -> Homepage
  */
 
