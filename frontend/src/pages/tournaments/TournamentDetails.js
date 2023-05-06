@@ -187,9 +187,7 @@ function ScoresTab({ data, tournamentDate }) {
               {/* <th>{idx + 1}</th> */}
               <th className="text-start">
                 <Link to={`/rounds/${r.id}`} className="text-decoration-none">
-                  <Typography sx={{ fontFamily: "Cubano", fontSize: "18px" }}>
-                    {r.firstName} {r.lastName[0]}
-                  </Typography>
+                  {r.firstName} {r.lastName[0]}
                 </Link>
               </th>
               {Object.values(r.strokes || r.putts).map((s, idx) => (
@@ -504,7 +502,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
       <Box>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography variant="h3" align="center" gutterBottom>
               Strokes
             </Typography>
             <BootstrapTable
@@ -536,7 +534,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
             </BootstrapTable>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
+            <Typography variant="h3" align="center" gutterBottom>
               PUTTS
             </Typography>
             <BootstrapTable
@@ -574,7 +572,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
       </Box>
 
       <Box>
-        <Typography variant="h4" gutterBottom align="center">
+        <Typography variant="h3" gutterBottom align="center">
           Points
         </Typography>
         <RankingsTable data={pointsLeaderboard} />

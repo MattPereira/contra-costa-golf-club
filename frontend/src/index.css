@@ -26,3 +26,8 @@ td {
     /* font-weight: bold; */
     font-size: 20px;
 }
+
+label {
+    font-family: cubano;
+    font-size: 20px;
+}

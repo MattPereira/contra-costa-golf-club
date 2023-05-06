@@ -143,10 +143,15 @@ export default function RoundDetails() {
         tournamentDate={date}
         isRoundHero={true}
       />
-      <Box sx={{ py: 1, bgcolor: "black", color: "white" }}>
-        <Typography variant="h3" align="center">
-          {date}
-        </Typography>
+      <Box sx={{ py: 1, bgcolor: "black" }}>
+        <Link
+          to={`/tournaments/${round.tournamentDate}`}
+          style={{ textDecorationColor: "white", color: "white" }}
+        >
+          <Typography variant="h4" align="center">
+            {date}
+          </Typography>
+        </Link>
       </Box>
       <Container sx={{ pb: 3 }}>
         <TabContext value={value}>

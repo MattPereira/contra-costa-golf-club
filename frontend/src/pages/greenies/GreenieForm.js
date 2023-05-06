@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
-import { Form } from "react-bootstrap";
 
 import {
   Button,
@@ -15,8 +14,6 @@ import {
   FormControl,
   Select,
   MenuItem,
-  InputLabel,
-  FormHelperText,
 } from "@mui/material";
 
 import PageHero from "../../components/PageHero";
@@ -130,7 +127,7 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
         title={greenie ? "Update Greenie" : "Create Greenie"}
       />
       <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
-        <Typography variant="h3" align="center">
+        <Typography variant="h4" align="center">
           {tournamentDate}
         </Typography>
       </Box>
@@ -140,23 +137,20 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
             <Paper elevation={0} sx={{ my: 5 }}>
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
+                  <label>Player Name</label>
+
                   {greenie ? (
                     <>
                       <TextField
                         fullWidth
-                        label="Player Name"
-                        readOnly
+                        disabled
                         sx={{ textAlign: "center" }}
                         value={greenie.firstName + " " + greenie.lastName}
                       />
-                      <FormHelperText>Disabled</FormHelperText>
                     </>
                   ) : (
                     <FormControl fullWidth>
-                      <InputLabel id="playerName">Player Name</InputLabel>
                       <Select
-                        labelId="playerName"
-                        label="Player Name"
                         name="roundId"
                         id="roundId"
                         value={formData.roundId}
@@ -177,24 +171,21 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
+                  <label>Hole #</label>
                   {greenie ? (
                     <>
                       <TextField
                         fullWidth
-                        label="Hole Number"
                         id="holeNumber"
                         name="holeNumber"
                         type="number"
+                        disabled
                         value={greenie.holeNumber}
                       />
-                      <FormHelperText>Disabled</FormHelperText>
                     </>
                   ) : (
                     <FormControl fullWidth>
-                      <InputLabel id="holeNumber">Hole Number</InputLabel>
                       <Select
-                        labelId="holeNumber"
-                        label="Hole Number"
                         id="holeNumber"
                         name="holeNumber"
                         onChange={handleChange}
@@ -213,22 +204,25 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
 
                 <Grid container spacing={4} sx={{ mb: 3 }}>
                   <Grid item xs={6}>
+                    <Box>
+                      <label>Feet</label>
+                    </Box>
                     <TextField
                       id="feet"
                       name="feet"
                       type="number"
-                      label="Feet"
                       min="0"
                       max="500"
                       onChange={handleChange}
                       value={formData.feet}
                       required
                     />
-                    <FormHelperText>Required</FormHelperText>
                   </Grid>
                   <Grid item xs={6}>
+                    <Box>
+                      <label>Inches</label>
+                    </Box>
                     <TextField
-                      label="Inches"
                       id="inches"
                       name="inches"
                       type="number"
@@ -238,7 +232,6 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                       value={formData.inches}
                       required
                     />
-                    <FormHelperText>Required</FormHelperText>
                   </Grid>
                 </Grid>
 
