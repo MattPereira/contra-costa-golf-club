@@ -67,38 +67,38 @@ export default function Navigation({ window, logout }) {
         // <SvgIcon color="inherit" fontSize="large">
         //   <CcgcLogo />
         // </SvgIcon>
-        <Box component="img" src={ccgcLogo} sx={{ width: "30px" }} />
+        <Box component="img" src={ccgcLogo} sx={{ width: "35px" }} />
       ),
       path: "/",
     },
     {
       text: "Tournaments",
-      icon: <SportsGolfIcon sx={{ fontSize: "30px" }} />,
+      icon: <SportsGolfIcon sx={{ fontSize: "35px" }} />,
       path: "/tournaments",
     },
     {
       text: "Standings",
-      icon: <EmojiEventsIcon sx={{ fontSize: "30px" }} />,
+      icon: <EmojiEventsIcon sx={{ fontSize: "35px" }} />,
       path: "/standings",
     },
     {
       text: "Members",
-      icon: <GroupsIcon sx={{ fontSize: "30px" }} />,
+      icon: <GroupsIcon sx={{ fontSize: "35px" }} />,
       path: "/members",
     },
     {
       text: "Greenies",
-      icon: <GolfCourseIcon sx={{ fontSize: "30px" }} />,
+      icon: <GolfCourseIcon sx={{ fontSize: "35px" }} />,
       path: "/greenies",
     },
     {
       text: "Courses",
-      icon: <InfoOutlinedIcon sx={{ fontSize: "30px" }} />,
+      icon: <InfoOutlinedIcon sx={{ fontSize: "35px" }} />,
       path: "/courses",
     },
     {
       text: "Dashboard",
-      icon: <DashboardCustomizeOutlinedIcon sx={{ fontSize: "30px" }} />,
+      icon: <DashboardCustomizeOutlinedIcon sx={{ fontSize: "35px" }} />,
       path: "/dashboard",
     },
   ];
@@ -279,9 +279,9 @@ export default function Navigation({ window, logout }) {
   /********** THE SIDEBAR **********/
 
   const StyledDrawer = styled(Drawer)({
-    width: "150px",
+    width: "175px",
     ".MuiDrawer-paper": {
-      width: "150px",
+      width: "175px",
       backgroundColor: "#eeeeee",
       borderWidth: 0,
     },
@@ -295,9 +295,8 @@ export default function Navigation({ window, logout }) {
 
   const StyledListItemText = styled(ListItemText)(({ theme }) => ({
     ".MuiTypography-root": {
-      fontFamily: "Montserrat",
-      fontSize: "16px",
-      fontWeight: 600,
+      fontFamily: "Cubano",
+      fontSize: "20px",
       color: theme.palette.grey[900],
     },
   }));
@@ -321,7 +320,7 @@ export default function Navigation({ window, logout }) {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  py: 1.25,
+                  py: 1.5,
                 }}
               >
                 <ListItemIcon
