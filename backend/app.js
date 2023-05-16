@@ -17,22 +17,40 @@ const pointsRoutes = require("./routes/points");
 
 const app = express();
 
-// TODO LEARN MORE ABOUT PROCESS.ENV
-
 // Enable pre-flight across-the-board
 app.options("*", cors());
 
-// URLs that are allowed to make requests to the API
+/*** Testing more secure cors options ***/
+let allowedUrls;
+
+if (process.env.NODE_ENV === "production") {
+  allowedUrls = [
+    "https://ccgc.vercel.app",
+    "https://ccgc.app",
+    "https://www.ccgc.app",
+  ];
+} else {
+  allowedUrls = ["http://localhost:3000"];
+}
+
 app.use(
   cors({
-    origin: [
-      "https://ccgc.vercel.app",
-      "https://ccgc.app",
-      "http://localhost:3000",
-      "https://www.ccgc.app",
-    ],
+    origin: allowedUrls,
   })
 );
+/*** end testing ***/
+
+// Old way that was being done
+// app.use(
+//   cors({
+//     origin: [
+//       "https://ccgc.vercel.app",
+//       "https://ccgc.app",
+//       "http://localhost:3000",
+//       "https://www.ccgc.app",
+//     ],
+//   })
+// );
 
 app.use(express.json());
 app.use(morgan("tiny"));
