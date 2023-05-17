@@ -28,7 +28,6 @@ console.log("PGPORT", process.env.PGPORT);
 console.log("PGUSER", process.env.PGUSER);
 console.log("-----");
 console.log("PORT:".yellow, PORT.toString());
-// console.log("DATABASE_URL", process.env.DATABASE_URL);
 console.log("-----");
 
 module.exports = {

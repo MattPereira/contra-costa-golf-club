@@ -20,43 +20,24 @@ const app = express();
 // Enable pre-flight across-the-board
 app.options("*", cors());
 
-/*** Testing more secure cors options ***/
-let allowedUrls;
-
-if (process.env.NODE_ENV === "production") {
-  allowedUrls = [
-    "https://ccgc.vercel.app",
-    "https://ccgc.app",
-    "https://www.ccgc.app",
-  ];
-} else {
-  allowedUrls = ["http://localhost:3000"];
-}
-
+// Only allow these domains to make requests
 app.use(
   cors({
-    origin: allowedUrls,
+    origin: [
+      "https://ccgc.vercel.app",
+      "https://ccgc.app",
+      "http://localhost:3000",
+      "https://www.ccgc.app",
+    ],
   })
 );
-/*** end testing ***/
 
-// Old way that was being done
-// app.use(
-//   cors({
-//     origin: [
-//       "https://ccgc.vercel.app",
-//       "https://ccgc.app",
-//       "http://localhost:3000",
-//       "https://www.ccgc.app",
-//     ],
-//   })
-// );
-
+// Middleware
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(authenticateJWT);
 
-//Prefixes for API endpoints
+// Prefixes for API endpoints
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/courses", coursesRoutes);
@@ -65,12 +46,7 @@ app.use("/tournaments", tournamentsRoutes);
 app.use("/greenies", greeniesRoutes);
 app.use("/points", pointsRoutes);
 
-/** GET / =>
- * display some welcome info
- *
- * NOTE: RENDER REQUIRES A ROOT ENDPOINT OR BUILD WILL FAIL
- */
-
+/** Display some welcome json for the root endpoint */
 app.get("/", (req, res) => {
   res.json({
     message: "Welcome to the Contra Costa Golf Club API!",
