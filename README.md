@@ -1,27 +1,21 @@
 
-# [Contra Costa Golf Club](https://ccgc.vercel.app/)
+# [Contra Costa Golf Club](https://ccgc.app/)
 
-|     Logo        |     Live Site        |
-| ----------- | ----------- |
-| [<img src="https://i.ibb.co/72nKCSf/ccgc-Logo11.png" width="200" height="250"/>](https://ccgc.vercel.app/)  | <p> [https://ccgc.app/](https://ccgc.app/)</p>    |
+[<img src="https://i.ibb.co/72nKCSf/ccgc-Logo11.png" width="200" height="250"/>](https://ccgc.vercel.app/) 
 
 
 
 
 ## Description
-A full-stack web application that manages all of the [tournaments](https://ccgc.vercel.app/tournaments), [greenies](https://ccgc.vercel.app/greenies), [members](https://ccgc.vercel.app/members), [courses](https://ccgc.vercel.app/courses), and [standings](https://ccgc.vercel.app/standings) data for the contra costa golf club. Tournament data tables are sorted in ascending order to display the winners of each round. Additionally, all users are able to input their strokes, putts, and greenies for each round. Upon submission of any new, edited, or deleted data, tour points are automatically recalculated. 
-
+A full stack web application that manages all of the [tournaments](https://ccgc.vercel.app/tournaments), [greenies](https://ccgc.vercel.app/greenies), [members](https://ccgc.vercel.app/members), [courses](https://ccgc.vercel.app/courses), and [standings](https://ccgc.vercel.app/standings) data for the contra costa golf club. Users are able to input their strokes, putts, and greenies as they play each round. Handicaps and points are automatically calculated to determine individual tournament and season long champions.
 
 ## Features
 **Full CRUD**
   * Regular users can create, update, and delete their round data (strokes, putts and greenies) 
   * Admin users can additionally manage golf course, tournament, and member data
 
-**Custom Internal API**
-  * deployed using https://render.com/ at [https://ccgc-backend.onrender.com](https://ccgc-backend.onrender.com)
-  * JSON Schema validation
   
-**User authentication and authorization**
+**User Authentication and Authorization**
   * Using JSON Web Tokens 
   * Created on the back-end upon user registration or login
   * Stored on the front-end using React state and localStorage
@@ -43,22 +37,23 @@ A full-stack web application that manages all of the [tournaments](https://ccgc.
   * Course Handicap: (Handicap Index * Slope) / 113
   * Net Strokes: Total Strokes - Course Handicap
 
+**Skins Game**
+  * Hole-by-hole competition
+  * Subtracts one stroke for the most difficult player handicap ÷ 2 holes for each golfer
+  * If two ore more players tie for the lowest hole score, no winner for that hole
+  * Variable number of winners per tournament depending on adjusted scores
+
 ## Database Schema
 
 ![image](https://user-images.githubusercontent.com/73561520/220162284-03d9c105-65e5-45f8-9487-929dcce4b8f1.png)
 
-
-
 ## Tech Stack
+* JavaScript
 * React
+* Material UI
 * React Router
 * Express
 * PostgreSQL
-* Material UI
-* JavaScript
-* HTML
-* CSS
-
 
 ## Testing
 * 180 Backend tests covering all the API endpoints
