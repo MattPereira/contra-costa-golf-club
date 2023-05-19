@@ -40,7 +40,7 @@ A full stack web application that manages all of the [tournaments](https://ccgc.
 **Skins Game**
   * Hole-by-hole competition
   * Subtracts one stroke for the most difficult player handicap ÷ 2 holes for each golfer
-  * If two ore more players tie for the lowest hole score, no winner for that hole
+  * If two or more players tie for the lowest hole score, no winner for that hole
   * Variable number of winners per tournament depending on adjusted scores
 
 ## Database Schema
