@@ -4,7 +4,7 @@
 services:
   postgres:
     image: postgres
-    container_name: postgres
+    container_name: db
     restart : always
     volumes:
       - db-data:/var/lib/postgresql/data
@@ -15,18 +15,18 @@ services:
     # also the default POSTGRES_USER is "postgres"
     environment:
       POSTGRES_PASSWORD: pineapple
-      POSTGRES_DB: golf-db
+      POSTGRES_DB: ccgc_db
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  express:
+  backend:
     build:
       context: ./backend
       dockerfile: ../backend/Dockerfile
-    container_name: express
+    container_name: backend
     # Volumes allow backend changes to take effect inside container without having to rebuild the image
     volumes:
       - ./backend/:/code
@@ -39,16 +39,16 @@ services:
       NODE_ENV: development
       # Figure out how to use .env file instead?
       # postgres://username:password@host:port/database
-      DATABASE_URL: postgres://postgres:pineapple@postgres:5432/golf-db
+      DATABASE_URL: postgres://postgres:pineapple@postgres:5432/ccgc_db
     depends_on:
       postgres:
         condition: service_healthy
 
-  react:
+  frontend:
     build:
       context: ./frontend
       dockerfile: ../frontend/Dockerfile
-    container_name: react
+    container_name: frontend
     ports:
       - 3000:3000
     # Volumes allow for frontend changes to be seen in running container without having to rebuild the image 
@@ -56,7 +56,7 @@ services:
       - ./frontend/src:/code/src
       - /code/node_modules
     depends_on:
-      - express
+      - backend
 
 # This particular volume keeps database data persistent even if the container is deleted
 volumes:
