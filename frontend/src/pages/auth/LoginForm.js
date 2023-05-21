@@ -94,10 +94,9 @@ const LoginForm = ({ login }) => {
               </Typography>
 
               <Box sx={{ pb: 3, px: 3 }}>
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 3, textAlign: "center" }}>
                   <Typography variant="p">
-                    To join our club you must request access from an admin
-                    member.
+                    To join our club site please request access from admin
                   </Typography>
                 </Box>
                 <Form onSubmit={handleSubmit}>
@@ -139,7 +138,7 @@ const LoginForm = ({ login }) => {
                     <Button
                       variant="contained"
                       type="submit"
-                      sx={{ borderRadius: "30px", px: 3, py: 1 }}
+                      sx={{ borderRadius: "10px", px: 3, py: 1 }}
                     >
                       Submit
                     </Button>

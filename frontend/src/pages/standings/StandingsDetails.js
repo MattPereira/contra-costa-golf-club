@@ -55,7 +55,7 @@ export default function StandingsDetails() {
 
   return (
     <Box>
-      <PageHero title="Tour Standings" backgroundImage={standingsImage} />
+      <PageHero title="Standings" backgroundImage={standingsImage} />
 
       <Container>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>

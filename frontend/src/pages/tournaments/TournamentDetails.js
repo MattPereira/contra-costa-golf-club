@@ -1,71 +1,47 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import LoadingSpinner from "../../components/LoadingSpinner";
+import { Link } from "react-router-dom";
+
 import CcgcApi from "../../api/api";
 import UserContext from "../../lib/UserContext";
-
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { RankingsTable } from "../standings/StandingsDetails";
-
 import PageHero from "../../components/PageHero";
 
-import { Link } from "react-router-dom";
-import { Table as BootstrapTable } from "react-bootstrap";
-
-import {
-  Button,
-  Container,
-  Box,
-  Tab,
-  TableCell,
-  TableRow,
-  Table,
-  TableContainer,
-  Paper,
-  TableBody,
-  TableHead,
-  Typography,
-  Grid,
-} from "@mui/material";
+// prettier-ignore
+import { Button, Container, Box, Tab, TableCell, TableRow, Table, TableContainer, Paper, TableBody, TableHead, Typography, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Table as BootstrapTable } from "react-bootstrap";
 
-/** Tournament details page.
+/** Tournament Details Page
  *
- * On component mount, load the tournament from API
- * which includes all the rounds for that tournament
+ * - Scores leaderboard
+ * - Skins game winners
+ * - Greenie winners
+ * - Points results tab
+ * - Allows users to add rounds and greenies to a tournament
  *
- * The TournamentDetails component is responsible for:
- * - Displaying the scores leaderboard
- * - Displaying the skins leaderboard
- * - Displaying the greenies associated with a tournament
- * - Displaying the points leaderboard (comes from StandingsDetails component's function -> RankingsTable)
- * - Offering add round and add greenie button to logged in users
- *
- * This is routed to path  "/tournaments/:date"
- *
- * Routes -> TournamentDetails -> {StandingsTable, TournamentTable, Showcase}
+ * path -> "/tournaments/:date"
  */
 
 export default function TournamentDetails() {
   const { date } = useParams();
 
   const [value, setValue] = useState("1");
-  const handleChange = (event, newValue) => {
+  const [tournament, setTournament] = useState(null);
+
+  const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const [tournament, setTournament] = useState(null);
-  console.debug("TournamentDetails");
 
   /* On component mount, load tournament from API */
   useEffect(
     function getTournamentOnMount() {
-      console.debug("TournamentDetails useEffect getTournamentOnMount");
-
       async function getTournament() {
         setTournament(await CcgcApi.getTournament(date));
       }
@@ -80,7 +56,7 @@ export default function TournamentDetails() {
   const { greenies, scoresLeaderboard, pointsLeaderboard } = tournament;
 
   const tournamentDate = new Date(date).toLocaleDateString("en-US", {
-    month: "long",
+    month: "numeric",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
@@ -106,18 +82,16 @@ export default function TournamentDetails() {
       </Box>
       <Container sx={{ mt: 1.5 }}>
         <TabContext value={value}>
-          <Box>
-            <TabList
-              centered
-              onChange={handleChange}
-              aria-label="tournament details tabs"
-            >
-              <StyledTab label="Scores" value="1" />
-              <StyledTab label="Greenies" value="2" />
-              <StyledTab label="Skins" value="3" />
-              <StyledTab label="Results" value="4" />
-            </TabList>
-          </Box>
+          <TabList
+            centered
+            onChange={handleTabChange}
+            aria-label="tournament details tabs"
+          >
+            <StyledTab label="Scores" value="1" />
+            <StyledTab label="Greenies" value="2" />
+            <StyledTab label="Skins" value="3" />
+            <StyledTab label="Results" value="4" />
+          </TabList>
           <TabPanel sx={{ px: 0 }} value="1">
             <ScoresTab
               data={scoresLeaderboard}
@@ -148,7 +122,7 @@ export default function TournamentDetails() {
 }
 
 function ScoresTab({ data, tournamentDate }) {
-  //only show edit button if user is logged in
+  // Only show edit button if user is logged in
   const { currentUser } = useContext(UserContext);
 
   return (
@@ -332,13 +306,8 @@ function SkinsTable({ pars, handicaps, rounds }) {
     },
   }));
 
-  const StyledParsRow = styled(TableRow)(({ theme }) => ({
-    backgroundColor: theme.palette.grey[600],
-    ".MuiTableCell-root": { color: "white", fontWeight: "bold" },
-  }));
-
   const StyledHandicapRow = styled(TableRow)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.grey[600],
     ".MuiTableCell-root": { color: "white", fontWeight: "bold" },
   }));
 
@@ -429,18 +398,8 @@ function SkinsTable({ pars, handicaps, rounds }) {
                 </StyledHeaderCell>
               ))}
             </StyledHolesRow>
-            <StyledParsRow>
-              <StyledStickyColumnCell sx={{ backgroundColor: "grey.600" }}>
-                PAR
-              </StyledStickyColumnCell>
-              {Object.values(pars).map((p, i) => (
-                <StyledHeaderCell align="center" key={i}>
-                  {p}
-                </StyledHeaderCell>
-              ))}
-            </StyledParsRow>
             <StyledHandicapRow>
-              <StyledStickyColumnCell sx={{ backgroundColor: "primary.main" }}>
+              <StyledStickyColumnCell sx={{ backgroundColor: "grey.600" }}>
                 HANDICAP
               </StyledStickyColumnCell>
               {Object.values(handicaps).map((p, i) => (
@@ -482,9 +441,7 @@ function SkinsTable({ pars, handicaps, rounds }) {
   );
 }
 
-function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
-  console.log(`GREENIES`, greenies);
-
+function ResultsTab({ tournament, pointsLeaderboard }) {
   // sort rounds by total putts and slice to only top 3
   const puttsWinners = [...tournament.scoresLeaderboard]
     .sort((a, b) => a.totalPutts - b.totalPutts)
@@ -495,14 +452,12 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
     .sort((a, b) => a.netStrokes - b.netStrokes)
     .slice(0, 3);
 
-  console.log(`SORTED BY PUTTS`, puttsWinners);
-
   return (
     <>
-      <Box>
+      <Box sx={{ mb: 5 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h3" align="center" gutterBottom>
+            <Typography variant="h4" align="center" gutterBottom>
               Strokes
             </Typography>
             <BootstrapTable
@@ -520,21 +475,20 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
                 </tr>
               </thead>
               <tbody>
-                {strokesWinners.length &&
-                  strokesWinners.map((player, idx) => (
-                    <tr key={idx}>
-                      <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
-                      <td style={{ textAlign: "start", fontFamily: "cubano" }}>
-                        {player.firstName + " " + player.lastName}
-                      </td>
-                      <td>{player.netStrokes}</td>
-                    </tr>
-                  ))}
+                {strokesWinners.map((player, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+                    <td style={{ textAlign: "start", fontFamily: "cubano" }}>
+                      {player.firstName + " " + player.lastName}
+                    </td>
+                    <td>{player.netStrokes}</td>
+                  </tr>
+                ))}
               </tbody>
             </BootstrapTable>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h3" align="center" gutterBottom>
+            <Typography variant="h4" align="center" gutterBottom>
               PUTTS
             </Typography>
             <BootstrapTable
@@ -552,19 +506,15 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
                 </tr>
               </thead>
               <tbody>
-                {puttsWinners.length >= 3
-                  ? puttsWinners.map((winner, idx) => (
-                      <tr key={idx}>
-                        <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
-                        <td
-                          style={{ fontFamily: "cubano", textAlign: "start" }}
-                        >
-                          {winner.firstName}
-                        </td>
-                        <td>{winner.totalPutts}</td>
-                      </tr>
-                    ))
-                  : null}
+                {puttsWinners.map((winner, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+                    <td style={{ fontFamily: "cubano", textAlign: "start" }}>
+                      {winner.firstName} {winner.lastName}
+                    </td>
+                    <td>{winner.totalPutts}</td>
+                  </tr>
+                ))}
               </tbody>
             </BootstrapTable>
           </Grid>
@@ -572,7 +522,7 @@ function ResultsTab({ tournament, pointsLeaderboard, greenies }) {
       </Box>
 
       <Box>
-        <Typography variant="h3" gutterBottom align="center">
+        <Typography variant="h4" gutterBottom align="center">
           Points
         </Typography>
         <RankingsTable data={pointsLeaderboard} />

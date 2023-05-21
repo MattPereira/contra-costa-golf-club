@@ -42,7 +42,7 @@ export default function GreenieList() {
 
   return (
     <Box>
-      <PageHero title="Closest Greenies" backgroundImage={greenieImage} />
+      <PageHero title="Greenies" backgroundImage={greenieImage} />
       <Container sx={{ py: 5 }}>
         <Box>
           <GreenieCardList greenies={greenies} />

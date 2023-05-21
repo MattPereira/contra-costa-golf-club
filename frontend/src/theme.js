@@ -23,8 +23,7 @@ let theme = createTheme({
       fontFamily: "Cubano",
     },
     h4: {
-      fontFamily: "Montserrat",
-      fontWeight: "600",
+      fontFamily: "Cubano",
     },
     h5: {
       fontFamily: "Cubano",

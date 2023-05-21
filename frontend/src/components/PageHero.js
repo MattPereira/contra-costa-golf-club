@@ -16,14 +16,9 @@ export default function PageHero({ title, backgroundImage }) {
             : "black",
         }}
       >
-        <Box>
-          <Typography
-            variant="h1"
-            sx={{ color: "white", fontSize: "2.5rem", mb: 0 }}
-          >
-            {title}
-          </Typography>
-        </Box>
+        <Typography variant="h1" sx={{ color: "white" }}>
+          {title}
+        </Typography>
       </Paper>
     </Box>
   );

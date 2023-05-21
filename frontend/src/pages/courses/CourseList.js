@@ -39,7 +39,7 @@ export default function CourseList() {
 
   return (
     <Box>
-      <PageHero title="Golf Courses" backgroundImage={courseImage} />
+      <PageHero title="Courses" backgroundImage={courseImage} />
       <Container className="pb-5 pt-4">
         <Grid container spacing={3} justifyContent="center">
           {courses.map((c) => (

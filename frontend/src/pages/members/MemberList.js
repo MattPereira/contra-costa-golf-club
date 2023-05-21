@@ -40,10 +40,10 @@ const MemberList = () => {
 
   return (
     <Box>
-      <PageHero title="Member Metrics" backgroundImage={membersImage} />
+      <PageHero title="Members" backgroundImage={membersImage} />
       <Container className="pb-5 text-center">
         <Typography variant="h2" sx={{ my: 3 }}>
-          Round Averages
+          Averages
         </Typography>
         <Row className="justify-content-center">
           <Col md={10} lg={6}>

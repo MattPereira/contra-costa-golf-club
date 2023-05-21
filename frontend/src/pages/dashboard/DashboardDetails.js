@@ -74,7 +74,7 @@ export default function Dashboard() {
     } catch (err) {
       setVariant("error.dark");
       setMessage(
-        `Deletion of tournament on ${formattedDate} not allowed since scores have been entered for this tournament!`
+        `Deletion of tournament on ${formattedDate} not allowed because "${err[0]}"`
       );
       setOpen(true);
       console.log("THE ERROR", err);

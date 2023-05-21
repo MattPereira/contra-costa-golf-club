@@ -1,42 +1,44 @@
-import React from "react";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { Route, Routes, Navigate, Outlet } from "react-router-dom";
+import UserContext from "../lib/UserContext";
 
-/** MEMBERS (USERS) **/
+/***** MEMBERS (USERS) *****/
 import MemberList from "../pages/members/MemberList";
 import MemberDetails from "../pages/members/MemberDetails";
 import MemberUpdate from "../pages/members/MemberUpdate";
 
-/** COURSES */
+/***** COURSES *****/
 import CourseList from "../pages/courses/CourseList";
 import CourseDetails from "../pages/courses/CourseDetails";
 import CourseCreate from "../pages/courses/CourseForm";
 import CourseUpdate from "../pages/courses/CourseUpdate";
 
-/** GREENIES */
+/***** GREENIES *****/
 import GreenieList from "../pages/greenies/GreenieList";
 import GreenieDetails from "../pages/greenies/GreenieDetails";
 import GreenieCreate from "../pages/greenies/GreenieCreate";
 import GreenieUpdate from "../pages/greenies/GreenieUpdate";
 
-/** TOURNAMENTS */
+/***** TOURNAMENTS *****/
 import TournamentList from "../pages/tournaments/TournamentList";
 import TournamentDetails from "../pages/tournaments/TournamentDetails";
 import TournamentCreate from "../pages/tournaments/TournamentCreate";
 import TournamentUpdate from "../pages/tournaments/TournamentUpdate";
 
-/** ROUNDS */
+/***** ROUNDS *****/
 import RoundDetails from "../pages/rounds/RoundDetails";
 import RoundCreate from "../pages/rounds/RoundCreate";
 import RoundUpdate from "../pages/rounds/RoundUpdate";
 
-/** AUTH */
+/***** AUTH *****/
 import LoginForm from "../pages/auth/LoginForm";
 import RegisterForm from "../pages/auth/RegisterForm";
 import ProfileForm from "../pages/auth/ProfileForm";
 
-/** MISCELLANEOUS */
+/***** MISC *****/
 import Standings from "../pages/standings/StandingsDetails";
 import Dashboard from "../pages/dashboard/DashboardDetails";
+import FormulaDetails from "../pages/formulas/FormulaDetails";
 import Homepage from "../pages/Homepage";
 
 /** Site-wide routes.
@@ -48,12 +50,18 @@ import Homepage from "../pages/Homepage";
  * Visiting a non-existant route redirects to the homepage.
  */
 
+const PrivateRoutes = () => {
+  const { currentUser } = useContext(UserContext);
+
+  return currentUser ? <Outlet /> : <Navigate to="/login" />;
+};
+
 export default function Router({ login, register, logout }) {
-  console.debug(
-    "Routes",
-    `login=${typeof login}`,
-    `register=${typeof register}`
-  );
+  // console.debug(
+  //   "Router",
+  //   `login=${typeof login}`,
+  //   `register=${typeof register}`
+  // );
 
   return (
     <Routes>
@@ -65,12 +73,14 @@ export default function Router({ login, register, logout }) {
         path="/register"
         element={<RegisterForm register={register} />}
       />
-
-      <Route exact path="/dashboard" element={<Dashboard />} />
-
       <Route exact path="/profile" element={<ProfileForm />} />
 
+      <Route element={<PrivateRoutes />}>
+        <Route exact path="/dashboard" element={<Dashboard />} />
+      </Route>
+
       <Route exact path="/standings" element={<Standings />} />
+      <Route exact path="/formulas" element={<FormulaDetails />} />
 
       <Route exact path="/members" element={<MemberList />} />
       <Route exact path="/members/:username" element={<MemberDetails />} />

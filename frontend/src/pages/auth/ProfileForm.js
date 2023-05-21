@@ -16,7 +16,7 @@ import {
 
 import { styled } from "@mui/material/styles";
 
-import SiteHero from "../../components/SiteHero";
+import PageHero from "../../components/PageHero";
 
 /** Form to edit user profile
  *
@@ -118,16 +118,13 @@ export default function ProfileForm() {
 
   return (
     <Box>
-      <SiteHero />
+      <PageHero title="User Profile" />
       <Container sx={{ py: 5 }}>
         <Grid container justifyContent="center">
           <Grid item xs={12} md={6}>
             <StyledPaper elevation={0}>
               <Box sx={{ p: 3 }}>
                 <Form onSubmit={handleSubmit}>
-                  <Typography variant="h2" sx={{ mb: 5 }} textAlign="center">
-                    User Profile
-                  </Typography>
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="p">
                       Password is not currently being used so enter anything.
@@ -209,7 +206,7 @@ export default function ProfileForm() {
                     <Button
                       variant="contained"
                       type="submit"
-                      sx={{ borderRadius: "30px", px: 3, py: 1 }}
+                      sx={{ borderRadius: "10px", px: 3, py: 1 }}
                     >
                       Submit
                     </Button>

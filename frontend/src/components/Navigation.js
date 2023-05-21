@@ -3,26 +3,8 @@ import { NavLink, Link, useNavigate } from "react-router-dom";
 import UserContext from "../lib/UserContext";
 import ccgcLogo from "../assets/ccgc_logo_nav.png";
 
-import { styled } from "@mui/material/styles";
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  IconButton,
-  Typography,
-  Grid,
-  Container,
-  Avatar,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Drawer,
-  ListItemIcon,
-  // SvgIcon,
-} from "@mui/material";
-
+// prettier-ignore
+import { AppBar, Box, Toolbar, IconButton, Typography, Grid, Container, Avatar, Divider, List, ListItem, ListItemButton, ListItemText, Drawer, ListItemIcon } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
@@ -33,6 +15,8 @@ import SportsGolfIcon from "@mui/icons-material/SportsGolf";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import FunctionsIcon from "@mui/icons-material/Functions";
+import { styled } from "@mui/material/styles";
 
 /** Navigation for site that shows on every page
  *
@@ -50,7 +34,6 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 export default function Navigation({ window, logout }) {
   const { currentUser } = useContext(UserContext);
   console.debug("Navigation", "currentUser=", currentUser);
-  console.debug("Navigation");
 
   const navigate = useNavigate();
 
@@ -95,6 +78,11 @@ export default function Navigation({ window, logout }) {
       text: "Courses",
       icon: <InfoOutlinedIcon sx={{ fontSize: "35px" }} />,
       path: "/courses",
+    },
+    {
+      text: "Formulas",
+      icon: <FunctionsIcon sx={{ fontSize: "35px" }} />,
+      path: "/formulas",
     },
     {
       text: "Dashboard",

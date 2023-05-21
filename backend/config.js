@@ -13,7 +13,7 @@ const PORT = +process.env.PORT || 3001;
 function getDatabaseUri() {
   return process.env.NODE_ENV === "test"
     ? "ccgc_test"
-    : process.env.DATABASE_URL || "ccgc_prod_copy";
+    : process.env.DATABASE_URL || "ccgc";
 }
 
 // Speed up bcrypt during tests, since the algorithm safety isn't being tested
