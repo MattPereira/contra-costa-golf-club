@@ -26,15 +26,12 @@ import UserContext from "../../lib/UserContext";
 import PageHero from "../../components/PageHero";
 import CcgcApi from "../../api/api";
 
-/***** MUI Styles *****/
+/***** MUI Accordion Styles *****/
 const StyledAccordion = styled((props) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: "4px",
-  // "&:not(:last-child)": {
-  //   borderBottom: 0,
-  // },
   "&:before": {
     display: "none",
   },

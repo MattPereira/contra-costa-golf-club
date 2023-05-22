@@ -13,7 +13,7 @@ import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import { Container, Box, Grid, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-
+import { useTheme } from "@mui/material/styles";
 /** Homepage component { path :"/" }
  *
  * displays cards for "current events" and "club resources"
@@ -22,7 +22,9 @@ import { Link } from "react-router-dom";
  */
 
 export default function Homepage() {
-  console.debug("Homepage");
+  const theme = useTheme();
+
+  console.log(theme);
 
   const [tournament, setTournament] = useState(null);
 
@@ -122,7 +124,7 @@ export default function Homepage() {
 
   const StyledCardPaper = styled(Paper)(({ theme }) => ({
     borderRadius: "30px",
-    backgroundColor: "#eeeeee",
+    backgroundColor: theme.palette.secondary.main,
     height: "100%",
     "&:hover": {
       backgroundColor: "black",

@@ -12,7 +12,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import Footer from "./components/Footer";
 
 import { ThemeProvider, Box } from "@mui/material";
-import theme from "./theme";
+import theme from "./theme/theme";
 
 /** Contra Costa Golf Club App
  *

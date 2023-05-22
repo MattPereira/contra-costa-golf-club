@@ -15,7 +15,7 @@ import SportsGolfIcon from "@mui/icons-material/SportsGolf";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import GrassRoundedIcon from "@mui/icons-material/GrassRounded";
 import { styled } from "@mui/material/styles";
 
 /** Navigation for site that shows on every page
@@ -33,7 +33,7 @@ import { styled } from "@mui/material/styles";
 
 export default function Navigation({ window, logout }) {
   const { currentUser } = useContext(UserContext);
-  console.debug("Navigation", "currentUser=", currentUser);
+  // console.debug("Navigation", "currentUser=", currentUser);
 
   const navigate = useNavigate();
 
@@ -46,12 +46,7 @@ export default function Navigation({ window, logout }) {
   let pages = [
     {
       text: "Home",
-      icon: (
-        // <SvgIcon color="inherit" fontSize="large">
-        //   <CcgcLogo />
-        // </SvgIcon>
-        <Box component="img" src={ccgcLogo} sx={{ width: "35px" }} />
-      ),
+      icon: <Box component="img" src={ccgcLogo} sx={{ width: "35px" }} />,
       path: "/",
     },
     {
@@ -76,13 +71,13 @@ export default function Navigation({ window, logout }) {
     },
     {
       text: "Courses",
-      icon: <InfoOutlinedIcon sx={{ fontSize: "35px" }} />,
+      icon: <GrassRoundedIcon sx={{ fontSize: "35px" }} />,
       path: "/courses",
     },
     {
-      text: "Glossary",
-      icon: <HelpOutlineOutlinedIcon sx={{ fontSize: "35px" }} />,
-      path: "/glossary",
+      text: "Information",
+      icon: <InfoOutlinedIcon sx={{ fontSize: "35px" }} />,
+      path: "/information",
     },
     {
       text: "Dashboard",

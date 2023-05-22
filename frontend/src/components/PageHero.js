@@ -1,6 +1,6 @@
 import { Paper, Typography, Box } from "@mui/material";
 
-export default function PageHero({ title, backgroundImage }) {
+export default function PageHero({ title, backgroundImage, position }) {
   return (
     <Box>
       <Paper
@@ -12,7 +12,9 @@ export default function PageHero({ title, backgroundImage }) {
           justifyContent: "center",
           alignItems: "center",
           background: backgroundImage
-            ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) center / cover no-repeat`
+            ? `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${backgroundImage}) ${
+                position ? position : "center"
+              } / cover no-repeat`
             : "black",
         }}
       >

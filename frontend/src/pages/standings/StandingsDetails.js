@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-import { Typography, Box, Tab, Container, Grid } from "@mui/material";
+import { Box, Tab, Container, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 
 // import StandingsTable from "../../components/Standings/StandingsTable";
