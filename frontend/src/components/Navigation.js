@@ -15,7 +15,7 @@ import SportsGolfIcon from "@mui/icons-material/SportsGolf";
 import GroupsIcon from "@mui/icons-material/Groups";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import FunctionsIcon from "@mui/icons-material/Functions";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import { styled } from "@mui/material/styles";
 
 /** Navigation for site that shows on every page
@@ -80,9 +80,9 @@ export default function Navigation({ window, logout }) {
       path: "/courses",
     },
     {
-      text: "Formulas",
-      icon: <FunctionsIcon sx={{ fontSize: "35px" }} />,
-      path: "/formulas",
+      text: "Glossary",
+      icon: <HelpOutlineOutlinedIcon sx={{ fontSize: "35px" }} />,
+      path: "/glossary",
     },
     {
       text: "Dashboard",

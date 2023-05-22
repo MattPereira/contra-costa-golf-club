@@ -90,7 +90,7 @@ export default function TournamentDetails() {
             <StyledTab label="Scores" value="1" />
             <StyledTab label="Greenies" value="2" />
             <StyledTab label="Skins" value="3" />
-            <StyledTab label="Results" value="4" />
+            <StyledTab label="Winners" value="4" />
           </TabList>
           <TabPanel sx={{ px: 0 }} value="1">
             <ScoresTab
@@ -109,7 +109,7 @@ export default function TournamentDetails() {
             />
           </TabPanel>
           <TabPanel sx={{ px: 0 }} value="4">
-            <ResultsTab
+            <WinnersTab
               tournament={tournament}
               pointsLeaderboard={pointsLeaderboard}
               greenies={greenies}
@@ -170,7 +170,7 @@ function ScoresTab({ data, tournamentDate }) {
                 </td>
               ))}
               <td>{r.totalStrokes}</td>
-              <td>{r.courseHandicap}</td>
+              <td style={{ color: "red" }}>{r.courseHandicap}</td>
               <td>{r.netStrokes}</td>
               <td>{r.totalPutts}</td>
               {currentUser && (
@@ -441,7 +441,7 @@ function SkinsTable({ pars, handicaps, rounds }) {
   );
 }
 
-function ResultsTab({ tournament, pointsLeaderboard }) {
+function WinnersTab({ tournament, pointsLeaderboard }) {
   // sort rounds by total putts and slice to only top 3
   const puttsWinners = [...tournament.scoresLeaderboard]
     .sort((a, b) => a.totalPutts - b.totalPutts)

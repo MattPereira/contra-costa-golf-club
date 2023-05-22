@@ -38,7 +38,7 @@ import ProfileForm from "../pages/auth/ProfileForm";
 /***** MISC *****/
 import Standings from "../pages/standings/StandingsDetails";
 import Dashboard from "../pages/dashboard/DashboardDetails";
-import FormulaDetails from "../pages/formulas/FormulaDetails";
+import Glossary from "../pages/glossary/GlossaryDetails";
 import Homepage from "../pages/Homepage";
 
 /** Site-wide routes.
@@ -80,7 +80,7 @@ export default function Router({ login, register, logout }) {
       </Route>
 
       <Route exact path="/standings" element={<Standings />} />
-      <Route exact path="/formulas" element={<FormulaDetails />} />
+      <Route exact path="/glossary" element={<Glossary />} />
 
       <Route exact path="/members" element={<MemberList />} />
       <Route exact path="/members/:username" element={<MemberDetails />} />
