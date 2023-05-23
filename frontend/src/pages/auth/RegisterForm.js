@@ -1,20 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Alert } from "react-bootstrap";
-import {
-  Container,
-  Button,
-  Typography,
-  Paper,
-  Box,
-  TextField,
-  Grid,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-} from "@mui/material";
+// prettier-ignore
+import { Container, Button, Typography, Paper, Box, TextField, Grid, FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, Alert} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
@@ -56,6 +43,8 @@ export default function RegisterForm({ register }) {
 
   const [formErrors, setFormErrors] = useState([]);
 
+  console.log("FORM ERRORS", formErrors);
+
   console.debug(
     "RegisterForm",
     "register=",
@@ -79,25 +68,30 @@ export default function RegisterForm({ register }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if the register function is defined (passed in as prop) through the router
-    // the register function will login the user and redirect to the homepage
-    if (register) {
-      //register function passes form data up to parent App component
-      let result = await register(formData);
-      if (result.success) {
-        navigate("/");
-      } else {
-        setFormErrors(result.errors);
+    try {
+      // if the register function is defined (passed in as prop) through the router
+      // the register function will login the user and redirect to the homepage
+      if (register) {
+        //register function passes form data up to parent App component
+        let result = await register(formData);
+        if (result.success) {
+          navigate("/");
+        } else {
+          setFormErrors(result.errors);
+        }
       }
-    }
-    // if the register function is not defined (passed in as prop) through the router
-    // then an admin is creating a user and will be redirected to the dashboard
-    else {
-      let result = await CcgcApi.createMember(formData);
-      console.log("RESULT", result);
-      if (result.username) {
-        navigate("/dashboard");
+      // if the register function is not defined (passed in as prop) through the router
+      // then an admin is creating a user and will be redirected to the dashboard
+      else {
+        let result = await CcgcApi.createMember(formData);
+        console.log("RESULT", result);
+        if (result.username) {
+          navigate("/dashboard");
+        }
       }
+    } catch (err) {
+      console.error("RegisterForm", "handleSubmit", err);
+      setFormErrors(err);
     }
   };
 
@@ -209,7 +203,7 @@ export default function RegisterForm({ register }) {
 
                     {formErrors.length
                       ? formErrors.map((err) => (
-                          <Alert variant="danger" key={err}>
+                          <Alert severity="error" key={err}>
                             {err}
                           </Alert>
                         ))

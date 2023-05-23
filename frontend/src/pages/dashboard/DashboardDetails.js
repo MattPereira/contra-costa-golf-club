@@ -2,27 +2,20 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/system";
-import {
-  Grid,
-  Typography,
-  Box,
-  Container,
-  IconButton,
-  Tab,
-  Button,
-} from "@mui/material";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+//prettier-ignore
+import { Grid, Box, Tab, Button, Tabs } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
 
 // Internal imports
 import PageHero from "../../components/PageHero";
 import Modal from "../../components/Modal";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
+
+import dashboardHero from "../../assets/dashboard.jpg";
+import { Table } from "react-bootstrap";
 
 /** DASHBOARD PAGE
  *
@@ -31,24 +24,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
  * Router -> Dashboard -> { CoursesDash, TournamentsDash }
  */
 
-const StyledBox = styled(Box)`
-  display: flex;
-  border: 1px solid black;
-  border-radius: 15px;
-  padding: 10px;
-  margin-bottom: 0.5rem;
-`;
-
-const StyledTypography = styled(Typography)`
-  font-family: "Itim";
-  font-size: 1.1rem;
-`;
-
 export default function Dashboard() {
-  const [tournaments, setTournaments] = useState(null);
-  const [courses, setCourses] = useState(null);
-  const [members, setMembers] = useState(null);
-  const [value, setValue] = useState("1");
+  const [value, setValue] = useState(0);
 
   const [open, setOpen] = useState(false);
   const [variant, setVariant] = useState("success.main");
@@ -57,6 +34,83 @@ export default function Dashboard() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const StyledTab = styled(Tab)(({ theme }) => ({
+    fontFamily: "Cubano",
+    fontSize: "1.15rem",
+    color: "white",
+  }));
+
+  return (
+    <Box>
+      <PageHero title="Dashboard" backgroundImage={dashboardHero} />
+
+      <Box sx={{ bgcolor: "black", py: 1 }}>
+        <Tabs
+          centered
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={value}
+          onChange={handleChange}
+          aria-label="lab API tabs example"
+        >
+          <StyledTab label="Tournaments" />
+          <StyledTab label="Courses" />
+          <StyledTab label="Members" />
+        </Tabs>
+      </Box>
+      <Grid container justifyContent="center" sx={{ mb: 5 }}>
+        <Grid item xs={12} md={8} lg={6}>
+          <TabPanel value={value} index={0}>
+            <TournamentsTab
+              setMessage={setMessage}
+              setOpen={setOpen}
+              setVariant={setVariant}
+            />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <CoursesTab
+              setMessage={setMessage}
+              setOpen={setOpen}
+              setVariant={setVariant}
+            />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <MembersTab
+              setMessage={setMessage}
+              setOpen={setOpen}
+              setVariant={setVariant}
+            />
+          </TabPanel>
+        </Grid>
+      </Grid>
+
+      <Modal
+        open={open}
+        setOpen={setOpen}
+        message={message}
+        variant={variant}
+      />
+    </Box>
+  );
+}
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
+  );
+}
+
+function TournamentsTab({ setMessage, setVariant, setOpen }) {
+  const [tournaments, setTournaments] = useState(null);
 
   const handleTournamentDelete = async (date) => {
     const formattedDate = new Date(date).toLocaleDateString("en-US", {
@@ -81,6 +135,93 @@ export default function Dashboard() {
     }
   };
 
+  /* On component mount, fetch all tournaments from API */
+  useEffect(function getTournamentData() {
+    async function fetchAllTournaments() {
+      let tournaments = await CcgcApi.getTournaments();
+      setTournaments(tournaments);
+    }
+
+    fetchAllTournaments();
+  }, []);
+
+  if (!tournaments) return <LoadingSpinner />;
+  console.log("TOURNAMENTS", tournaments);
+
+  return (
+    <Box>
+      <Box sx={{ textAlign: "center" }}>
+        <Button
+          component={Link}
+          to="/tournaments/create"
+          variant="contained"
+          sx={{ my: 3, borderRadius: "30px" }}
+        >
+          <AddCircleOutlineIcon sx={{ mr: 1 }} /> Tournament
+        </Button>
+      </Box>
+
+      <Table striped bordered>
+        <thead className="table-dark">
+          <tr>
+            <th>Date</th>
+            <th>Course</th>
+            <th className="text-center">
+              <BorderColorIcon />
+            </th>
+            <th className="text-center">
+              <RemoveCircleIcon />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tournaments.map((t) => (
+            <tr key={t.date}>
+              <th>
+                {new Date(t.date).toLocaleDateString("en-Us", {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </th>
+              <td>{t.courseName.split(" ").slice(0, 2).join(" ")}</td>
+              <td className="text-center">
+                <Button
+                  component={Link}
+                  to={`/tournaments/update/${t.date}`}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    "&:hover": { color: "primary.dark" },
+                  }}
+                >
+                  <BorderColorIcon />
+                </Button>
+              </td>
+              <td className="text-center">
+                <Button
+                  onClick={() => handleTournamentDelete(t.date)}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    color: "error.main",
+                    "&:hover": { color: "error.dark" },
+                  }}
+                >
+                  <RemoveCircleIcon />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function CoursesTab({ setMessage, setVariant, setOpen }) {
+  const [courses, setCourses] = useState(null);
+
   const handleCourseDelete = async (handle) => {
     try {
       await CcgcApi.deleteCourse(handle);
@@ -98,6 +239,91 @@ export default function Dashboard() {
     }
   };
 
+  /* On component mount, load tournaments from API */
+  useEffect(function getCourseData() {
+    async function fetchAllCourses() {
+      let courses = await CcgcApi.getCourses();
+      setCourses(courses);
+    }
+
+    fetchAllCourses();
+  }, []);
+
+  if (!courses) return <LoadingSpinner />;
+  console.log("COURSES", courses);
+
+  return (
+    <Box>
+      <Box sx={{ textAlign: "center" }}>
+        <Button
+          component={Link}
+          to="/courses/create"
+          variant="contained"
+          color="success"
+          sx={{ my: 3, borderRadius: "30px" }}
+        >
+          <AddCircleOutlineIcon sx={{ mr: 1 }} />
+          Golf Course
+        </Button>
+      </Box>
+
+      <Table bordered striped responsive>
+        <thead className="table-dark">
+          <tr>
+            <th>Name</th>
+            <th>Rtg</th>
+            <th>Slp</th>
+            <th className="text-center">
+              <BorderColorIcon />
+            </th>
+            <th className="text-center">
+              <RemoveCircleIcon />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map((c) => (
+            <tr key={c.handle}>
+              <th>{c.name.split(" ").slice(0, 2).join(" ")}</th>
+              <td>{c.rating}</td>
+              <td>{c.slope}</td>
+              <td className="text-center">
+                <Button
+                  component={Link}
+                  to={`/courses/update/${c.handle}`}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    "&:hover": { color: "primary.dark" },
+                  }}
+                >
+                  <BorderColorIcon />
+                </Button>
+              </td>
+              <td className="text-center">
+                <Button
+                  onClick={() => handleCourseDelete(c.handle)}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    color: "error.main",
+                    "&:hover": { color: "error.dark" },
+                  }}
+                >
+                  <RemoveCircleIcon />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function MembersTab({ setMessage, setVariant, setOpen }) {
+  const [members, setMembers] = useState(null);
+
   const handleMemberDelete = async (username) => {
     try {
       await CcgcApi.deleteMember(username);
@@ -114,220 +340,80 @@ export default function Dashboard() {
   };
 
   /* On component mount, load tournaments from API */
-  useEffect(function getClubDataOnMount() {
-    console.debug("Dashboard useEffect getClubDataonMount");
-
-    async function fetchAllTournaments() {
-      let tournaments = await CcgcApi.getTournaments();
-      setTournaments(tournaments);
-    }
-    async function fetchAllCourses() {
-      let courses = await CcgcApi.getCourses();
-      setCourses(courses);
-    }
+  useEffect(function getMemberData() {
     async function fetchAllMembers() {
       let members = await CcgcApi.getMembers();
       setMembers(members);
     }
-    fetchAllCourses();
-    fetchAllTournaments();
     fetchAllMembers();
   }, []);
 
-  if (!tournaments || !courses || !members) return <LoadingSpinner />;
+  if (!members) return <LoadingSpinner />;
 
   console.log("MEMBERS", members);
 
-  console.log(tournaments);
-
   return (
     <Box>
-      <PageHero title="Dashboard" />
-      <Container sx={{ pt: 2, pb: 5, textAlign: "center" }}>
-        <TabContext value={value}>
-          <Box>
-            <TabList
-              centered
-              onChange={handleChange}
-              aria-label="lab API tabs example"
-            >
-              <Tab
-                label="Tournaments"
-                value="1"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-              <Tab
-                label="Courses"
-                value="2"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-              <Tab
-                label="Members"
-                value="3"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-            </TabList>
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Box sx={{ width: { xs: "100%", lg: "60%" } }}>
-              <TabPanel value="1" sx={{ px: 0 }}>
-                <Button
-                  component={Link}
-                  to="/tournaments/create"
-                  variant="contained"
-                  sx={{ mb: 2 }}
-                >
-                  <AddCircleOutlineIcon sx={{ mr: 1 }} /> Tournament{" "}
-                </Button>
-                {tournaments.map((t) => (
-                  <StyledBox key={t.date}>
-                    <Grid
-                      container
-                      spacing={2}
-                      sx={{ textAlign: "start", alignItems: "center" }}
-                    >
-                      <Grid item sx={{ flexGrow: 2 }}>
-                        <StyledTypography>
-                          {new Date(t.date).toLocaleDateString("en-Us", {
-                            month: "long",
-                            day: "numeric",
-                            year: "numeric",
-                          })}
-                        </StyledTypography>
-                      </Grid>
-                      {/* <Grid item sx={{ flexGrow: 2 }}>
-                        <StyledTypography>
-                          {t.courseName.split(" ").slice(0, 2).join(" ")}
-                        </StyledTypography>
-                      </Grid> */}
-                      <Grid item>
-                        <IconButton
-                          component={Link}
-                          to={`/tournaments/update/${t.date}`}
-                          sx={{
-                            bgcolor: "primary.main",
-                            "&:hover": { bgcolor: "primary.dark" },
-                          }}
-                        >
-                          <EditIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                      <Grid item>
-                        <IconButton
-                          onClick={() => handleTournamentDelete(t.date)}
-                          sx={{
-                            bgcolor: "error.main",
-                            "&:hover": { bgcolor: "error.dark" },
-                          }}
-                        >
-                          <DeleteIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </StyledBox>
-                ))}
-              </TabPanel>
-              <TabPanel value="2" sx={{ px: 0 }}>
-                <Button
-                  component={Link}
-                  to="/courses/create"
-                  variant="contained"
-                  color="success"
-                  sx={{ mb: 2 }}
-                >
-                  <AddCircleOutlineIcon sx={{ mr: 1 }} /> Golf Course{" "}
-                </Button>
-                {courses.map((c) => (
-                  <StyledBox key={c.handle}>
-                    <Grid container spacing={2} sx={{ alignItems: "center" }}>
-                      <Grid item sx={{ flexGrow: 1, textAlign: "start" }}>
-                        <StyledTypography>{c.name}</StyledTypography>
-                      </Grid>
+      <Box sx={{ textAlign: "center" }}>
+        <Button
+          component={Link}
+          to="/members/create"
+          variant="contained"
+          color="warning"
+          sx={{ my: 3, borderRadius: "30px" }}
+        >
+          <AddCircleOutlineIcon sx={{ mr: 1 }} /> Club Member
+        </Button>
+      </Box>
 
-                      <Grid item>
-                        <IconButton
-                          component={Link}
-                          to={`/courses/update/${c.handle}`}
-                          sx={{
-                            bgcolor: "primary.main",
-                            "&:hover": { bgcolor: "primary.dark" },
-                          }}
-                        >
-                          <EditIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                      <Grid item>
-                        <IconButton
-                          onClick={() => handleCourseDelete(c.handle)}
-                          sx={{
-                            bgcolor: "error.main",
-                            "&:hover": { bgcolor: "error.dark" },
-                          }}
-                        >
-                          <DeleteIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </StyledBox>
-                ))}
-              </TabPanel>
-              <TabPanel value="3" sx={{ px: 0 }}>
+      <Table bordered striped responsive>
+        <thead className="table-dark">
+          <tr>
+            <th>Name</th>
+            <th className="text-center">
+              <BorderColorIcon />
+            </th>
+            <th className="text-center">
+              <RemoveCircleIcon />
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map((m) => (
+            <tr key={m.username}>
+              <th>
+                {m.firstName} {m.lastName}
+              </th>
+              <td className="text-center">
                 <Button
                   component={Link}
-                  to="/members/create"
-                  variant="contained"
-                  color="info"
-                  sx={{ mb: 2 }}
+                  to={`/members/update/${m.username}`}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    "&:hover": { color: "primary.dark" },
+                  }}
                 >
-                  <AddCircleOutlineIcon sx={{ mr: 1 }} /> Club Member{" "}
+                  <BorderColorIcon />
                 </Button>
-                {members.map((m) => (
-                  <StyledBox key={m.username}>
-                    <Grid container spacing={2} sx={{ alignItems: "center" }}>
-                      <Grid item sx={{ flexGrow: 1, textAlign: "start" }}>
-                        <StyledTypography>
-                          {m.firstName} {m.lastName} ({" "}
-                          <span style={{ color: "blue" }}>{m.email}</span> )
-                        </StyledTypography>
-                      </Grid>
-
-                      <Grid item>
-                        <IconButton
-                          component={Link}
-                          to={`/members/update/${m.username}`}
-                          sx={{
-                            bgcolor: "primary.main",
-                            "&:hover": { bgcolor: "primary.dark" },
-                          }}
-                        >
-                          <EditIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                      <Grid item>
-                        <IconButton
-                          onClick={() => handleMemberDelete(m.username)}
-                          sx={{
-                            bgcolor: "error.main",
-                            "&:hover": { bgcolor: "error.dark" },
-                          }}
-                        >
-                          <DeleteIcon sx={{ color: "white" }} />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </StyledBox>
-                ))}
-              </TabPanel>
-            </Box>
-          </Box>
-        </TabContext>
-      </Container>
-      <Modal
-        open={open}
-        setOpen={setOpen}
-        message={message}
-        variant={variant}
-      />
+              </td>
+              <td className="text-center">
+                <Button
+                  onClick={() => handleMemberDelete(m.username)}
+                  sx={{
+                    minWidth: "auto",
+                    p: 0.5,
+                    color: "error.main",
+                    "&:hover": { color: "error.dark" },
+                  }}
+                >
+                  <RemoveCircleIcon />
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </Box>
   );
 }
