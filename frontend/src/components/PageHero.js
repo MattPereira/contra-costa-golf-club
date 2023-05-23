@@ -1,4 +1,5 @@
 import { Paper, Typography, Box } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export default function PageHero({ title, backgroundImage, position, date }) {
   return (
@@ -22,7 +23,14 @@ export default function PageHero({ title, backgroundImage, position, date }) {
         <Typography variant="h1" sx={{ mb: 0 }}>
           {title}
         </Typography>
-        <Typography variant="h3">{date}</Typography>
+        {date && (
+          <Link
+            to={`/tournaments/${date}`}
+            style={{ textDecorationColor: "white", color: "white" }}
+          >
+            <Typography variant="h3">{date}</Typography>
+          </Link>
+        )}
       </Paper>
     </Box>
   );

@@ -52,7 +52,6 @@ export default function Dashboard() {
           indicatorColor="secondary"
           value={value}
           onChange={handleChange}
-          aria-label="lab API tabs example"
         >
           <StyledTab label="Tournaments" />
           <StyledTab label="Courses" />

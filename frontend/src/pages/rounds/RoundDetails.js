@@ -11,28 +11,10 @@ import PageHero from "../../components/PageHero";
 
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import {
-  Button,
-  Typography,
-  Container,
-  Box,
-  Modal,
-  Tab,
-  Grid,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
-  Paper,
-} from "@mui/material";
+// prettier-ignore
+import { Button, Typography, Container, Box, Modal, Tab, Grid, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper , Tabs} from "@mui/material";
 
 import { v4 as uuidv4 } from "uuid";
-
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
 
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
@@ -58,7 +40,7 @@ export default function RoundDetails() {
 
   const [round, setRound] = useState(null);
 
-  const [value, setValue] = useState("1");
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -89,7 +71,7 @@ export default function RoundDetails() {
   console.log(round);
 
   ////////
-  const style = {
+  const modalStyles = {
     position: "absolute",
     top: "50%",
     left: "50%",
@@ -101,6 +83,12 @@ export default function RoundDetails() {
     p: 4,
   };
 
+  const StyledTab = styled(Tab)(({ theme }) => ({
+    fontFamily: "Cubano",
+    fontSize: "1.15rem",
+    color: "white",
+  }));
+
   const date = new Date(round.tournamentDate).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -109,7 +97,7 @@ export default function RoundDetails() {
   });
 
   const memberButtons = (
-    <Box sx={{ mt: 3, textAlign: "center" }}>
+    <Box sx={{ mb: 3, textAlign: "center" }}>
       <Button
         variant="contained"
         color="error"
@@ -140,97 +128,88 @@ export default function RoundDetails() {
       <PageHero
         title={round.username.split("-").join(" ")}
         backgroundImage={round.courseImg}
-        tournamentDate={date}
+        date={date}
         isRoundHero={true}
       />
-      <Box sx={{ py: 1, bgcolor: "black" }}>
-        <Link
-          to={`/tournaments/${round.tournamentDate}`}
-          style={{ textDecorationColor: "white", color: "white" }}
-        >
-          <Typography variant="h4" align="center">
-            {date}
-          </Typography>
-        </Link>
-      </Box>
-      <Container sx={{ pb: 3 }}>
-        <TabContext value={value}>
-          <Box sx={{ mt: 2 }}>
-            <TabList
-              centered
-              onChange={handleChange}
-              aria-label="lab API tabs example"
-            >
-              <Tab
-                label="Scores"
-                value="1"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-              <Tab
-                label="Greenies"
-                value="2"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-              <Tab
-                label="Handicap"
-                value="3"
-                sx={{ fontFamily: "Cubano", fontSize: "1.25rem" }}
-              />
-            </TabList>
-          </Box>
-          <TabPanel sx={{ px: 0 }} value="1">
-            <ScoresTable round={round} />
-            {currentUser ? memberButtons : null}
-          </TabPanel>
-          <TabPanel sx={{ px: 0 }} value="2">
-            {round.greenies.length ? (
-              <GreenieCardList greenies={round.greenies} />
-            ) : null}
-          </TabPanel>
-          <TabPanel sx={{ px: 0 }} value="3">
-            <HandicapCalculations round={round} />
-          </TabPanel>
-        </TabContext>
 
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
+      <Box sx={{ py: 1, bgcolor: "black" }}>
+        <Tabs
+          centered
+          onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+          value={value}
         >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" variant="h4" color="white">
-              Are you Sure?
-            </Typography>
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2 }}
-              color="white"
-            >
-              This action will permanently erase all data associated with this
-              round including greenies. Proceed with caution.
-            </Typography>
-            <Box sx={{ mt: 3, textAlign: "right" }}>
-              <Button
-                variant="contained"
-                onClick={handleClose}
-                sx={{ mr: 2, bgcolor: "gray" }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="dark"
-                sx={{ color: "white" }}
-                onClick={() => handleDelete(round.id)}
-              >
-                Delete
-              </Button>
-            </Box>
-          </Box>
-        </Modal>
+          <StyledTab label="Round" />
+          <StyledTab label="Greenies" />
+          <StyledTab label="Handicap" />
+        </Tabs>
+      </Box>
+
+      <Container sx={{ py: 3 }}>
+        <TabPanel value={value} index={0}>
+          {currentUser ? memberButtons : null}
+
+          <ScoresTable round={round} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          {round.greenies.length ? (
+            <GreenieCardList greenies={round.greenies} />
+          ) : null}
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <HandicapTab round={round} />
+        </TabPanel>
       </Container>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyles}>
+          <Typography id="modal-modal-title" variant="h4" color="white">
+            Are you Sure?
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }} color="white">
+            This action will permanently erase all data associated with this
+            round including greenies. Proceed with caution.
+          </Typography>
+          <Box sx={{ mt: 3, textAlign: "right" }}>
+            <Button
+              variant="contained"
+              onClick={handleClose}
+              sx={{ mr: 2, bgcolor: "gray" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="dark"
+              sx={{ color: "white" }}
+              onClick={() => handleDelete(round.id)}
+            >
+              Delete
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </Box>
+  );
+}
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
   );
 }
 
@@ -443,7 +422,7 @@ function ScoresTable({ round }) {
   );
 }
 
-function HandicapCalculations({ round }) {
+function HandicapTab({ round }) {
   //Logic for computing course handicap for a round
   //Need to add logic to check if this round is the most recent round for a user? if it is not the most recent, show text explaining that handicap calculation can only be seen on most recent round?
 
