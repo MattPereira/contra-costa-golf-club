@@ -127,7 +127,7 @@ class Tournament {
    * Throws NotFoundError if not found.
    **/
 
-  static async getScores(date) {
+  static async getRounds(date) {
     const roundsRes = await db.query(
       `SELECT id, users.username, first_name AS "firstName", last_name AS "lastName", total_strokes AS "totalStrokes", net_strokes AS "netStrokes", total_putts AS "totalPutts", course_handicap AS "courseHandicap"
           FROM rounds 

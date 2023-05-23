@@ -72,7 +72,7 @@ router.get("/", async function (req, res, next) {
  *  Returns all leaderboard data about a specific tournament by date.
  *
  *
- *  pointsLeaderboard is ...
+ *  points is ...
  *
  *  strokesLeaderboard is { date, course_handle, season_end_year, rounds }
  *  where rounds is [{ username, strokes, total_strokes, net_strokes, player_index, score_differential, course_handicap }, ...]
@@ -102,14 +102,14 @@ router.get("/:date", async function (req, res, next) {
     }
 
     const tournament = await Tournament.get(date);
-    const scoresLeaderboard = await Tournament.getScores(date);
-    const pointsLeaderboard = await Point.getTournamentStandings(date);
+    const rounds = await Tournament.getRounds(date);
+    const points = await Point.getTournamentStandings(date);
     const greenies = await Greenie.findAll(date);
     return res.json({
       tournament: {
         ...tournament,
-        pointsLeaderboard,
-        scoresLeaderboard,
+        points,
+        rounds,
         greenies,
       },
     });

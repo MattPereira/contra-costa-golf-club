@@ -9,8 +9,7 @@
 
 const express = require("express");
 
-const { BadRequestError } = require("../expressError");
-const { ensureAdmin } = require("../middleware/auth");
+// const { BadRequestError } = require("../expressError");
 const Point = require("../models/point");
 const Tournament = require("../models/tournament");
 
@@ -51,38 +50,6 @@ router.get("/:date", async function (req, res, next) {
   try {
     const points = await Point.getTournamentStandings(req.params.date);
     return res.status(200).json({ points });
-  } catch (err) {
-    return next(err);
-  }
-});
-
-/** PATCH /[dates] => { points }
- *
- *  FOR DEVELOPMENT PURPOSES TO HANDLE PRE-SEEDED DATA
- *
- *  Updates points totals for all tournaments
- *  using the data that exists in the rounds
- *  and greenies tables
- *
- *
- * Authorization required: none
- */
-
-router.patch("/all", async function (req, res, next) {
-  try {
-    //Query tournaments to map array of all tournament dates
-    const tournaments = await Tournament.findAll();
-    const dates = tournaments.map((tournament) => tournament.date);
-
-    //update points for each tournament date previously seeded into db
-    for (const date of dates) {
-      await Point.updateStrokesPositions(date);
-      await Point.updatePuttsPositions(date);
-      await Point.updateAllGreenies(date);
-      await Point.updateAllScores(date);
-    }
-
-    return res.status(201).json({ success: "seed data updated!" });
   } catch (err) {
     return next(err);
   }

@@ -418,7 +418,7 @@ export default function Navigation({ window, logout }) {
         sx={{
           backgroundColor: "black",
           display: { xs: "flex", md: "none" },
-          py: 1,
+          py: 0.5,
         }}
       >
         <Container maxWidth="xl">
@@ -426,9 +426,6 @@ export default function Navigation({ window, logout }) {
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
               <IconButton
                 size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={handleDrawerToggle}
                 color="inherit"
                 sx={{ padding: "0px" }}

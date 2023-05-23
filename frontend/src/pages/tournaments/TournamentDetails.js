@@ -13,7 +13,7 @@ import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/materi
 import { styled } from "@mui/material/styles";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { Table as BootstrapTable } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 /** Tournament Details Page
  *
@@ -50,7 +50,7 @@ export default function TournamentDetails() {
   if (!tournament) return <LoadingSpinner />;
   console.log("TOURNAMENT", tournament);
 
-  const { greenies, scoresLeaderboard, pointsLeaderboard } = tournament;
+  const { greenies, rounds, points, handicaps } = tournament;
 
   const tournamentDate = new Date(date).toLocaleDateString("en-US", {
     month: "numeric",
@@ -71,7 +71,7 @@ export default function TournamentDetails() {
         title="Tournament"
         backgroundImage={tournament.courseImg}
         date={tournamentDate}
-        hasScores={tournament.scoresLeaderboard.length ? true : false}
+        hasScores={tournament.rounds.length ? true : false}
       />
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
@@ -83,31 +83,28 @@ export default function TournamentDetails() {
           indicatorColor="secondary"
           aria-label="tournament details tabs"
         >
-          <StyledTab label="Scores" />
+          <StyledTab label="Rounds" />
           <StyledTab label="Greenies" />
           <StyledTab label="Skins" />
           <StyledTab label="Winners" />
         </Tabs>
       </Box>
-      <Container sx={{ py: 5 }}>
+      <Container sx={{ pb: 5, pt: 3 }}>
         <TabPanel value={value} index={0}>
-          <ScoresTab data={scoresLeaderboard} tournamentDate={tournamentDate} />
+          <RoundsTab rounds={rounds} tournamentDate={date} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <GreeniesTab greenies={greenies} tournamentDate={tournamentDate} />
+          <GreeniesTab
+            greenies={greenies}
+            tournamentDate={date}
+            rounds={rounds}
+          />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={2}>
-          <SkinsTab
-            handicaps={tournament.handicaps}
-            rounds={tournament.scoresLeaderboard}
-          />
+          <SkinsTab handicaps={handicaps} rounds={rounds} />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={3}>
-          <WinnersTab
-            tournament={tournament}
-            pointsLeaderboard={pointsLeaderboard}
-            greenies={greenies}
-          />
+          <WinnersTab rounds={rounds} points={points} greenies={greenies} />
         </TabPanel>
       </Container>
     </>
@@ -128,13 +125,30 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
-function ScoresTab({ data, tournamentDate }) {
+function RoundsTab({ rounds, tournamentDate }) {
   // Only show edit button if user is logged in
   const { currentUser } = useContext(UserContext);
 
+  const AddRoundButton = currentUser && (
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Button
+        variant="contained"
+        component={Link}
+        to={`/rounds/create/${tournamentDate}`}
+        sx={{ borderRadius: "30px", mb: 3, width: "150px" }}
+      >
+        <AddCircleOutlineIcon />{" "}
+        <Box component="span" sx={{ ml: 1 }}>
+          Round
+        </Box>
+      </Button>
+    </Box>
+  );
+
   return (
     <>
-      <BootstrapTable
+      {AddRoundButton}
+      <Table
         responsive
         bordered
         striped
@@ -163,7 +177,7 @@ function ScoresTab({ data, tournamentDate }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((r, idx) => (
+          {rounds.map((r, idx) => (
             <tr key={r.id}>
               {/* <th>{idx + 1}</th> */}
               <th className="text-start">
@@ -185,7 +199,6 @@ function ScoresTab({ data, tournamentDate }) {
                   <Button
                     to={`/rounds/update/${r.id}`}
                     component={Link}
-                    // variant="outlined"
                     sx={{ p: 0.5, minWidth: "auto" }}
                   >
                     <BorderColorIcon />
@@ -195,98 +208,93 @@ function ScoresTab({ data, tournamentDate }) {
             </tr>
           ))}
         </tbody>
-      </BootstrapTable>
-      {currentUser && (
-        <Box sx={{ display: "flex", justifyContent: "end" }}>
-          <Button
-            variant="contained"
-            component={Link}
-            to={`/rounds/create/${tournamentDate}`}
-          >
-            <AddCircleOutlineIcon />{" "}
-            <Box component="span" sx={{ ml: 0.5 }}>
-              Round
-            </Box>
-          </Button>
-        </Box>
-      )}
+      </Table>
     </>
   );
 }
 
-function GreeniesTab({ greenies, tournamentDate }) {
+function GreeniesTab({ greenies, tournamentDate, rounds }) {
   const { currentUser } = useContext(UserContext);
-
   console.log("GREENIES", greenies);
+
+  const AddGreenieButton =
+    currentUser && rounds.length !== 0 ? (
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Button
+          variant="contained"
+          component={Link}
+          color="success"
+          to={`/greenies/create/${tournamentDate}`}
+          sx={{ borderRadius: "30px", mb: 3, width: "150px" }}
+        >
+          <AddCircleOutlineIcon />{" "}
+          <Box component="span" sx={{ ml: 1 }}>
+            Greenie
+          </Box>
+        </Button>
+      </Box>
+    ) : (
+      <Box sx={{ textAlign: "center", mb: 3 }}>
+        <Typography variant="p">
+          Create round before entering a greenie
+        </Typography>
+      </Box>
+    );
+
   return (
     <Box>
-      <>
-        <Grid container justifyContent="center">
-          <Grid item xs={12} md={6}>
-            <BootstrapTable striped bordered className="text-center">
-              <thead className="table-dark">
-                <tr>
-                  <th className="text-start">PLAYER</th>
-                  <th>HOLE</th>
-                  <th>FEET</th>
-                  <th>INCH</th>
-                  {currentUser && (
-                    <th className="fw-normal">
-                      <BorderColorIcon />
+      {AddGreenieButton}
+
+      <Grid container justifyContent="center">
+        <Grid item xs={12} md={8} lg={6}>
+          <Table striped bordered className="text-center">
+            <thead className="table-dark">
+              <tr>
+                <th className="text-start">PLAYER</th>
+                <th>HOLE</th>
+                <th>FEET</th>
+                <th>INCH</th>
+                {currentUser && (
+                  <th className="fw-normal">
+                    <BorderColorIcon />
+                  </th>
+                )}
+              </tr>
+            </thead>
+            {greenies.length ? (
+              <tbody>
+                {greenies.map((g) => (
+                  <tr key={g.id}>
+                    <th className="text-start">
+                      <Link
+                        to={`/rounds/${g.roundId}`}
+                        className="text-decoration-none"
+                      >
+                        {`${g.firstName} ${g.lastName[0]}`}
+                      </Link>
                     </th>
-                  )}
-                </tr>
-              </thead>
-              {greenies.length ? (
-                <tbody>
-                  {greenies.map((g) => (
-                    <tr key={g.id}>
-                      <th className="text-start">
-                        <Link
-                          to={`/rounds/${g.roundId}`}
-                          className="text-decoration-none"
+                    <td>#{g.holeNumber}</td>
+                    <td>{g.feet}'</td>
+                    <td>{g.inches}"</td>
+                    {currentUser && (
+                      <td>
+                        <Button
+                          to={`/greenies/update/${g.id}`}
+                          component={Link}
+                          // variant="outlined"
+                          sx={{ p: 0.5, minWidth: "auto" }}
                         >
-                          {`${g.firstName} ${g.lastName[0]}`}
-                        </Link>
-                      </th>
-                      <td>#{g.holeNumber}</td>
-                      <td>{g.feet}'</td>
-                      <td>{g.inches}"</td>
-                      {currentUser && (
-                        <td>
-                          <Button
-                            to={`/greenies/update/${g.id}`}
-                            component={Link}
-                            // variant="outlined"
-                            sx={{ p: 0.5, minWidth: "auto" }}
-                          >
-                            <BorderColorIcon />
-                          </Button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              ) : null}
-            </BootstrapTable>
-            {currentUser && (
-              <Box sx={{ display: "flex", justifyContent: "end" }}>
-                <Button
-                  variant="contained"
-                  component={Link}
-                  color="success"
-                  to={`/greenies/create/${tournamentDate}`}
-                >
-                  <AddCircleOutlineIcon />{" "}
-                  <Box component="span" sx={{ ml: 0.5 }}>
-                    Greenie
-                  </Box>
-                </Button>
-              </Box>
-            )}
-          </Grid>
+                          <BorderColorIcon />
+                        </Button>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            ) : null}
+          </Table>
         </Grid>
-      </>
+      </Grid>
     </Box>
   );
 }
@@ -348,7 +356,7 @@ function SkinsTab({ pars, handicaps, rounds }) {
 
   return (
     <Box>
-      <BootstrapTable
+      <Table
         responsive
         striped
         bordered
@@ -388,7 +396,7 @@ function SkinsTab({ pars, handicaps, rounds }) {
             </tr>
           ))}
         </tbody>
-      </BootstrapTable>
+      </Table>
       <Box sx={{ mb: 3, textAlign: "start" }}>
         <Typography variant="p">
           Skins game subtracts one stroke for the most difficult player handicap
@@ -400,16 +408,22 @@ function SkinsTab({ pars, handicaps, rounds }) {
   );
 }
 
-function WinnersTab({ tournament, pointsLeaderboard }) {
+function WinnersTab({ rounds, points }) {
   // sort rounds by total putts and slice to only top 3
-  const puttsWinners = [...tournament.scoresLeaderboard]
+  const puttsWinners = [...rounds]
     .sort((a, b) => a.totalPutts - b.totalPutts)
     .slice(0, 3);
 
   // sort rounds by net strokes and slice to only top 3
-  const strokesWinners = [...tournament.scoresLeaderboard]
+  const strokesWinners = [...rounds]
     .sort((a, b) => a.netStrokes - b.netStrokes)
     .slice(0, 3);
+
+  // TODO: HANDLE THIRD PLACE TIES
+  // if (strokesWinners.length === 3){
+  //   if(strokesWinners[2])
+  // }
+  console.log("STROKE WINNER", strokesWinners);
 
   return (
     <>
@@ -419,7 +433,7 @@ function WinnersTab({ tournament, pointsLeaderboard }) {
             <Typography variant="h4" align="center" gutterBottom>
               Strokes
             </Typography>
-            <BootstrapTable
+            <Table
               responsive
               bordered
               striped
@@ -444,13 +458,13 @@ function WinnersTab({ tournament, pointsLeaderboard }) {
                   </tr>
                 ))}
               </tbody>
-            </BootstrapTable>
+            </Table>
           </Grid>
           <Grid item xs={12} md={6}>
             <Typography variant="h4" align="center" gutterBottom>
               PUTTS
             </Typography>
-            <BootstrapTable
+            <Table
               responsive
               bordered
               striped
@@ -475,7 +489,7 @@ function WinnersTab({ tournament, pointsLeaderboard }) {
                   </tr>
                 ))}
               </tbody>
-            </BootstrapTable>
+            </Table>
           </Grid>
         </Grid>
       </Box>
@@ -484,7 +498,7 @@ function WinnersTab({ tournament, pointsLeaderboard }) {
         <Typography variant="h4" gutterBottom align="center">
           Points
         </Typography>
-        <RankingsTable data={pointsLeaderboard} />
+        <RankingsTable data={points} />
       </Box>
     </>
   );
