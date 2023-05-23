@@ -9,11 +9,8 @@ import { RankingsTable } from "../standings/StandingsDetails";
 import PageHero from "../../components/PageHero";
 
 // prettier-ignore
-import { Button, Container, Box, Tab, TableCell, TableRow, Table, TableContainer, Paper, TableBody, TableHead, Typography, Grid } from "@mui/material";
+import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Table as BootstrapTable } from "react-bootstrap";
@@ -32,7 +29,7 @@ import { Table as BootstrapTable } from "react-bootstrap";
 export default function TournamentDetails() {
   const { date } = useParams();
 
-  const [value, setValue] = useState("1");
+  const [value, setValue] = useState(0);
   const [tournament, setTournament] = useState(null);
 
   const handleTabChange = (event, newValue) => {
@@ -65,6 +62,7 @@ export default function TournamentDetails() {
   const StyledTab = styled(Tab)(({ theme }) => ({
     fontFamily: "Cubano",
     fontSize: "1.15rem",
+    color: "white",
   }));
 
   return (
@@ -72,52 +70,61 @@ export default function TournamentDetails() {
       <PageHero
         title="Tournament"
         backgroundImage={tournament.courseImg}
-        tournamentDate={date}
+        date={tournamentDate}
         hasScores={tournament.scoresLeaderboard.length ? true : false}
       />
-      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
-        <Typography variant="h4" align="center">
-          {tournamentDate}
-        </Typography>
+
+      <Box sx={{ bgcolor: "black", py: 1 }}>
+        <Tabs
+          value={value}
+          centered
+          onChange={handleTabChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="tournament details tabs"
+        >
+          <StyledTab label="Scores" />
+          <StyledTab label="Greenies" />
+          <StyledTab label="Skins" />
+          <StyledTab label="Winners" />
+        </Tabs>
       </Box>
-      <Container sx={{ mt: 1.5 }}>
-        <TabContext value={value}>
-          <TabList
-            centered
-            onChange={handleTabChange}
-            aria-label="tournament details tabs"
-          >
-            <StyledTab label="Scores" value="1" />
-            <StyledTab label="Greenies" value="2" />
-            <StyledTab label="Skins" value="3" />
-            <StyledTab label="Winners" value="4" />
-          </TabList>
-          <TabPanel sx={{ px: 0 }} value="1">
-            <ScoresTab
-              data={scoresLeaderboard}
-              tournamentDate={tournamentDate}
-            />
-          </TabPanel>
-          <TabPanel sx={{ px: 0 }} value="2">
-            <GreeniesTab greenies={greenies} tournamentDate={tournamentDate} />
-          </TabPanel>
-          <TabPanel sx={{ px: 0 }} value="3">
-            <SkinsTable
-              pars={tournament.pars}
-              handicaps={tournament.handicaps}
-              rounds={tournament.scoresLeaderboard}
-            />
-          </TabPanel>
-          <TabPanel sx={{ px: 0 }} value="4">
-            <WinnersTab
-              tournament={tournament}
-              pointsLeaderboard={pointsLeaderboard}
-              greenies={greenies}
-            />
-          </TabPanel>
-        </TabContext>
+      <Container sx={{ py: 5 }}>
+        <TabPanel value={value} index={0}>
+          <ScoresTab data={scoresLeaderboard} tournamentDate={tournamentDate} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <GreeniesTab greenies={greenies} tournamentDate={tournamentDate} />
+        </TabPanel>
+        <TabPanel sx={{ px: 0 }} value={value} index={2}>
+          <SkinsTab
+            handicaps={tournament.handicaps}
+            rounds={tournament.scoresLeaderboard}
+          />
+        </TabPanel>
+        <TabPanel sx={{ px: 0 }} value={value} index={3}>
+          <WinnersTab
+            tournament={tournament}
+            pointsLeaderboard={pointsLeaderboard}
+            greenies={greenies}
+          />
+        </TabPanel>
       </Container>
     </>
+  );
+}
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
   );
 }
 
@@ -285,48 +292,7 @@ function GreeniesTab({ greenies, tournamentDate }) {
 }
 
 /******************* SKINS TABLE ********************/
-function SkinsTable({ pars, handicaps, rounds }) {
-  const StyledHeaderCell = styled(TableCell)(({ theme }) => ({
-    borderRight: "1px solid #e0e0e0",
-  }));
-
-  const StyledStickyColumnCell = styled(TableCell)(({ theme }) => ({
-    fontWeight: "bold",
-    position: "sticky",
-    left: 0,
-    borderRight: "1px solid #e0e0e0",
-  }));
-
-  const StyledHolesRow = styled(TableRow)(({ theme }) => ({
-    backgroundColor: theme.palette.grey[900],
-    ".MuiTableCell-root": {
-      color: "white",
-      minWidth: "55px",
-      fontWeight: "bold",
-    },
-  }));
-
-  const StyledHandicapRow = styled(TableRow)(({ theme }) => ({
-    backgroundColor: theme.palette.grey[600],
-    ".MuiTableCell-root": { color: "white", fontWeight: "bold" },
-  }));
-
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    borderRight: "1px solid #e0e0e0",
-    textAlign: "center",
-  }));
-
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    "&:nth-of-type(odd)": {
-      backgroundColor: theme.palette.grey[100],
-      ".MuiTableCell-root": { backgroundColor: theme.palette.grey[100] },
-    },
-    "&:nth-of-type(even)": {
-      backgroundColor: theme.palette.grey[200],
-      ".MuiTableCell-root": { backgroundColor: theme.palette.grey[200] },
-    },
-  }));
-
+function SkinsTab({ pars, handicaps, rounds }) {
   // Transform rounds data to subtract strokes for each golfer based on their handicap
   const skinsData = rounds.map((r) => {
     const strokesValues = Object.values(r.strokes);
@@ -357,7 +323,8 @@ function SkinsTable({ pars, handicaps, rounds }) {
     });
 
     const playerName = r.username.split("-");
-    const shortName = playerName[0][0].toUpperCase() + playerName[0].slice(1);
+    const shortName =
+      playerName[0] + " " + (playerName[1] ? playerName[1][0] : "");
 
     return {
       name: shortName,
@@ -366,10 +333,10 @@ function SkinsTable({ pars, handicaps, rounds }) {
     };
   });
 
-  console.log(`SKINS`, skinsData);
+  console.log(`SKINS TAB`, skinsData);
 
   // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
-  // Maybe start with transforming skinsData to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}]
+  // Maybe start with transforming skinsData to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
   // const winners = skinsData.map((item) => {
   //   return {
   //     name: item.name,
@@ -381,55 +348,47 @@ function SkinsTable({ pars, handicaps, rounds }) {
 
   return (
     <Box>
-      <TableContainer
-        component={Paper}
-        elevation={0}
-        sx={{ border: "1px solid #F4F4F4", mb: 1 }}
+      <BootstrapTable
+        responsive
+        striped
+        bordered
+        variant="light"
+        className="text-center"
       >
-        <Table size="small" sx={{ whiteSpace: "nowrap" }}>
-          <TableHead>
-            <StyledHolesRow>
-              <StyledStickyColumnCell sx={{ backgroundColor: "grey.900" }}>
-                HOLE
-              </StyledStickyColumnCell>
-              {Array.from({ length: 18 }, (_, i) => (
-                <StyledHeaderCell align="center" key={i + 1}>
-                  {i + 1}
-                </StyledHeaderCell>
-              ))}
-            </StyledHolesRow>
-            <StyledHandicapRow>
-              <StyledStickyColumnCell sx={{ backgroundColor: "grey.600" }}>
-                HANDICAP
-              </StyledStickyColumnCell>
-              {Object.values(handicaps).map((p, i) => (
-                <StyledHeaderCell align="center" key={i}>
-                  {p}
-                </StyledHeaderCell>
-              ))}
-            </StyledHandicapRow>
-          </TableHead>
-          <TableBody>
-            {skinsData.map((player, idx) => (
-              <StyledTableRow key={idx}>
-                <StyledStickyColumnCell variant="head">
-                  {player.name}
-                </StyledStickyColumnCell>
-                {player.round.map((hole, i) => (
-                  <StyledTableCell
-                    key={i}
-                    sx={{
-                      color: typeof hole.strokes === "string" ? "red" : "black",
-                    }}
-                  >
-                    {hole.strokes}
-                  </StyledTableCell>
-                ))}
-              </StyledTableRow>
+        <thead>
+          <tr className="table-dark">
+            <th className="text-start">HOLE</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1}>{i + 1}</th>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </tr>
+          <tr className="table-dark">
+            <th className="text-start">HANDICAP</th>
+            {Object.values(handicaps).map((p, i) => (
+              <th key={i}>{p}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {skinsData.map((player, idx) => (
+            <tr key={idx}>
+              <th className="text-start">
+                {player.name} ({player.courseHandicap})
+              </th>
+              {player.round.map((hole, i) => (
+                <td
+                  key={i}
+                  style={{
+                    color: typeof hole.strokes === "string" ? "red" : "black",
+                  }}
+                >
+                  {hole.strokes}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </BootstrapTable>
       <Box sx={{ mb: 3, textAlign: "start" }}>
         <Typography variant="p">
           Skins game subtracts one stroke for the most difficult player handicap

@@ -2,19 +2,13 @@ import React, { useState, useEffect } from "react";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-import { Box, Tab, Container, Grid } from "@mui/material";
+import { Box, Tab, Tabs, Container, Grid, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-// import StandingsTable from "../../components/Standings/StandingsTable";
-// import PointsDetails from "../../components/Standings/PointsDetails";
 import PageHero from "../../components/PageHero";
 import standingsImage from "../../assets/tour-standings.webp";
-
+import { styled } from "@mui/material/styles";
 import { Table } from "react-bootstrap";
-
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
 
 /** Show club standings page
  *
@@ -26,12 +20,10 @@ import TabPanel from "@mui/lab/TabPanel";
  */
 
 export default function StandingsDetails() {
-  console.debug("Standings");
   const [standings, setStandings] = useState(null);
-
   const [tourYear, setTourYear] = useState("2022-23");
+  const [value, setValue] = useState(1);
 
-  const [value, setValue] = useState("2");
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -53,45 +45,60 @@ export default function StandingsDetails() {
 
   console.log(standings);
 
+  const StyledTab = styled(Tab)(({ theme }) => ({
+    fontFamily: "Cubano",
+    fontSize: "1.5rem",
+    color: "white",
+  }));
+
   return (
     <Box>
       <PageHero title="Standings" backgroundImage={standingsImage} />
 
-      <Container>
+      <Box sx={{ bgcolor: "black", pb: 1 }}>
+        <Tabs
+          value={value}
+          centered
+          onChange={handleChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+          aria-label="standings tabs"
+        >
+          <StyledTab label="2022" onClick={() => setTourYear("2021-22")} />
+          <StyledTab label="2023" onClick={() => setTourYear("2022-23")} />
+        </Tabs>
+      </Box>
+
+      <Container sx={{ py: 3 }}>
+        <Typography variant="h3" align="center">
+          {tourYear} Season
+        </Typography>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>
-            <TabContext value={value}>
-              <Box>
-                <TabList
-                  centered
-                  onChange={handleChange}
-                  aria-label="lab API tabs example"
-                >
-                  <Tab
-                    label="2022"
-                    value="1"
-                    onClick={() => setTourYear("2021-22")}
-                    sx={{ fontFamily: "Cubano", fontSize: "1.5rem" }}
-                  />
-                  <Tab
-                    label="2023"
-                    value="2"
-                    onClick={() => setTourYear("2022-23")}
-                    sx={{ fontFamily: "Cubano", fontSize: "1.5rem" }}
-                  />
-                </TabList>
-              </Box>
-              <TabPanel sx={{ px: 0 }} value="1">
-                <RankingsTable data={standings} />
-              </TabPanel>
-              <TabPanel sx={{ px: 0 }} value="2">
-                <RankingsTable data={standings} />
-              </TabPanel>
-            </TabContext>
+            <TabPanel value={value} index={0}>
+              <RankingsTable data={standings} />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <RankingsTable data={standings} />
+            </TabPanel>
           </Grid>
         </Grid>
       </Container>
     </Box>
+  );
+}
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
   );
 }
 

@@ -52,11 +52,9 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
 });
 
 /** GET /  =>
- *
  *   Returns a list of all greenies.
  *
  * { greenies: [ { id, roundId, holeNumber, feet, inches }, ... ] }
- *
  *
  * Authorization required: none
  */

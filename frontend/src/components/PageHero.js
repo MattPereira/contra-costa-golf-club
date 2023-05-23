@@ -1,11 +1,12 @@
 import { Paper, Typography, Box } from "@mui/material";
 
-export default function PageHero({ title, backgroundImage, position }) {
+export default function PageHero({ title, backgroundImage, position, date }) {
   return (
     <Box>
       <Paper
         sx={{
           height: { xs: "175px", sm: "275px" },
+          color: "white",
           display: "flex",
           borderRadius: "0px",
           flexDirection: "column",
@@ -18,9 +19,10 @@ export default function PageHero({ title, backgroundImage, position }) {
             : "black",
         }}
       >
-        <Typography variant="h1" sx={{ color: "white" }}>
+        <Typography variant="h1" sx={{ mb: 0 }}>
           {title}
         </Typography>
+        <Typography variant="h3">{date}</Typography>
       </Paper>
     </Box>
   );

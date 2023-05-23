@@ -418,6 +418,7 @@ export default function Navigation({ window, logout }) {
         sx={{
           backgroundColor: "black",
           display: { xs: "flex", md: "none" },
+          py: 1,
         }}
       >
         <Container maxWidth="xl">
