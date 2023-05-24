@@ -50,7 +50,7 @@ export default function TournamentDetails() {
   if (!tournament) return <LoadingSpinner />;
   console.log("TOURNAMENT", tournament);
 
-  const { greenies, rounds, points, handicaps } = tournament;
+  const { greenies, rounds, points, course } = tournament;
 
   const tournamentDate = new Date(date).toLocaleDateString("en-US", {
     month: "short",
@@ -65,18 +65,15 @@ export default function TournamentDetails() {
     color: "white",
   }));
 
-  const shortCourseName = tournament.courseName
-    .split(" ")
-    .slice(0, 2)
-    .join(" ");
+  const shortCourseName = course.courseName.split(" ").slice(0, 2).join(" ");
 
   return (
     <>
       <PageHero
         title={shortCourseName}
-        backgroundImage={tournament.courseImg}
+        backgroundImage={course.courseImg}
         date={tournamentDate}
-        hasScores={tournament.rounds.length ? true : false}
+        hasScores={rounds.length ? true : false}
       />
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
@@ -106,7 +103,7 @@ export default function TournamentDetails() {
           />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={2}>
-          <SkinsTab handicaps={handicaps} rounds={rounds} />
+          <SkinsTab handicaps={course.handicaps} rounds={rounds} />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={3}>
           <WinnersTab rounds={rounds} points={points} greenies={greenies} />

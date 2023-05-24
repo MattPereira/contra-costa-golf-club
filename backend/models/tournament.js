@@ -41,10 +41,7 @@ class Tournament {
   }
 
   /** Find all tournaments
-   *
-   *
    * Returns [{  date, courseName, tourYears }, ...]
-
    * */
 
   static async findAll() {
@@ -61,32 +58,39 @@ class Tournament {
     return tournaments;
   }
 
-  /** Given a tournament date, return basic information about that tournament
+  /** Given a tournament date, return information about that tournament
    *
-   * Returns { date, courseName, tourYears}
+   * Returns { date, tourYears, course: { courseHandle, courseName, courseImg, pars, handicaps}}
    *
-   * Throws NotFoundError if not found.
    **/
 
   static async get(date) {
     const tournamentRes = await db.query(
-      `SELECT date, course_handle AS "courseHandle", name AS "courseName", img_url AS "courseImg", tour_years AS "tourYears"
-                   FROM tournaments JOIN courses ON tournaments.course_handle = courses.handle
-             WHERE date = $1`,
+      `SELECT date, tour_years AS "tourYears"
+        FROM tournaments
+        WHERE date = $1`,
       [date]
     );
 
-    const tournament = tournamentRes.rows[0];
-    if (!tournament) throw new NotFoundError(`No tournament on date: ${date}`);
+    const tournamentData = tournamentRes.rows[0];
+    if (!tournamentData)
+      throw new NotFoundError(`No tournament on date: ${date}`);
 
-    // const parsRes = await db.query(
-    //   `SELECT  hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18
-    //   FROM tournaments JOIN courses ON tournaments.course_handle = courses.handle JOIN pars ON courses.handle = pars.course_handle
-    //   WHERE date = $1`,
-    //   [date]
-    // );
+    const courseRes = await db.query(
+      `SELECT course_handle AS "courseHandle", name AS "courseName", img_url AS "courseImg"
+          FROM tournaments JOIN courses ON tournaments.course_handle = courses.handle
+          WHERE date = $1`,
+      [date]
+    );
 
-    // const pars = parsRes.rows[0];
+    const courseData = courseRes.rows[0];
+
+    const parsRes = await db.query(
+      `SELECT  hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18
+      FROM tournaments JOIN courses ON tournaments.course_handle = courses.handle JOIN pars ON courses.handle = pars.course_handle
+      WHERE date = $1`,
+      [date]
+    );
 
     const handicapsRes = await db.query(
       `SELECT hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18
@@ -95,10 +99,14 @@ class Tournament {
       [date]
     );
 
-    const handicaps = handicapsRes.rows[0];
+    const course = {
+      ...courseData,
+      handicaps: handicapsRes.rows[0],
+      pars: parsRes.rows[0],
+    };
 
-    tournament.handicaps = handicaps;
-    // tournament.pars = pars;
+    const tournament = { ...tournamentData, course: course };
+
     return tournament;
   }
 
