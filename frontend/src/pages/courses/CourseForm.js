@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import { Card, Form, Alert, Container } from "react-bootstrap";
-import { Button } from "@mui/material";
+import {
+  Button,
+  Container,
+  Box,
+  Alert,
+  Grid,
+  Typography,
+  Paper,
+  TextField,
+} from "@mui/material";
+
+import PageHero from "../../components/PageHero";
 
 /** Form to create a new course
  *
@@ -168,56 +178,57 @@ export default function CourseForm({ course }) {
   const HOLES = Array.from({ length: 18 }, (v, i) => i + 1);
 
   return (
-    <Container className="py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-9 col-lg-7">
-          <h1 className="text-center display-3 mb-5">
-            {" "}
-            {course ? "Edit" : "Create"} Course
-          </h1>
-          <Card className="mb-5 p-3">
-            <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <div className="row">
-                  <Form.Group className="mb-3">
-                    <Form.Label htmlFor="name" className="fw-bold">
-                      Name
-                    </Form.Label>
-                    <input
-                      className="form-control"
-                      id="name"
-                      name="name"
-                      type="text"
-                      onChange={handleChange}
-                      value={formData.name}
-                      required
-                    ></input>
-                  </Form.Group>
-                </div>
-                <div className="row">
-                  <Form.Group className="mb-3">
-                    <Form.Label htmlFor="name" className="fw-bold">
-                      Image URL
-                    </Form.Label>
-                    <input
-                      className="form-control"
-                      id="imgUrl"
-                      name="imgUrl"
-                      type="text"
-                      onChange={handleChange}
-                      value={formData.imgUrl}
-                      required
-                    ></input>
-                  </Form.Group>
-                </div>
+    <Box>
+      <PageHero title="Course" />
+      <Typography variant="h3" align="center" sx={{ my: 3 }}>
+        {" "}
+        {course ? "Update" : "Create"}
+      </Typography>
+      <Container sx={{ pb: 5 }}>
+        <Grid container justifyContent="center">
+          <Grid item sx={12} md={8} lg={6}>
+            <Paper
+              elevation={0}
+              sx={{
+                px: 4,
+                pt: 4,
+                pb: 2,
+                bgcolor: "secondary.main",
+                mb: 3,
+              }}
+            >
+              <form onSubmit={handleSubmit}>
+                <Box sx={{ mb: 2 }}>
+                  <label htmlFor="name">Name</label>
+                  <TextField
+                    className="form-control"
+                    id="name"
+                    name="name"
+                    type="text"
+                    onChange={handleChange}
+                    value={formData.name}
+                    required
+                  />
+                </Box>
 
-                <div className="row justify-content-center">
-                  <div className="col-6">
-                    <Form.Group className="mb-3">
-                      <Form.Label htmlFor="rating" className="fw-bold">
-                        Rating
-                      </Form.Label>
-                      <input
+                <Box sx={{ mb: 2 }}>
+                  <label htmlFor="name">Image URL</label>
+                  <TextField
+                    className="form-control"
+                    id="imgUrl"
+                    name="imgUrl"
+                    type="text"
+                    onChange={handleChange}
+                    value={formData.imgUrl}
+                    required
+                  />
+                </Box>
+
+                <Grid container spacing={4} sx={{ mb: 2 }}>
+                  <Grid item xs={6}>
+                    <Box>
+                      <label htmlFor="rating">Rating</label>
+                      <TextField
                         className="form-control"
                         id="rating"
                         name="rating"
@@ -226,15 +237,13 @@ export default function CourseForm({ course }) {
                         onChange={handleChange}
                         value={formData.rating}
                         required
-                      ></input>
-                    </Form.Group>
-                  </div>
-                  <div className="col-6">
-                    <Form.Group className="mb-3">
-                      <Form.Label htmlFor="slope" className="fw-bold">
-                        Slope
-                      </Form.Label>
-                      <input
+                      ></TextField>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Box>
+                      <label htmlFor="slope">Slope</label>
+                      <TextField
                         className="form-control"
                         id="slope"
                         name="slope"
@@ -242,29 +251,29 @@ export default function CourseForm({ course }) {
                         onChange={handleChange}
                         value={formData.slope}
                         required
-                      ></input>
-                    </Form.Group>
-                  </div>
-                </div>
+                      />
+                    </Box>
+                  </Grid>
+                </Grid>
 
                 <div className="row text-center">
                   <div className="col-2">
-                    <Form.Label className="fw-bold">Hole</Form.Label>
+                    <label>Hole</label>
                   </div>
                   <div className="col-5">
-                    <Form.Label className="fw-bold">Par</Form.Label>
+                    <label>Par</label>
                   </div>
                   <div className="col-5">
-                    <Form.Label className="fw-bold">Handicap</Form.Label>
+                    <label>Handicap</label>
                   </div>
                 </div>
                 {HOLES.map((num) => (
                   <div key={num} className="row align-items-center mb-3">
                     <div className="col-2 text-center">
-                      <Form.Label className="fw-bold">#{num}</Form.Label>
+                      <label>#{num}</label>
                     </div>
                     <div className="col-5 align-self-center">
-                      <input
+                      <TextField
                         className="form-control"
                         id={`par${num}`}
                         name={`par${num}`}
@@ -272,10 +281,10 @@ export default function CourseForm({ course }) {
                         onChange={handleChange}
                         value={formData[`par${num}`]}
                         required
-                      ></input>
+                      />
                     </div>
                     <div className="col-5">
-                      <input
+                      <TextField
                         className="form-control"
                         id={`handicap${num}`}
                         name={`handicap${num}`}
@@ -283,28 +292,27 @@ export default function CourseForm({ course }) {
                         onChange={handleChange}
                         value={formData[`handicap${num}`]}
                         required
-                      ></input>
+                      />
                     </div>
                   </div>
                 ))}
-
-                <div className="text-end">
-                  <Button variant="contained" type="submit">
-                    Submit
-                  </Button>
-                </div>
-              </Form>
-            </Card.Body>
-          </Card>
-          {formErrors.length
-            ? formErrors.map((err) => (
-                <Alert key={err} color="danger">
-                  {err}
-                </Alert>
-              ))
-            : null}
-        </div>
-      </div>
-    </Container>
+              </form>
+            </Paper>
+            <Box sx={{ textAlign: "end" }}>
+              <Button variant="contained" type="submit">
+                Submit
+              </Button>
+            </Box>
+            {formErrors.length
+              ? formErrors.map((err) => (
+                  <Alert key={err} severity="error">
+                    {err}
+                  </Alert>
+                ))
+              : null}
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 }

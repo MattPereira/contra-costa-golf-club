@@ -32,8 +32,7 @@ let theme = createTheme({
       fontFamily: "Cubano",
     },
     h6: {
-      fontFamily: "Itim",
-      fontSize: "1.3rem",
+      fontFamily: "Cubano",
     },
     p: {
       fontFamily: "Poppins",

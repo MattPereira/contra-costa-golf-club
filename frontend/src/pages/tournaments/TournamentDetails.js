@@ -9,7 +9,7 @@ import { RankingsTable } from "../standings/StandingsDetails";
 import PageHero from "../../components/PageHero";
 
 // prettier-ignore
-import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
+import { Button, Container, Box, Tab, Typography, Grid, Tabs, Modal } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
@@ -53,7 +53,7 @@ export default function TournamentDetails() {
   const { greenies, rounds, points, handicaps } = tournament;
 
   const tournamentDate = new Date(date).toLocaleDateString("en-US", {
-    month: "numeric",
+    month: "short",
     day: "numeric",
     year: "numeric",
     timeZone: "UTC",
@@ -199,7 +199,11 @@ function RoundsTab({ rounds, tournamentDate }) {
                   <Button
                     to={`/rounds/update/${r.id}`}
                     component={Link}
-                    sx={{ p: 0.5, minWidth: "auto" }}
+                    sx={{
+                      p: 0.5,
+                      minWidth: "auto",
+                      "&:hover": { color: "primary.dark" },
+                    }}
                   >
                     <BorderColorIcon />
                   </Button>
@@ -282,7 +286,11 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
                           to={`/greenies/update/${g.id}`}
                           component={Link}
                           // variant="outlined"
-                          sx={{ p: 0.5, minWidth: "auto" }}
+                          sx={{
+                            p: 0.5,
+                            minWidth: "auto",
+                            "&:hover": { color: "primary.dark" },
+                          }}
                         >
                           <BorderColorIcon />
                         </Button>
@@ -300,7 +308,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 }
 
 /******************* SKINS TABLE ********************/
-function SkinsTab({ pars, handicaps, rounds }) {
+function SkinsTab({ handicaps, rounds }) {
   // Transform rounds data to subtract strokes for each golfer based on their handicap
   const skinsData = rounds.map((r) => {
     const strokesValues = Object.values(r.strokes);
@@ -489,6 +497,48 @@ function WinnersTab({ rounds, points }) {
                   </tr>
                 ))}
               </tbody>
+            </Table>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" align="center" gutterBottom>
+              Greenies
+            </Typography>
+            <Table
+              responsive
+              bordered
+              striped
+              variant="light"
+              className="text-center"
+            >
+              <thead className="table-dark">
+                <tr>
+                  <th>HOLE</th>
+                  <th className="text-start">NAME</th>
+                  <th>LENGTH</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </Table>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Typography variant="h4" align="center" gutterBottom>
+              Skins
+            </Typography>
+            <Table
+              responsive
+              bordered
+              striped
+              variant="light"
+              className="text-center"
+            >
+              <thead className="table-dark">
+                <tr>
+                  <th>HOLE</th>
+                  <th className="text-start">NAME</th>
+                  <th>SCORE</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
             </Table>
           </Grid>
         </Grid>

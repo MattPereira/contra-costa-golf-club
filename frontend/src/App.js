@@ -12,6 +12,8 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import Footer from "./components/Footer";
 
 import { ThemeProvider, Box } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import theme from "./theme/theme";
 
 /** Contra Costa Golf Club App
@@ -116,43 +118,45 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <UserContext.Provider
-          value={{
-            currentUser,
-            setCurrentUser,
-          }}
-        >
-          <ScrollToTop>
-            <Box
-              sx={{
-                display: { xs: "block", md: "flex" },
-                height: "100vh",
-              }}
-            >
-              <Box>
-                <Navigation logout={logout} />
-              </Box>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <BrowserRouter>
+          <UserContext.Provider
+            value={{
+              currentUser,
+              setCurrentUser,
+            }}
+          >
+            <ScrollToTop>
               <Box
                 sx={{
-                  width: "100%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  display: { xs: "block", md: "flex" },
+                  height: "100vh",
                 }}
               >
                 <Box>
-                  <Router login={login} register={register} />
+                  <Navigation logout={logout} />
                 </Box>
-                <Box>
-                  <Footer />
+                <Box
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Box>
+                    <Router login={login} register={register} />
+                  </Box>
+                  <Box>
+                    <Footer />
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          </ScrollToTop>
-        </UserContext.Provider>
-      </BrowserRouter>
+            </ScrollToTop>
+          </UserContext.Provider>
+        </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }

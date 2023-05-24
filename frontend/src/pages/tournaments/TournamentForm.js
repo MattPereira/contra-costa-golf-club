@@ -1,9 +1,20 @@
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import { Card, Form, Alert, Row, Container } from "react-bootstrap";
 
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  Box,
+  Typography,
+  Container,
+  Grid,
+  Paper,
+  Select,
+  MenuItem,
+  Alert,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import PageHero from "../../components/PageHero";
 
 /** Form to create a new tournament
  *
@@ -20,10 +31,12 @@ import { Button, Typography } from "@mui/material";
 const TournamentForm = ({ courseHandles, tournament }) => {
   let navigate = useNavigate();
 
+  const [dateValue, setDateValue] = useState(null);
+
   //dynamically set initial state of formData based on whether creating or updating
   //a tournament by looking to see if a tournament is defined
   const [formData, setFormData] = useState({
-    date: tournament ? tournament.date : "",
+    date: tournament ? tournament.date : dateValue,
     courseHandle: tournament ? tournament.courseHandle : courseHandles[0],
     tourYears: tournament ? tournament.tourYears : "2022-23",
   });
@@ -70,7 +83,7 @@ const TournamentForm = ({ courseHandles, tournament }) => {
       };
     } else {
       tournamentData = {
-        date: formData.date,
+        date: dateValue,
         courseHandle: formData.courseHandle,
         tourYears: formData.tourYears,
       };
@@ -96,106 +109,121 @@ const TournamentForm = ({ courseHandles, tournament }) => {
   console.log(formData);
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Typography variant="h1">
-          {tournament ? "Edit" : "Add"} Tournament
-        </Typography>
-        <div className="col-sm-10 col-md-8 col-lg-6">
-          <Card className="p-3">
-            <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="date">Date</Form.Label>
+    <Box>
+      <PageHero title="Tournament" />
+
+      <Container>
+        <Box sx={{ my: 3 }}>
+          <Typography variant="h2" align="center">
+            {tournament ? "Update" : "Create"}
+          </Typography>
+        </Box>
+
+        <Grid container justifyContent="center">
+          <Grid item xs={12} md={8} lg={6}>
+            <Paper
+              elevation={0}
+              sx={{ bgcolor: "secondary.main", px: 5, pt: 3, pb: 3, mb: 3 }}
+            >
+              <form onSubmit={handleSubmit}>
+                <Box sx={{ mb: 2 }}>
+                  <Box>
+                    <label htmlFor="date">Date</label>
+                  </Box>
 
                   {tournament ? (
-                    <Form.Control
-                      value={new Date(tournament.date).toLocaleDateString(
-                        "en-US",
-                        {
+                    <Box
+                      sx={{
+                        width: "100%",
+                        bgcolor: "white",
+                        p: 2,
+                        borderRadius: "5px",
+                      }}
+                    >
+                      <Typography variant="h5">
+                        {new Date(tournament.date).toLocaleDateString("en-US", {
                           year: "numeric",
                           month: "long",
                           day: "numeric",
                           timeZone: "UTC",
-                        }
-                      )}
-                      readOnly
-                    ></Form.Control>
+                        })}
+                      </Typography>
+                    </Box>
                   ) : (
-                    <Form.Control
+                    <DatePicker
+                      sx={{ width: "100%", bgcolor: "white" }}
                       id="date"
                       name="date"
-                      type="date"
-                      onChange={handleChange}
                       value={formData.date}
+                      onChange={(date) => setDateValue(date)}
                       required
-                    ></Form.Control>
+                    />
                   )}
-                </Form.Group>
+                </Box>
 
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="courseHandle">Golf Course</Form.Label>
-                  <Form.Select
+                <Box sx={{ mb: 2 }}>
+                  <Box>
+                    <label htmlFor="courseHandle">Course</label>
+                  </Box>
+                  <Select
                     id="courseHandle"
                     name="courseHandle"
                     type="select"
                     onChange={handleChange}
                     value={formData.courseHandle}
+                    sx={{ width: "100%", bgcolor: "white" }}
                     required
                   >
                     {courseHandles.map((handle) => (
-                      <option key={handle} value={handle}>
+                      <MenuItem key={handle} value={handle}>
                         {handle
                           .split("-")
                           .map((word) => word[0].toUpperCase() + word.slice(1))
                           .join(" ")}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </Form.Select>
-                </Form.Group>
+                  </Select>
+                </Box>
 
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="tourYears">Tour Year</Form.Label>
+                <Box sx={{ mb: 3 }}>
+                  <Box>
+                    <label htmlFor="tourYears">Tour Year</label>
+                  </Box>
 
                   {tournament ? (
-                    <Form.Select
+                    <Select
                       id="tourYears"
                       name="tourYears"
                       type="select"
                       onChange={handleChange}
                       value={formData.tourYears}
+                      sx={{ width: "100%", bgcolor: "white" }}
                       required
                     >
-                      <option>2021-22</option>
-                      <option>2022-23</option>
-                      <option>2023-24</option>
-                      <option>2024-25</option>
-                      <option>2025-26</option>
-                    </Form.Select>
+                      {["2021-22", "2022-23", "2023-24"].map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   ) : (
-                    <Form.Select
+                    <Select
                       id="tourYears"
                       name="tourYears"
                       type="select"
                       onChange={handleChange}
                       value={formData.tourYears}
+                      sx={{ width: "100%", bgcolor: "white" }}
                       required
                     >
-                      <option>2022-23</option>
-                      <option>2023-24</option>
-                      <option>2024-25</option>
-                      <option>2025-26</option>
-                    </Form.Select>
+                      {["2022-23", "2023-24"].map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
                   )}
-                </Form.Group>
-
-                {formErrors.length
-                  ? formErrors.map((err) => (
-                      <Alert key={err} variant="danger">
-                        {err}
-                      </Alert>
-                    ))
-                  : null}
+                </Box>
 
                 <div className="row justify-content-end">
                   <div className="col-auto">
@@ -204,12 +232,19 @@ const TournamentForm = ({ courseHandles, tournament }) => {
                     </Button>
                   </div>
                 </div>
-              </Form>
-            </Card.Body>
-          </Card>
-        </div>
-      </Row>
-    </Container>
+              </form>
+            </Paper>
+            {formErrors.length
+              ? formErrors.map((err) => (
+                  <Alert key={err} severity="error">
+                    {err}
+                  </Alert>
+                ))
+              : null}
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
   );
 };
 

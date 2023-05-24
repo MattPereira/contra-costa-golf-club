@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // prettier-ignore
-import { Container, Button, Typography, Paper, Box, TextField, Grid, FormControl, FormControlLabel, FormLabel, RadioGroup, Radio, Alert} from "@mui/material";
+import { Container, Button, Typography, Paper, Box, TextField, Grid, FormControl, FormControlLabel, RadioGroup, Radio, Alert} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 
@@ -10,7 +10,7 @@ import SiteHero from "../../components/SiteHero";
 import CcgcApi from "../../api/api";
 
 const StyledPaper = styled(Paper)({
-  borderRadius: "30px",
+  borderRadius: "15px",
   backgroundColor: "#eeeeee",
 });
 
@@ -44,7 +44,6 @@ export default function RegisterForm({ register }) {
   const [formErrors, setFormErrors] = useState([]);
 
   console.log("FORM ERRORS", formErrors);
-
   console.debug(
     "RegisterForm",
     "register=",
@@ -101,16 +100,16 @@ export default function RegisterForm({ register }) {
   return (
     <Box>
       <SiteHero />
-      <Container sx={{ py: 5 }}>
+      <Typography align="center" variant="h3" sx={{ my: 3 }}>
+        {register ? "Register" : "Add Member"}
+      </Typography>
+      <Container sx={{ pb: 5 }}>
         <Grid container justifyContent="center">
           <Grid item xs={12} md={10} lg={8}>
-            <StyledPaper elevation={0}>
-              <Box sx={{ p: 3 }}>
+            <StyledPaper elevation={0} sx={{ mb: 3 }}>
+              <Box sx={{ p: 4 }}>
                 <FormControl onSubmit={handleSubmit} sx={{ width: "100%" }}>
                   <form>
-                    <Typography variant="h1" sx={{ mb: 5 }}>
-                      {register ? "Register" : "Create User"}
-                    </Typography>
                     {register ? (
                       <Box sx={{ textAlign: "center", my: 5 }}>
                         <Typography variant="p">
@@ -121,10 +120,10 @@ export default function RegisterForm({ register }) {
                     ) : null}
 
                     <Box sx={{ mb: 3 }}>
+                      <label htmlFor="email">Email</label>
                       <StyledTextField
                         id="email"
                         name="email"
-                        label="Email"
                         type="text"
                         variant="outlined"
                         onChange={handleChange}
@@ -134,11 +133,11 @@ export default function RegisterForm({ register }) {
                       />
                     </Box>
                     <Box sx={{ mb: 3 }}>
+                      <label htmlFor="password">Password</label>
                       <StyledTextField
                         id="password"
                         name="password"
                         type="password"
-                        label="Password"
                         variant="outlined"
                         onChange={handleChange}
                         autoComplete="disabled"
@@ -147,11 +146,11 @@ export default function RegisterForm({ register }) {
                       />
                     </Box>
                     <Box sx={{ mb: 3 }}>
+                      <label htmlFor="firstName">First Name</label>
                       <StyledTextField
                         id="firstName"
                         name="firstName"
                         type="text"
-                        label="First Name"
                         variant="outlined"
                         onChange={handleChange}
                         required
@@ -159,11 +158,11 @@ export default function RegisterForm({ register }) {
                       />
                     </Box>
                     <Box sx={{ mb: 3 }}>
+                      <label htmlFor="lastName">Last Name</label>
                       <StyledTextField
                         id="lastName"
                         name="lastName"
                         type="text"
-                        label="Last Name"
                         variant="outlined"
                         onChange={handleChange}
                         required
@@ -171,11 +170,15 @@ export default function RegisterForm({ register }) {
                       />
                     </Box>
                     {!register && (
-                      <Box sx={{ mb: 3 }}>
+                      <Box>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <FormLabel sx={{ mr: 3 }} id="user-type">
-                            Authorization
-                          </FormLabel>
+                          <Typography
+                            variant="h6"
+                            sx={{ mr: 3 }}
+                            id="user-type"
+                          >
+                            Auth Level
+                          </Typography>
                           <RadioGroup
                             row
                             aria-labelledby="user-type"
@@ -188,7 +191,7 @@ export default function RegisterForm({ register }) {
                               value={false}
                               name="isAdmin"
                               control={<Radio />}
-                              label="Regular"
+                              label="Basic"
                             />
                             <FormControlLabel
                               value={true}
@@ -208,20 +211,19 @@ export default function RegisterForm({ register }) {
                           </Alert>
                         ))
                       : null}
-
-                    <Box sx={{ textAlign: "end" }}>
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        sx={{ borderRadius: "30px", px: 3, py: 1 }}
-                      >
-                        Submit
-                      </Button>
-                    </Box>
                   </form>
                 </FormControl>
               </Box>
             </StyledPaper>
+            <Box sx={{ textAlign: "end" }}>
+              <Button
+                variant="contained"
+                type="submit"
+                sx={{ px: 3, py: 1, borderRadius: "30px" }}
+              >
+                Submit
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </Container>
