@@ -24,14 +24,10 @@ import { styled } from "@mui/material/styles";
  */
 
 export default function TournamentList() {
-  console.debug("TournamentList");
-
   const [tournaments, setTournaments] = useState(null);
 
   /* On component mount, load tournaments from API */
   useEffect(function getTournamentsOnMount() {
-    console.debug("TournamentList useEffect getTournamentsOnMount");
-
     async function fetchAllTournaments() {
       let tournaments = await CcgcApi.getTournaments();
       setTournaments(tournaments);
@@ -40,6 +36,7 @@ export default function TournamentList() {
   }, []);
 
   if (!tournaments) return <LoadingSpinner />;
+  console.log("TOURNAMENTS", tournaments);
 
   return (
     <Box>
@@ -48,7 +45,12 @@ export default function TournamentList() {
         <div className="text-center row justify-content-center">
           {tournaments.map((t) => (
             <Col md={12} lg={6} xl={6} key={t.date}>
-              <TournamentCard key={t.date} date={t.date} imgUrl={t.imgUrl} />
+              <TournamentCard
+                key={t.date}
+                date={t.date}
+                imgUrl={t.imgUrl}
+                courseName={t.courseName}
+              />
             </Col>
           ))}
         </div>
@@ -63,7 +65,7 @@ export default function TournamentList() {
  * TournamentCard functions as a link to each tournament's detail page.
  */
 
-function TournamentCard({ date, imgUrl }) {
+function TournamentCard({ date, imgUrl, courseName }) {
   const StyledPaper = styled(Paper)(({ theme }) => ({
     borderRadius: "30px",
     backgroundColor: "black",
@@ -81,6 +83,13 @@ function TournamentCard({ date, imgUrl }) {
     objectFit: "cover",
   }));
 
+  const readableDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
   return (
     <Box sx={{ mb: 5 }}>
       <Link to={`/tournaments/${date}`} style={{ textDecoration: "none" }}>
@@ -91,15 +100,8 @@ function TournamentCard({ date, imgUrl }) {
               py: 2,
             }}
           >
-            <Typography variant="h4">
-              {" "}
-              {new Date(date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                timeZone: "UTC",
-              })}
-            </Typography>
+            <Typography variant="h4">{courseName}</Typography>
+            <Typography variant="h5">{readableDate}</Typography>
           </Box>
         </StyledPaper>
       </Link>

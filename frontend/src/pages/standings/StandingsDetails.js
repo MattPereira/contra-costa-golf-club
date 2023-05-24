@@ -71,7 +71,7 @@ export default function StandingsDetails() {
 
       <Container sx={{ py: 3 }}>
         <Typography variant="h3" align="center">
-          {tourYear} Season
+          '{tourYear.split("-")[1]} Rankings
         </Typography>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>

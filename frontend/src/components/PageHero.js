@@ -20,7 +20,7 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <Typography variant="h1" sx={{ mb: 0 }}>
+        <Typography variant="h2" align="center">
           {title}
         </Typography>
         {date && (
@@ -28,7 +28,7 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             to={`/tournaments/${date}`}
             style={{ textDecorationColor: "white", color: "white" }}
           >
-            <Typography variant="h3">{date}</Typography>
+            <Typography variant="h4">{date}</Typography>
           </Link>
         )}
       </Paper>

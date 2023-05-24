@@ -65,10 +65,15 @@ export default function TournamentDetails() {
     color: "white",
   }));
 
+  const shortCourseName = tournament.courseName
+    .split(" ")
+    .slice(0, 2)
+    .join(" ");
+
   return (
     <>
       <PageHero
-        title="Tournament"
+        title={shortCourseName}
         backgroundImage={tournament.courseImg}
         date={tournamentDate}
         hasScores={tournament.rounds.length ? true : false}

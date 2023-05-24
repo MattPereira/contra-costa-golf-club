@@ -15,9 +15,6 @@ let theme = createTheme({
   typography: {
     h1: {
       fontFamily: "Cubano",
-      marginBottom: "1rem",
-      fontSize: "6rem",
-      textAlign: "center",
     },
     h2: {
       fontFamily: "Cubano",

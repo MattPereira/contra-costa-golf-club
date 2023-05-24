@@ -21,7 +21,7 @@ export default function SiteHero() {
           sx={{ alignItems: "center", justifyContent: "center" }}
           spacing={2}
         >
-          <Grid item sx={{ display: { xs: "none", lg: "flex" } }}>
+          <Grid item sx={{ display: { xs: "none", xl: "flex" } }}>
             <Box
               component="img"
               src={ccgcLogo}
@@ -35,6 +35,7 @@ export default function SiteHero() {
           <Grid item>
             <Typography
               variant="h1"
+              align="center"
               sx={{
                 color: "white",
                 fontSize: "2.5rem",
@@ -46,6 +47,7 @@ export default function SiteHero() {
             </Typography>
             <Typography
               variant="h1"
+              align="center"
               sx={{
                 color: "white",
                 fontSize: "2.5rem",
