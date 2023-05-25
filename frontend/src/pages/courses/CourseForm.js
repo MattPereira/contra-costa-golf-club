@@ -296,13 +296,14 @@ export default function CourseForm({ course }) {
                     </div>
                   </div>
                 ))}
+                <Box sx={{ textAlign: "end" }}>
+                  <Button variant="contained" type="submit">
+                    Submit
+                  </Button>
+                </Box>
               </form>
             </Paper>
-            <Box sx={{ textAlign: "end" }}>
-              <Button variant="contained" type="submit">
-                Submit
-              </Button>
-            </Box>
+
             {formErrors.length
               ? formErrors.map((err) => (
                   <Alert key={err} severity="error">

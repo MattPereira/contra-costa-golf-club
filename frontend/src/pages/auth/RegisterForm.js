@@ -203,27 +203,26 @@ export default function RegisterForm({ register }) {
                         </Box>
                       </Box>
                     )}
-
-                    {formErrors.length
-                      ? formErrors.map((err) => (
-                          <Alert severity="error" key={err}>
-                            {err}
-                          </Alert>
-                        ))
-                      : null}
+                    <Box sx={{ textAlign: "end" }}>
+                      <Button
+                        variant="contained"
+                        type="submit"
+                        sx={{ px: 3, py: 1, borderRadius: "30px" }}
+                      >
+                        Submit
+                      </Button>
+                    </Box>
                   </form>
                 </FormControl>
               </Box>
             </StyledPaper>
-            <Box sx={{ textAlign: "end" }}>
-              <Button
-                variant="contained"
-                type="submit"
-                sx={{ px: 3, py: 1, borderRadius: "30px" }}
-              >
-                Submit
-              </Button>
-            </Box>
+            {formErrors.length
+              ? formErrors.map((err) => (
+                  <Alert severity="error" key={err}>
+                    {err}
+                  </Alert>
+                ))
+              : null}
           </Grid>
         </Grid>
       </Container>

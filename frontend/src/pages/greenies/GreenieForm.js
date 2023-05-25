@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate, useParams } from "react-router-dom";
-
-import {
-  Button,
-  Typography,
-  Alert,
-  Box,
-  Container,
-  Grid,
-  Paper,
-  TextField,
-  FormControl,
-  Select,
-  MenuItem,
-} from "@mui/material";
+// prettier-ignore
+import { Button, Typography, Alert, Box, Container, Grid, Paper, TextField, FormControl, Select, MenuItem } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
 import PageHero from "../../components/PageHero";
 
@@ -30,7 +19,7 @@ import PageHero from "../../components/PageHero";
  * Routes -> NewGreenie -> NewGreenieForm
  */
 
-const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
+const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
   let navigate = useNavigate();
   const { date } = useParams();
 
@@ -123,31 +112,30 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
   return (
     <Box>
       <PageHero
-        backgroundImage={greenie ? greenie.courseImg : courseImg}
-        title={greenie ? "Update Greenie" : "Create Greenie"}
+        backgroundImage={greenie ? greenie.courseImg : course.courseImg}
+        title={greenie ? greenie.courseName : course.courseName}
+        date={tournamentDate}
       />
-      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
-        <Typography variant="h4" align="center">
-          {tournamentDate}
-        </Typography>
-      </Box>
       <Container>
+        <Typography variant="h3" align="center" sx={{ my: 3 }}>
+          {greenie ? "Update Greenie" : "Create Greenie"}
+        </Typography>
         <Grid container justifyContent="center">
           <Grid item>
-            <Paper elevation={0} sx={{ my: 5 }}>
+            <Paper
+              elevation={0}
+              sx={{ mb: 3, bgcolor: "secondary.main", p: 5 }}
+            >
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
                   <label>Player Name</label>
 
                   {greenie ? (
-                    <>
-                      <TextField
-                        fullWidth
-                        disabled
-                        sx={{ textAlign: "center" }}
-                        value={greenie.firstName + " " + greenie.lastName}
-                      />
-                    </>
+                    <Box sx={{ bgcolor: "white", p: 2, borderRadius: "5px" }}>
+                      <Typography variant="h5">
+                        {greenie.firstName + " " + greenie.lastName}
+                      </Typography>
+                    </Box>
                   ) : (
                     <FormControl fullWidth>
                       <Select
@@ -155,6 +143,7 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                         id="roundId"
                         value={formData.roundId}
                         onChange={handleChange}
+                        sx={{ bgcolor: "white" }}
                         required
                       >
                         {usernames.map((user) => (
@@ -171,17 +160,14 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                 </Box>
 
                 <Box sx={{ mb: 3 }}>
-                  <label>Hole #</label>
+                  <label>Hole Number</label>
                   {greenie ? (
                     <>
-                      <TextField
-                        fullWidth
-                        id="holeNumber"
-                        name="holeNumber"
-                        type="number"
-                        disabled
-                        value={greenie.holeNumber}
-                      />
+                      <Box sx={{ bgcolor: "white", p: 2, borderRadius: "5px" }}>
+                        <Typography variant="h5" align="center">
+                          {greenie.holeNumber}
+                        </Typography>
+                      </Box>
                     </>
                   ) : (
                     <FormControl fullWidth>
@@ -190,6 +176,7 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                         name="holeNumber"
                         onChange={handleChange}
                         value={formData.holeNumber}
+                        sx={{ bgcolor: "white" }}
                         required
                       >
                         {par3HoleNums.map((num) => (
@@ -211,10 +198,12 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                       id="feet"
                       name="feet"
                       type="number"
-                      min="0"
-                      max="500"
+                      inputProps={{
+                        min: "0",
+                      }}
                       onChange={handleChange}
                       value={formData.feet}
+                      sx={{ bgcolor: "white" }}
                       required
                     />
                   </Grid>
@@ -226,16 +215,18 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                       id="inches"
                       name="inches"
                       type="number"
-                      min="0"
-                      max="11"
+                      inputProps={{
+                        min: "0",
+                        max: "11",
+                      }}
                       onChange={handleChange}
                       value={formData.inches}
+                      sx={{ bgcolor: "white", width: "100%" }}
                       required
                     />
                   </Grid>
                 </Grid>
-
-                <Box sx={{ display: "flex", justifyContent: "end", mb: 3 }}>
+                <Box sx={{ display: "flex", justifyContent: "end" }}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -245,16 +236,15 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, courseImg }) => {
                     Submit
                   </Button>
                 </Box>
-
-                {formErrors.length
-                  ? formErrors.map((err) => (
-                      <Alert key={err} severity="error">
-                        {err}
-                      </Alert>
-                    ))
-                  : null}
               </form>
             </Paper>
+            {formErrors.length
+              ? formErrors.map((err) => (
+                  <Alert key={err} severity="error">
+                    {err}
+                  </Alert>
+                ))
+              : null}
           </Grid>
         </Grid>
       </Container>

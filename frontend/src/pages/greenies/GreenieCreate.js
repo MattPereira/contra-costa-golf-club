@@ -46,7 +46,7 @@ export default function GreenieCreate() {
   const usernames = rounds.map((round) => [round.id, round.username]);
 
   //array of par 3 hole numbers for select input
-  const par3HoleNums = Object.entries(tournament.pars)
+  const par3HoleNums = Object.entries(tournament.course.pars)
     .filter((p) => p[1] === 3)
     .map((h) => h[0])
     .map((h) => h.split("e")[1]);
@@ -57,7 +57,7 @@ export default function GreenieCreate() {
       <GreenieForm
         par3HoleNums={par3HoleNums}
         usernames={usernames}
-        courseImg={tournament.courseImg}
+        course={tournament.course}
       />
     </div>
   );

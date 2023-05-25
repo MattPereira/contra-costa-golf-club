@@ -12,13 +12,11 @@ export default function AddRound() {
 
   const [members, setMembers] = useState(null);
   const [rounds, setRounds] = useState(null);
-  const [courseImg, setCourseImg] = useState(null);
+  const [course, setCourse] = useState(null);
 
   // Grab all courses from API to make an array of course handles for select input
   useEffect(
     function getMembersOnMount() {
-      console.debug("AddRound useEffect getMembersOnMount");
-
       async function fetchAllMembers() {
         let members = await CcgcApi.getMembers();
         setMembers(members);
@@ -31,7 +29,7 @@ export default function AddRound() {
 
       async function fetchTournament() {
         const tournament = await CcgcApi.getTournament(date);
-        setCourseImg(tournament.courseImg);
+        setCourse(tournament.course);
       }
       fetchTournament();
       fetchTournamentRounds();
@@ -42,7 +40,7 @@ export default function AddRound() {
 
   console.log("MEMBERS", members);
 
-  if (!members || !rounds || !courseImg) return <LoadingSpinner />;
+  if (!members || !rounds || !course) return <LoadingSpinner />;
 
   console.log("ROUNDS", rounds);
 
@@ -58,10 +56,7 @@ export default function AddRound() {
 
   return (
     <div>
-      <RoundForm
-        availableUsernames={availableUsernames}
-        courseImg={courseImg}
-      />
+      <RoundForm availableUsernames={availableUsernames} course={course} />
     </div>
   );
 }

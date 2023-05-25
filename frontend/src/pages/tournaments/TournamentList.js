@@ -44,7 +44,7 @@ export default function TournamentList() {
       <Container className="py-5">
         <div className="text-center row justify-content-center">
           {tournaments.map((t) => (
-            <Col md={12} lg={6} xl={6} key={t.date}>
+            <Col md={12} xl={6} key={t.date}>
               <TournamentCard
                 key={t.date}
                 date={t.date}

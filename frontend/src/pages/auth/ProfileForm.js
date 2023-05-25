@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import UserContext from "../../lib/UserContext";
 import CcgcApi from "../../api/api";
-import { Form } from "react-bootstrap";
 import {
   Button,
   Box,
@@ -124,7 +123,7 @@ export default function ProfileForm() {
           <Grid item xs={12} md={6}>
             <StyledPaper elevation={0}>
               <Box sx={{ p: 3 }}>
-                <Form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   <Box sx={{ mb: 3 }}>
                     <Typography variant="p">
                       Password is not currently being used so enter anything.
@@ -194,14 +193,6 @@ export default function ProfileForm() {
                     />
                   </Box>
 
-                  {formErrors.length
-                    ? formErrors.map((err) => (
-                        <Alert variant="danger" key={err}>
-                          {err}
-                        </Alert>
-                      ))
-                    : null}
-
                   <Box sx={{ textAlign: "end" }}>
                     <Button
                       variant="contained"
@@ -211,9 +202,16 @@ export default function ProfileForm() {
                       Submit
                     </Button>
                   </Box>
-                </Form>
+                </form>
               </Box>
             </StyledPaper>
+            {formErrors.length
+              ? formErrors.map((err) => (
+                  <Alert variant="danger" key={err}>
+                    {err}
+                  </Alert>
+                ))
+              : null}
             {updateConfirmed ? (
               <Alert severity="success" sx={{ mt: 3, borderRadius: "20px" }}>
                 Profile information updated!

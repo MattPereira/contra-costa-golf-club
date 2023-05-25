@@ -14,6 +14,8 @@ import { styled } from "@mui/material/styles";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Table } from "react-bootstrap";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 
 /** Tournament Details Page
  *
@@ -61,7 +63,7 @@ export default function TournamentDetails() {
 
   const StyledTab = styled(Tab)(({ theme }) => ({
     fontFamily: "Cubano",
-    fontSize: "1.15rem",
+    fontSize: "1.25rem",
     color: "white",
   }));
 
@@ -87,7 +89,6 @@ export default function TournamentDetails() {
         >
           <StyledTab label="Rounds" />
           <StyledTab label="Greenies" />
-          <StyledTab label="Skins" />
           <StyledTab label="Winners" />
         </Tabs>
       </Box>
@@ -103,10 +104,12 @@ export default function TournamentDetails() {
           />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={2}>
-          <SkinsTab handicaps={course.handicaps} rounds={rounds} />
-        </TabPanel>
-        <TabPanel sx={{ px: 0 }} value={value} index={3}>
-          <WinnersTab rounds={rounds} points={points} greenies={greenies} />
+          <WinnersTab
+            rounds={rounds}
+            points={points}
+            greenies={greenies}
+            handicaps={course.handicaps}
+          />
         </TabPanel>
       </Container>
     </>
@@ -253,7 +256,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
-          <Table striped bordered className="text-center">
+          <Table striped bordered variant="light" className="text-center">
             <thead className="table-dark">
               <tr>
                 <th className="text-start">PLAYER</th>
@@ -287,7 +290,6 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
                         <Button
                           to={`/greenies/update/${g.id}`}
                           component={Link}
-                          // variant="outlined"
                           sx={{
                             p: 0.5,
                             minWidth: "auto",
@@ -309,8 +311,27 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
   );
 }
 
-/******************* SKINS TABLE ********************/
-function SkinsTab({ handicaps, rounds }) {
+function WinnersTab({ rounds, points, handicaps }) {
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  // sort rounds by total putts and slice to only top 3
+  const puttsWinners = [...rounds]
+    .sort((a, b) => a.totalPutts - b.totalPutts)
+    .slice(0, 3);
+
+  // sort rounds by net strokes and slice to only top 3
+  const strokesWinners = [...rounds]
+    .sort((a, b) => a.netStrokes - b.netStrokes)
+    .slice(0, 3);
+
+  // TODO: HANDLE THIRD PLACE TIES
+  // if (strokesWinners.length === 3){
+  //   if(strokesWinners[2])
+  // }
+  console.log("STROKE WINNER", strokesWinners);
+
   // Transform rounds data to subtract strokes for each golfer based on their handicap
   const skinsData = rounds.map((r) => {
     const strokesValues = Object.values(r.strokes);
@@ -364,76 +385,19 @@ function SkinsTab({ handicaps, rounds }) {
   // });
   // console.log(`WINNERS`, winners);
 
-  return (
-    <Box>
-      <Table
-        responsive
-        striped
-        bordered
-        variant="light"
-        className="text-center"
-      >
-        <thead>
-          <tr className="table-dark">
-            <th className="text-start">HOLE</th>
-            {Array.from({ length: 18 }, (_, i) => (
-              <th key={i + 1}>{i + 1}</th>
-            ))}
-          </tr>
-          <tr className="table-dark">
-            <th className="text-start">HANDICAP</th>
-            {Object.values(handicaps).map((p, i) => (
-              <th key={i}>{p}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {skinsData.map((player, idx) => (
-            <tr key={idx}>
-              <th className="text-start">
-                {player.name} ({player.courseHandicap})
-              </th>
-              {player.round.map((hole, i) => (
-                <td
-                  key={i}
-                  style={{
-                    color: typeof hole.strokes === "string" ? "red" : "black",
-                  }}
-                >
-                  {hole.strokes}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      <Box sx={{ mb: 3, textAlign: "start" }}>
-        <Typography variant="p">
-          Skins game subtracts one stroke for the most difficult player handicap
-          ÷ 2 holes for each golfer. Adjusted hole scores are shown in{" "}
-          <span style={{ color: "red" }}>red</span>.
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
-
-function WinnersTab({ rounds, points }) {
-  // sort rounds by total putts and slice to only top 3
-  const puttsWinners = [...rounds]
-    .sort((a, b) => a.totalPutts - b.totalPutts)
-    .slice(0, 3);
-
-  // sort rounds by net strokes and slice to only top 3
-  const strokesWinners = [...rounds]
-    .sort((a, b) => a.netStrokes - b.netStrokes)
-    .slice(0, 3);
-
-  // TODO: HANDLE THIRD PLACE TIES
-  // if (strokesWinners.length === 3){
-  //   if(strokesWinners[2])
-  // }
-  console.log("STROKE WINNER", strokesWinners);
+  const stylesForModal = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: { xs: "100%", md: "80%", xl: "75%" },
+    bgcolor: "white",
+    boxShadow: 24,
+    borderRadius: "20px",
+    overflow: "auto",
+    px: 5,
+    pb: 5,
+  };
 
   return (
     <>
@@ -523,8 +487,19 @@ function WinnersTab({ rounds, points }) {
             </Table>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
-              Skins
+            <Typography
+              variant="h4"
+              align="center"
+              gutterBottom
+              onClick={handleOpen}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              Skins <InfoOutlinedIcon sx={{ fontSize: "inherit", ml: 1 }} />
             </Typography>
             <Table
               responsive
@@ -552,6 +527,87 @@ function WinnersTab({ rounds, points }) {
         </Typography>
         <RankingsTable data={points} />
       </Box>
+
+      <div>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={stylesForModal}>
+            <SkinsModalContent
+              skinsData={skinsData}
+              handicaps={handicaps}
+              handleClose={handleClose}
+            />
+          </Box>
+        </Modal>
+      </div>
     </>
+  );
+}
+
+function SkinsModalContent({ skinsData, handicaps, handleClose }) {
+  return (
+    <Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", pt: 3 }}>
+        <CloseIcon
+          onClick={handleClose}
+          sx={{ cursor: "pointer", fontSize: "35px" }}
+        />
+      </Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        Ajusted Scores
+      </Typography>
+      <Table
+        responsive
+        striped
+        bordered
+        variant="light"
+        className="text-center"
+      >
+        <thead>
+          <tr className="table-dark">
+            <th className="text-start">HOLE</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1}>{i + 1}</th>
+            ))}
+          </tr>
+          <tr className="table-dark">
+            <th className="text-start">HANDICAP</th>
+            {Object.values(handicaps).map((p, i) => (
+              <th key={i}>{p}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {skinsData.map((player, idx) => (
+            <tr key={idx}>
+              <th className="text-start">
+                {player.name} ({player.courseHandicap})
+              </th>
+              {player.round.map((hole, i) => (
+                <td
+                  key={i}
+                  style={{
+                    color: typeof hole.strokes === "string" ? "red" : "black",
+                  }}
+                >
+                  {hole.strokes}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+      <Box sx={{ mb: 3, textAlign: "start" }}>
+        <Typography variant="p">
+          Skins game subtracts one stroke for the most difficult player handicap
+          ÷ 2 holes for each golfer. Adjusted hole scores are shown in{" "}
+          <span style={{ color: "red" }}>red</span>.
+        </Typography>
+      </Box>
+    </Box>
   );
 }

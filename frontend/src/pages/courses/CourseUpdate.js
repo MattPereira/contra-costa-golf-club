@@ -28,11 +28,11 @@ export default function EditCourse() {
     },
     [handle]
   );
+  console.log("COURSE", course);
 
   console.debug("EditCourse", "course=", course);
 
-  // alternative loading spinner rendering method
-  // if (!course) return <LoadingSpinner />;????
+  if (!course) return <LoadingSpinner />;
 
-  return course ? <CourseForm course={course} /> : <LoadingSpinner />;
+  return <CourseForm course={course} />;
 }

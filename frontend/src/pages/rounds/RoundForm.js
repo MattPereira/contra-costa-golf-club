@@ -2,22 +2,8 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  Box,
-  Container,
-  Grid,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  Alert,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+// prettier-ignore
+import { Button, Typography, Box, Container, Grid, FormControl, InputLabel, MenuItem, Select, TextField, Alert, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import { styled } from "@mui/material/styles";
 
@@ -25,38 +11,6 @@ import { styled } from "@mui/material/styles";
 import UserContext from "../../lib/UserContext";
 import PageHero from "../../components/PageHero";
 import CcgcApi from "../../api/api";
-
-/***** MUI Accordion Styles *****/
-const StyledAccordion = styled((props) => (
-  <Accordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: "4px",
-  "&:before": {
-    display: "none",
-  },
-}));
-
-const StyledAccordionSummary = styled((props) => (
-  <AccordionSummary
-    expandIcon={
-      <ArrowForwardIosSharpIcon sx={{ fontSize: "1rem", color: "white" }} />
-    }
-    {...props}
-  />
-))(({ theme }) => ({
-  color: "white",
-  backgroundColor: "black",
-  borderRadius: "4px",
-
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
-}));
 
 /** Form to create a new round
  *
@@ -67,7 +21,7 @@ const StyledAccordionSummary = styled((props) => (
  * Routed as /rounds/create/:date
  */
 
-const RoundForm = ({ availableUsernames, round, courseImg }) => {
+const RoundForm = ({ availableUsernames, round, course }) => {
   let navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const { date } = useParams();
@@ -216,29 +170,14 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
     }
   };
 
-  // const HOLES = Array.from({ length: 18 }, (v, i) => i + 1);
-  const frontNine = Array.from({ length: 9 }, (v, i) => i + 1);
-  const backNine = Array.from({ length: 9 }, (v, i) => i + 10);
   let tournamentDate;
-
-  if (round) {
-    tournamentDate = new Date(round.tournamentDate).toLocaleDateString(
-      "en-US",
-      {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        timeZone: "UTC",
-      }
-    );
-  } else {
-    tournamentDate = new Date(date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      timeZone: "UTC",
-    });
-  }
+  tournamentDate = round ? round.tournamentDate : date;
+  tournamentDate = new Date(tournamentDate).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
   let formattedName;
 
@@ -251,7 +190,12 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
       .join(" ");
   }
 
-  console.log("formData", formData);
+  const courseName = round ? round.courseName : course.courseName;
+
+  const shortCourseName = courseName.split(" ").slice(0, 2).join(" ");
+
+  const frontNine = Array.from({ length: 9 }, (v, i) => i + 1);
+  const backNine = Array.from({ length: 9 }, (v, i) => i + 10);
 
   // Naive progress tracker for how many holes played that only looks at strokes NOT putts
   const frontProgress = Object.values(formData)
@@ -261,17 +205,46 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
     .slice(10, 19)
     .filter((item) => item !== "").length;
 
+  /***** MUI Accordion Styles *****/
+  const StyledAccordion = styled((props) => (
+    <Accordion disableGutters elevation={0} square {...props} />
+  ))(({ theme }) => ({
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: "4px",
+    backgroundColor: theme.palette.secondary.main,
+    "&:before": {
+      display: "none",
+    },
+  }));
+
+  const StyledAccordionSummary = styled((props) => (
+    <AccordionSummary
+      expandIcon={
+        <ArrowForwardIosSharpIcon sx={{ fontSize: "1rem", color: "white" }} />
+      }
+      {...props}
+    />
+  ))(({ theme }) => ({
+    color: "white",
+    backgroundColor: "black",
+    borderRadius: "4px",
+
+    flexDirection: "row-reverse",
+    "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+      transform: "rotate(90deg)",
+    },
+    "& .MuiAccordionSummary-content": {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+
   return (
     <Box>
       <PageHero
-        title={round ? "Update Round" : "Create Round"}
-        backgroundImage={round ? round.courseImg : courseImg}
+        title={shortCourseName}
+        backgroundImage={round ? round.courseImg : course.courseImg}
+        date={tournamentDate}
       />
-      <Box sx={{ bgcolor: "black", color: "white", py: 1 }}>
-        <Typography variant="h4" align="center">
-          {tournamentDate}
-        </Typography>
-      </Box>
 
       <Container sx={{ pb: 5, pt: 1 }} disableGutters>
         <Grid container justifyContent="center">
@@ -290,18 +263,17 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                 </Box>
               ) : (
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="h3" align="center" gutterBottom>
+                  <Typography variant="h3" align="center" sx={{ mb: 3 }}>
                     Create Round
                   </Typography>
                   <FormControl fullWidth>
-                    <InputLabel id="username" htmlFor="username">
+                    <label id="username" htmlFor="username">
                       Player Name
-                    </InputLabel>
+                    </label>
 
                     <Select
                       id="username"
                       name="username"
-                      label="Player Name"
                       onChange={handleChange}
                       value={formData.username}
                       required
@@ -367,6 +339,7 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                           min="1"
                           onChange={handleChange}
                           value={formData[`strokes${num}`]}
+                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -379,6 +352,7 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                           min="0"
                           onChange={handleChange}
                           value={formData[`putts${num}`]}
+                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -430,6 +404,7 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                           min="1"
                           onChange={handleChange}
                           value={formData[`strokes${num}`]}
+                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -442,6 +417,7 @@ const RoundForm = ({ availableUsernames, round, courseImg }) => {
                           min="0"
                           onChange={handleChange}
                           value={formData[`putts${num}`]}
+                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
