@@ -96,7 +96,7 @@ export default function Navigation({ window, logout }) {
   const mobileDrawer = (
     <Box
       onClick={handleDrawerToggle}
-      sx={{ textAlign: "center", backgroundColor: "black", height: "100%" }}
+      sx={{ textAlign: "center", backgroundColor: "black", height: "100vh" }}
     >
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <IconButton
@@ -114,9 +114,8 @@ export default function Navigation({ window, logout }) {
           component={Link}
           to="/"
           sx={{
-            my: 2,
+            my: 1.5,
             color: "white",
-            fontFamily: "Cubano",
             fontSize: "1.75rem",
             letterSpacing: "0.2rem",
             textDecoration: "none",
@@ -137,15 +136,7 @@ export default function Navigation({ window, logout }) {
       </Box>
 
       <Divider sx={{ border: "2px solid white" }} />
-      <Grid
-        container
-        sx={{
-          flexDirection: "column",
-          justifyContent: "space-between",
-          height: "75%",
-          flexWrap: "nowrap",
-        }}
-      >
+      <Grid container sx={{ bgcolor: "black" }}>
         <Grid item>
           <List sx={{ py: 3 }}>
             {pages.map((page) => (
@@ -441,9 +432,8 @@ export default function Navigation({ window, logout }) {
                 to="/"
                 sx={{
                   color: "white !important",
-                  fontFamily: "Fredoka One",
-                  letterSpacing: ".25rem",
-                  fontSize: "1.5rem",
+                  letterSpacing: ".2rem",
+                  fontSize: "1.7rem",
                   textDecoration: "none",
                 }}
               >
@@ -452,17 +442,19 @@ export default function Navigation({ window, logout }) {
             </Box>
             {currentUser ? (
               <Box sx={{ flexGrow: 0 }}>
-                <Avatar
-                  alt="Member Initials"
-                  sx={{
-                    color: "black",
-                    bgcolor: "white",
-                    fontFamily: "Itim",
-                    fontWeight: 700,
-                  }}
-                >
-                  {currentUser.firstName[0] + currentUser.lastName[0]}
-                </Avatar>
+                <Link to="/profile" style={{ textDecoration: "none" }}>
+                  <Avatar
+                    alt="Member Initials"
+                    sx={{
+                      color: "black",
+                      bgcolor: "white",
+                      fontFamily: "Itim",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {currentUser.firstName[0] + currentUser.lastName[0]}
+                  </Avatar>
+                </Link>
               </Box>
             ) : (
               <>
@@ -499,6 +491,7 @@ export default function Navigation({ window, logout }) {
           }}
           sx={{
             display: { xs: "block", md: "none" },
+
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               height: "100%",

@@ -89,16 +89,11 @@ const LoginForm = ({ login }) => {
         <Grid container justifyContent="center">
           <Grid item xs={12} md={6}>
             <StyledPaper elevation={0}>
-              <Typography variant="h1" sx={{ pt: 3 }}>
+              <Typography variant="h1" sx={{ mb: 3, pt: 3 }} align="center">
                 Login
               </Typography>
 
               <Box sx={{ pb: 3, px: 3 }}>
-                <Box sx={{ mb: 3, textAlign: "center" }}>
-                  <Typography variant="p">
-                    To join our club site please request access from admin
-                  </Typography>
-                </Box>
                 <Form onSubmit={handleSubmit}>
                   <Box sx={{ mb: 3 }}>
                     <StyledTextField

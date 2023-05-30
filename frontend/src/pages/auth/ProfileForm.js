@@ -15,7 +15,7 @@ import {
 
 import { styled } from "@mui/material/styles";
 
-import PageHero from "../../components/PageHero";
+import SiteHero from "../../components/SiteHero";
 
 /** Form to edit user profile
  *
@@ -39,30 +39,18 @@ const StyledTextField = styled(TextField)({
   width: "100%",
 });
 
-export default function ProfileForm() {
+export default function ProfileForm({ memberData }) {
   const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const [formData, setFormData] = useState({
-    firstName: currentUser.firstName,
-    lastName: currentUser.lastName,
-    email: currentUser.email,
+    firstName: memberData ? memberData.firstName : currentUser.firstName,
+    lastName: memberData ? memberData.lastName : currentUser.lastName,
+    email: memberData ? memberData.email : currentUser.email,
     password: "",
   });
 
   const [formErrors, setFormErrors] = useState([]);
   const [updateConfirmed, setUpdateConfirmed] = useState(false);
-
-  console.debug(
-    "ProfileForm",
-    "currentUser=",
-    currentUser,
-    "formData=",
-    formData,
-    "formErrors=",
-    formErrors,
-    "updateConfirmed=",
-    updateConfirmed
-  );
 
   //update state of formData onChange of any form input field
   const handleChange = (e) => {
@@ -91,46 +79,52 @@ export default function ProfileForm() {
       lastName: formData.lastName,
       email: formData.email,
       password: formData.password,
-      username: currentUser.username,
+      username: memberData ? memberData.username : currentUser.username,
     };
 
     let updatedUser;
 
-    try {
-      updatedUser = await CcgcApi.updateProfile(
-        currentUser.username,
-        profileData
-      );
-    } catch (errors) {
-      debugger;
-      setFormErrors(errors);
-      return;
+    // if memberData is null, then this is a profile update for current user
+    if (!memberData) {
+      try {
+        updatedUser = await CcgcApi.updateProfile(
+          currentUser.username,
+          profileData
+        );
+      } catch (errors) {
+        setFormErrors(errors);
+        return;
+      }
+
+      //trigger reloading of user information throughout the site
+      setCurrentUser(updatedUser);
+    } else {
+      // if memberData is not null, then this is an admin updating a member's profile
+      try {
+        await CcgcApi.updateProfile(memberData.username, profileData);
+      } catch (errors) {
+        setFormErrors(errors);
+        return;
+      }
     }
 
     setFormData((fData) => ({ ...fData, password: "" }));
     setFormErrors([]);
     setUpdateConfirmed(true);
-
-    //trigger reloading of user information throughout the site
-    setCurrentUser(updatedUser);
   };
 
   return (
     <Box>
-      <PageHero title="User Profile" />
+      <SiteHero />
       <Container sx={{ py: 5 }}>
+        <Typography variant="h3" align="center" sx={{ mb: 5 }}>
+          Update Profile
+        </Typography>
         <Grid container justifyContent="center">
           <Grid item xs={12} md={6}>
             <StyledPaper elevation={0}>
               <Box sx={{ p: 3 }}>
                 <form onSubmit={handleSubmit}>
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="p">
-                      Password is not currently being used so enter anything.
-                      All other fields should update appropriately on submit.
-                    </Typography>
-                  </Box>
-
                   <Box sx={{ mb: 3 }}>
                     <InputLabel sx={{ mb: 1 }} htmlFor="firstName">
                       First Name
@@ -177,7 +171,7 @@ export default function ProfileForm() {
                       sx={{ width: "100%", bgcolor: "white" }}
                     />
                   </Box>
-                  <Box sx={{ mb: 3 }}>
+                  {/* <Box sx={{ mb: 3 }}>
                     <InputLabel sx={{ mb: 1 }} htmlFor="password">
                       Password
                     </InputLabel>
@@ -191,7 +185,7 @@ export default function ProfileForm() {
                       required
                       sx={{ width: "100%" }}
                     />
-                  </Box>
+                  </Box> */}
 
                   <Box sx={{ textAlign: "end" }}>
                     <Button
@@ -207,14 +201,15 @@ export default function ProfileForm() {
             </StyledPaper>
             {formErrors.length
               ? formErrors.map((err) => (
-                  <Alert variant="danger" key={err}>
+                  <Alert severity="error" key={err} sx={{ mt: 3 }}>
                     {err}
                   </Alert>
                 ))
               : null}
             {updateConfirmed ? (
               <Alert severity="success" sx={{ mt: 3, borderRadius: "20px" }}>
-                Profile information updated!
+                Profile information updated for{" "}
+                {memberData ? memberData.username : currentUser.username}!
               </Alert>
             ) : null}
           </Grid>

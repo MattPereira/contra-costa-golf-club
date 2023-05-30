@@ -53,29 +53,29 @@ export default function Dashboard() {
           value={value}
           onChange={handleChange}
         >
+          <StyledTab label="Members" />
           <StyledTab label="Tournaments" />
           <StyledTab label="Courses" />
-          <StyledTab label="Members" />
         </Tabs>
       </Box>
       <Grid container justifyContent="center" sx={{ mb: 5 }}>
         <Grid item xs={12} md={8} lg={6}>
           <TabPanel value={value} index={0}>
-            <TournamentsTab
+            <MembersTab
               setMessage={setMessage}
               setOpen={setOpen}
               setVariant={setVariant}
             />
           </TabPanel>
           <TabPanel value={value} index={1}>
-            <CoursesTab
+            <TournamentsTab
               setMessage={setMessage}
               setOpen={setOpen}
               setVariant={setVariant}
             />
           </TabPanel>
           <TabPanel value={value} index={2}>
-            <MembersTab
+            <CoursesTab
               setMessage={setMessage}
               setOpen={setOpen}
               setVariant={setVariant}
