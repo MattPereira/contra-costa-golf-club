@@ -48,7 +48,7 @@ app.use("/points", pointsRoutes);
 
 /** Display some welcome json for the root endpoint */
 app.get("/", (req, res) => {
-  res.json({
+  return res.json({
     message: "Welcome to the Contra Costa Golf Club API!",
     github: "https://github.com/MattPereira/contra-costa-golf-club",
     linkedIn: "https://www.linkedin.com/in/-matt-pereira-/",

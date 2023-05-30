@@ -29,9 +29,7 @@
     "start": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "build": "REACT_APP_BASE_URL=https://ccgc.up.railway.app react-scripts build",
-    "pre-deploy": "cp build/index.html build/200.html",
-    "deploy": "surge build --domain https://ccgc.surge.sh"
+    "build": "REACT_APP_BASE_URL=https://ccgc.up.railway.app react-scripts build"
   },
   "eslintConfig": {
     "extends": [

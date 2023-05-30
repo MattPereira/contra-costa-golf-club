@@ -92,7 +92,7 @@ export default function TournamentDetails() {
           <StyledTab label="Winners" />
         </Tabs>
       </Box>
-      <Container sx={{ pb: 5, pt: 3 }}>
+      <Container sx={{ py: 5 }}>
         <TabPanel value={value} index={0}>
           <RoundsTab rounds={rounds} tournamentDate={date} />
         </TabPanel>
@@ -140,7 +140,7 @@ function RoundsTab({ rounds, tournamentDate }) {
         variant="contained"
         component={Link}
         to={`/rounds/create/${tournamentDate}`}
-        sx={{ borderRadius: "30px", mb: 3, width: "150px" }}
+        sx={{ borderRadius: "30px", mb: 5, width: "150px" }}
       >
         <AddCircleOutlineIcon />{" "}
         <Box component="span" sx={{ ml: 1 }}>
@@ -234,7 +234,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
           component={Link}
           color="success"
           to={`/greenies/create/${tournamentDate}`}
-          sx={{ borderRadius: "30px", mb: 3, width: "150px" }}
+          sx={{ borderRadius: "30px", mb: 5, width: "150px" }}
         >
           <AddCircleOutlineIcon />{" "}
           <Box component="span" sx={{ ml: 1 }}>
@@ -528,7 +528,7 @@ function WinnersTab({ rounds, points, handicaps }) {
         <RankingsTable data={points} />
       </Box>
 
-      <div>
+      <div className="modal">
         <Modal
           open={open}
           onClose={handleClose}
