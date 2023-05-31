@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
-
-import { Box, Tab, Tabs, Container, Grid, Typography } from "@mui/material";
+// prettier-ignore
+import { Box, Container, Grid, FormControl, MenuItem, Select } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import PageHero from "../../components/PageHero";
 import standingsImage from "../../assets/tour-standings.webp";
-import { styled } from "@mui/material/styles";
+
 import { Table } from "react-bootstrap";
 
 /** Show club standings page
@@ -22,10 +22,10 @@ import { Table } from "react-bootstrap";
 export default function StandingsDetails() {
   const [standings, setStandings] = useState(null);
   const [tourYear, setTourYear] = useState("2022-23");
-  const [value, setValue] = useState(1);
+  const [tournaments, setTournaments] = useState(null);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
+  const handleChange = (event) => {
+    setTourYear(event.target.value);
   };
 
   /* On component mount, load club standings from API */
@@ -36,69 +36,61 @@ export default function StandingsDetails() {
       async function getStandings() {
         setStandings(await CcgcApi.getStandings(tourYear));
       }
+      async function getTournaments() {
+        setTournaments(await CcgcApi.getTournaments());
+      }
       getStandings();
+      getTournaments();
     },
     [tourYear]
   );
 
-  if (!standings) return <LoadingSpinner />;
+  if (!standings || !tournaments) return <LoadingSpinner />;
 
   console.log(standings);
 
-  const StyledTab = styled(Tab)(({ theme }) => ({
-    fontFamily: "Cubano",
-    fontSize: "1.5rem",
-    color: "white",
-  }));
+  // Farm all tournaments for tour years and remove duplicates with set
+  const tourYearsOptions = Array.from(
+    new Set(
+      tournaments.map((t) => {
+        return t.tourYears;
+      })
+    )
+  );
+  console.log("years", tourYearsOptions);
 
   return (
     <Box>
       <PageHero title="Standings" backgroundImage={standingsImage} />
 
-      <Box sx={{ bgcolor: "black", pb: 1 }}>
-        <Tabs
-          value={value}
-          centered
-          onChange={handleChange}
-          textColor="secondary"
-          indicatorColor="secondary"
-          aria-label="standings tabs"
-        >
-          <StyledTab label="2022" onClick={() => setTourYear("2021-22")} />
-          <StyledTab label="2023" onClick={() => setTourYear("2022-23")} />
-        </Tabs>
-      </Box>
-
       <Container sx={{ py: 3 }}>
-        <Typography variant="h3" align="center">
-          '{tourYear.split("-")[1]} Rankings
-        </Typography>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>
-            <TabPanel value={value} index={0}>
-              <RankingsTable data={standings} />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <RankingsTable data={standings} />
-            </TabPanel>
+            <Grid container sx={{ mb: 3 }}>
+              <Grid item xs={12} lg={6}>
+                <FormControl fullWidth>
+                  <label style={{ textAlign: "start" }}>Tour Year:</label>
+                  <Select
+                    id="tour-year"
+                    value={tourYear}
+                    onChange={handleChange}
+                    sx={{ fontFamily: "cubano", fontSize: "1.5rem" }}
+                  >
+                    {tourYearsOptions.map((year) => (
+                      <MenuItem key={year} value={year}>
+                        {year}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+
+            <RankingsTable data={standings} />
           </Grid>
         </Grid>
       </Container>
     </Box>
-  );
-}
-
-function TabPanel({ children, value, index, ...other }) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box>{children}</Box>}
-    </div>
   );
 }
 

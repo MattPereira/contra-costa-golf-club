@@ -219,95 +219,83 @@ class Point {
    *
    * */
   static async getYearlyStandings(tourYears) {
-    const standingsRes = await db.query(
-      `SELECT rounds.username,
-            first_name AS "firstName",
-            last_name AS "lastName",
-            SUM(participation) AS "participation",
-            SUM(strokes) AS "strokes",
-            SUM(putts) AS "putts",
-            SUM(greenies) AS "greenies",
-            SUM(pars) AS "pars",
-            SUM(birdies) AS "birdies",
-            SUM(eagles) AS "eagles",
-            SUM(aces) AS "aces",
-            (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) AS "total"
-          FROM points
-          JOIN rounds ON points.round_id=rounds.id
-          JOIN users ON rounds.username=users.username
-          JOIN tournaments ON rounds.tournament_date = tournaments.date
-          WHERE tour_years = $1
-          GROUP BY rounds.username, last_name, first_name
-          ORDER BY total DESC`,
-      [tourYears]
-    );
-
-    /// TOUR YEARS FILTER NOT WORKING WITH row_number() solution?!?!
-
+    /**** OG query that sums ALL rounds points for each golfer for a given tourYear ****/
     // const standingsRes = await db.query(
-    //   `SELECT * FROM (
-    //     SELECT rounds.username,
-    //           first_name AS "firstName",
-    //           last_name AS "lastName",
-    //           participation,
-    //           strokes,
-    //           putts,
-    //           greenies,
-    //           pars,
-    //           birdies,
-    //           eagles,
-    //           aces,
-    //           (strokes + putts + greenies + participation + pars + birdies + eagles + aces) AS "total",
-    //           tour_years,
-    //           row_number() OVER (PARTITION BY rounds.username ORDER BY (strokes + putts + greenies + participation + pars + birdies + eagles + aces) DESC) AS rn
-    //       FROM points
-    //       JOIN rounds ON points.round_id=rounds.id
-    //       JOIN users ON rounds.username=users.username
-    //       JOIN tournaments ON rounds.tournament_date = tournaments.date
-    //       WHERE tour_years = $1) AS sub
-    //       WHERE rn < 4`,
-    //   [tourYears]
-    // );
-
-    // rank window function partitioning by golfer id? or username? rank over the year and order by total points per round order by total descending
-
-    // const standingsRes = await db.query(
-    //   `SELECT *
-    //   FROM (
-    //     SELECT rounds.username,
-    //     first_name AS "firstName",
-    //     last_name AS "lastName",
-    //     SUM(participation) AS "participation",
-    //     SUM(strokes) AS "strokes",
-    //     SUM(putts) AS "putts",
-    //     SUM(greenies) AS "greenies",
-    //     SUM(pars) AS "pars",
-    //     SUM(birdies) AS "birdies",
-    //     SUM(eagles) AS "eagles",
-    //     SUM(aces) AS "aces",
-    //     (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) AS "total",
-    //     row_number() OVER (PARTITION BY rounds.username ORDER BY (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) DESC) AS rn
+    //   `SELECT rounds.username,
+    //         first_name AS "firstName",
+    //         last_name AS "lastName",
+    //         SUM(participation) AS "participation",
+    //         SUM(strokes) AS "strokes",
+    //         SUM(putts) AS "putts",
+    //         SUM(greenies) AS "greenies",
+    //         SUM(pars) AS "pars",
+    //         SUM(birdies) AS "birdies",
+    //         SUM(eagles) AS "eagles",
+    //         SUM(aces) AS "aces",
+    //         (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) AS "total"
     //       FROM points
     //       JOIN rounds ON points.round_id=rounds.id
     //       JOIN users ON rounds.username=users.username
     //       JOIN tournaments ON rounds.tournament_date = tournaments.date
     //       WHERE tour_years = $1
     //       GROUP BY rounds.username, last_name, first_name
-    //       ORDER BY total DESC) AS sub
-    //       WHERE rn < 4`,
+    //       ORDER BY total DESC`,
     //   [tourYears]
     // );
+
+    /*** Sums only top 3 rounds points for each golfer for a given tourYear ***/
+    const standingsRes = await db.query(
+      `WITH ranked_rounds AS (
+          SELECT 
+              rounds.username,
+              first_name,
+              last_name,
+              participation,
+              strokes,
+              putts,
+              greenies,
+              pars,
+              birdies,
+              eagles,
+              aces,
+              ROW_NUMBER() OVER(PARTITION BY rounds.username ORDER BY 
+                  (strokes + putts + greenies + participation + pars + birdies + eagles + aces) DESC) as rn
+          FROM points
+          JOIN rounds ON points.round_id=rounds.id
+          JOIN users ON rounds.username=users.username
+          JOIN tournaments ON rounds.tournament_date = tournaments.date
+          WHERE tour_years = $1
+        )
+
+        SELECT 
+          username,
+          first_name AS "firstName",
+          last_name AS "lastName",
+          SUM(participation) AS "participation",
+          SUM(strokes) AS "strokes",
+          SUM(putts) AS "putts",
+          SUM(greenies) AS "greenies",
+          SUM(pars) AS "pars",
+          SUM(birdies) AS "birdies",
+          SUM(eagles) AS "eagles",
+          SUM(aces) AS "aces",
+          (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) AS "total"
+        FROM ranked_rounds
+        WHERE rn <= 10
+        GROUP BY username, last_name, first_name
+        ORDER BY total DESC`,
+      [tourYears]
+    );
 
     return standingsRes.rows;
   }
 
   /** Find all points for a specific tournament_date
    *
-   * sum the columns
+   * returns { roundId, username, firstName, lastName, participation, strokes, putts, greenies, pars, birdies, eagles, aces, total}
    *
-   *
-   *
-   * */
+   * for each round in the selected tournament
+   */
   static async getTournamentStandings(tournamentDate) {
     const result = await db.query(
       `SELECT rounds.id AS "roundId",
@@ -330,6 +318,8 @@ class Point {
             ORDER BY total DESC`,
       [tournamentDate]
     );
+
+    console.log("GETSTANDINGS", result.rows);
 
     return result.rows;
   }
@@ -419,60 +409,62 @@ class Point {
   }
 
   /**
+   *  NOT NEEDED ANYMORE
+   *
    * handle the updating of greenie points for all
    * rounds assocatiated with a particular tournamentDate
    *
    * called only in development for adding points to seed data
    *
    */
-  static async updateAllGreenies(tournamentDate) {
-    /*********Update the points table column "greenies" **************/
+  // static async updateAllGreenies(tournamentDate) {
+  //   /*********Update the points table column "greenies" **************/
 
-    //have to figure out some way to sum greenies points before updating points column greenies
+  //   //have to figure out some way to sum greenies points before updating points column greenies
 
-    const greeniesRes = await db.query(
-      `SELECT rounds.id AS "roundId", username, feet FROM rounds
-        JOIN greenies ON rounds.id=greenies.round_id
-        WHERE tournament_date=$1`,
-      [tournamentDate]
-    );
+  //   const greeniesRes = await db.query(
+  //     `SELECT rounds.id AS "roundId", username, feet FROM rounds
+  //       JOIN greenies ON rounds.id=greenies.round_id
+  //       WHERE tournament_date=$1`,
+  //     [tournamentDate]
+  //   );
 
-    //array of objects containing roundId and points per greenie depending on feet
-    const greenieObjs = greeniesRes.rows.map((g) => {
-      let total = 1;
-      if (g.feet < 20 && g.feet >= 10) total += 1;
-      if (g.feet < 10 && g.feet >= 2) total += 2;
-      if (g.feet < 2) total += 3;
-      return { roundId: g.roundId, points: total };
-    });
+  //   //array of objects containing roundId and points per greenie depending on feet
+  //   const greenieObjs = greeniesRes.rows.map((g) => {
+  //     let total = 1;
+  //     if (g.feet < 20 && g.feet >= 10) total += 1;
+  //     if (g.feet < 10 && g.feet >= 2) total += 2;
+  //     if (g.feet < 2) total += 3;
+  //     return { roundId: g.roundId, points: total };
+  //   });
 
-    console.log("GREENIE OBJS", greenieObjs);
+  //   console.log("GREENIE OBJS", greenieObjs);
 
-    //reduce the greenieObjs to sum the points for each unique roundId
-    const reducedGreenieObjs = greenieObjs.reduce((acc, item) => {
-      //item points at each obj in array
-      const { roundId, points } = item;
-      //does roundId exist in intial object?
-      if (acc[roundId]) {
-        acc[roundId] += points;
-      } else {
-        acc[roundId] = points;
-      }
-      return acc;
-    }, {});
+  //   //reduce the greenieObjs to sum the points for each unique roundId
+  //   const reducedGreenieObjs = greenieObjs.reduce((acc, item) => {
+  //     //item points at each obj in array
+  //     const { roundId, points } = item;
+  //     //does roundId exist in intial object?
+  //     if (acc[roundId]) {
+  //       acc[roundId] += points;
+  //     } else {
+  //       acc[roundId] = points;
+  //     }
+  //     return acc;
+  //   }, {});
 
-    //reformat the reducedGreenieObjs
-    const finalGreenieObj = Object.keys(reducedGreenieObjs).map((k) => ({
-      roundId: k,
-      points: reducedGreenieObjs[k],
-    }));
+  //   //reformat the reducedGreenieObjs
+  //   const finalGreenieObj = Object.keys(reducedGreenieObjs).map((k) => ({
+  //     roundId: k,
+  //     points: reducedGreenieObjs[k],
+  //   }));
 
-    for (let greenie of finalGreenieObj) {
-      await db.query(`UPDATE points SET greenies=$1 WHERE round_id=$2`, [
-        greenie.points,
-        greenie.roundId,
-      ]);
-    }
-  }
+  //   for (let greenie of finalGreenieObj) {
+  //     await db.query(`UPDATE points SET greenies=$1 WHERE round_id=$2`, [
+  //       greenie.points,
+  //       greenie.roundId,
+  //     ]);
+  //   }
+  // }
 }
 module.exports = Point;
