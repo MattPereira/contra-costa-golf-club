@@ -140,7 +140,7 @@ function RoundsTab({ rounds, tournamentDate }) {
         variant="contained"
         component={Link}
         to={`/rounds/create/${tournamentDate}`}
-        sx={{ borderRadius: "30px", mb: 5, width: "150px" }}
+        sx={{ mb: 5, width: "150px" }}
       >
         <AddCircleOutlineIcon />{" "}
         <Box component="span" sx={{ ml: 1 }}>
@@ -234,7 +234,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
           component={Link}
           color="success"
           to={`/greenies/create/${tournamentDate}`}
-          sx={{ borderRadius: "30px", mb: 5, width: "150px" }}
+          sx={{ mb: 5, width: "150px" }}
         >
           <AddCircleOutlineIcon />{" "}
           <Box component="span" sx={{ ml: 1 }}>
@@ -312,9 +312,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 }
 
 function WinnersTab({ rounds, points, handicaps }) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const [showFullTable, setShowFullTable] = useState(null);
 
   // sort rounds by total putts and slice to only top 3
   const puttsWinners = [...rounds]
@@ -322,7 +320,7 @@ function WinnersTab({ rounds, points, handicaps }) {
     .slice(0, 3);
 
   // sort rounds by net strokes and slice to only top 3
-  const strokesWinners = [...rounds]
+  let strokesWinners = [...rounds]
     .sort((a, b) => a.netStrokes - b.netStrokes)
     .slice(0, 3);
 
@@ -330,7 +328,6 @@ function WinnersTab({ rounds, points, handicaps }) {
   // if (strokesWinners.length === 3){
   //   if(strokesWinners[2])
   // }
-  console.log("STROKE WINNER", strokesWinners);
 
   // Transform rounds data to subtract strokes for each golfer based on their handicap
   const skinsData = rounds.map((r) => {
@@ -385,180 +382,287 @@ function WinnersTab({ rounds, points, handicaps }) {
   // });
   // console.log(`WINNERS`, winners);
 
-  const stylesForModal = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: { xs: "100%", md: "80%", xl: "75%" },
-    bgcolor: "white",
-    boxShadow: 24,
-    borderRadius: "20px",
-    overflow: "auto",
-    px: 5,
-    pb: 5,
+  const fullTables = {
+    strokes: <StrokesDetailsTable rounds={rounds} />,
+    putts: <PuttsDetailsTable rounds={rounds} />,
+    points: <PointsDetailsTable data={points} />,
+    skins: <SkinsDetailsTable skinsData={skinsData} handicaps={handicaps} />,
   };
 
   return (
-    <>
+    <section>
       <Box sx={{ mb: 5 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
-              Strokes
-            </Typography>
-            <Table
-              responsive
-              bordered
-              striped
-              variant="light"
-              className="text-center"
-            >
-              <thead className="table-dark">
-                <tr>
-                  <th>POS</th>
-                  <th className="text-start">NAME</th>
-                  <th>NET</th>
-                </tr>
-              </thead>
-              <tbody>
-                {strokesWinners.map((player, idx) => (
-                  <tr key={idx}>
-                    <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
-                    <td style={{ textAlign: "start", fontFamily: "cubano" }}>
-                      {player.firstName + " " + player.lastName}
-                    </td>
-                    <td>{player.netStrokes}</td>
-                  </tr>
+        {!showFullTable && (
+          <>
+            <Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <StrokesWinnersTable winners={strokesWinners} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <PuttsWinnersTable winners={puttsWinners} />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <GreeniesWinnersTable winners="coming soon" />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <SkinsWinnersTable winners={skinsData} />
+                </Grid>
+              </Grid>
+              <Grid container spacing={4} sx={{ mt: 5 }}>
+                {["strokes", "putts", "skins", "points"].map((category) => (
+                  <Grid item xs={6} lg={3} key={category}>
+                    <Button
+                      key={category}
+                      variant="contained"
+                      onClick={() => setShowFullTable(category)}
+                      sx={{ width: "100%" }}
+                    >
+                      {category}
+                    </Button>
+                  </Grid>
                 ))}
-              </tbody>
-            </Table>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
-              PUTTS
-            </Typography>
-            <Table
-              responsive
-              bordered
-              striped
-              variant="light"
-              className="text-center"
-            >
-              <thead className="table-dark">
-                <tr>
-                  <th>POS</th>
-                  <th className="text-start">NAME</th>
-                  <th>TOT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {puttsWinners.map((winner, idx) => (
-                  <tr key={idx}>
-                    <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
-                    <td style={{ fontFamily: "cubano", textAlign: "start" }}>
-                      {winner.firstName} {winner.lastName}
-                    </td>
-                    <td>{winner.totalPutts}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography variant="h4" align="center" gutterBottom>
-              Greenies
-            </Typography>
-            <Table
-              responsive
-              bordered
-              striped
-              variant="light"
-              className="text-center"
-            >
-              <thead className="table-dark">
-                <tr>
-                  <th>HOLE</th>
-                  <th className="text-start">NAME</th>
-                  <th>LENGTH</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </Table>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography
-              variant="h4"
-              align="center"
-              gutterBottom
-              onClick={handleOpen}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              Skins <InfoOutlinedIcon sx={{ fontSize: "inherit", ml: 1 }} />
-            </Typography>
-            <Table
-              responsive
-              bordered
-              striped
-              variant="light"
-              className="text-center"
-            >
-              <thead className="table-dark">
-                <tr>
-                  <th>HOLE</th>
-                  <th className="text-start">NAME</th>
-                  <th>SCORE</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </Table>
-          </Grid>
-        </Grid>
+              </Grid>
+            </Box>
+          </>
+        )}
+        {showFullTable && (
+          <DetailsTableWrapper setShowFullTable={setShowFullTable}>
+            {fullTables[showFullTable]}
+          </DetailsTableWrapper>
+        )}
       </Box>
-
-      <Box>
-        <Typography variant="h4" gutterBottom align="center">
-          Points
-        </Typography>
-        <RankingsTable data={points} />
-      </Box>
-
-      <div className="modal">
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={stylesForModal}>
-            <SkinsModalContent
-              skinsData={skinsData}
-              handicaps={handicaps}
-              handleClose={handleClose}
-            />
-          </Box>
-        </Modal>
-      </div>
-    </>
+    </section>
   );
 }
 
-function SkinsModalContent({ skinsData, handicaps, handleClose }) {
+function StrokesWinnersTable({ winners }) {
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", pt: 3 }}>
-        <CloseIcon
-          onClick={handleClose}
-          sx={{ cursor: "pointer", fontSize: "35px" }}
-        />
-      </Box>
       <Typography variant="h4" align="center" gutterBottom>
-        Ajusted Scores
+        Strokes
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>POS</th>
+            <th className="text-start">NAME</th>
+            <th>NET</th>
+          </tr>
+        </thead>
+        <tbody>
+          {winners.map((player, idx) => (
+            <tr key={idx}>
+              <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+              <td style={{ textAlign: "start", fontFamily: "cubano" }}>
+                {player.firstName + " " + player.lastName}
+              </td>
+              <td>{player.netStrokes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function PuttsWinnersTable({ winners }) {
+  return (
+    <Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        PUTTS
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>POS</th>
+            <th className="text-start">NAME</th>
+            <th>TOT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {winners.map((winner, idx) => (
+            <tr key={idx}>
+              <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+              <td style={{ fontFamily: "cubano", textAlign: "start" }}>
+                {winner.firstName} {winner.lastName}
+              </td>
+              <td>{winner.totalPutts}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function GreeniesWinnersTable({ winners }) {
+  return (
+    <Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        Greenies
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>HOLE</th>
+            <th className="text-start">NAME</th>
+            <th>LENGTH</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function SkinsWinnersTable({ winners }) {
+  return (
+    <Box>
+      <Typography variant="h4" align="center" gutterBottom>
+        Skins
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>HOLE</th>
+            <th className="text-start">NAME</th>
+            <th>SCORE</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function StrokesDetailsTable({ rounds }) {
+  return (
+    <Box>
+      <Typography variant="h3" align="center" gutterBottom>
+        Strokes Details
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+        style={{ fontSize: "18px", fontFamily: "cubano" }}
+      >
+        <thead className="table-dark">
+          <tr>
+            <th className="text-start fw-normal">PLAYER</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1} className="d-none d-sm-table-cell">
+                {i + 1}
+              </th>
+            ))}
+            <th className="fw-normal">TOT</th>
+            <th className="fw-normal">HCP</th>
+            <th className="fw-normal">NET</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rounds.map((r, idx) => (
+            <tr key={r.id}>
+              <th className="text-start">
+                <Link to={`/rounds/${r.id}`} className="text-decoration-none">
+                  {r.firstName} {r.lastName[0]}
+                </Link>
+              </th>
+              {Object.values(r.strokes).map((s, idx) => (
+                <td key={idx} className="d-none d-sm-table-cell">
+                  {s}
+                </td>
+              ))}
+              <td>{r.totalStrokes}</td>
+              <td style={{ color: "red" }}>{r.courseHandicap}</td>
+              <td>{r.netStrokes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function PuttsDetailsTable({ rounds }) {
+  const sortedByPutts = [...rounds].sort((a, b) => a.totalPutts - b.totalPutts);
+
+  return (
+    <Box>
+      <Typography variant="h3" align="center" sx={{ mb: 3 }}>
+        Putts Details
+      </Typography>
+      <Table
+        responsive
+        bordered
+        striped
+        variant="light"
+        className="text-center"
+        style={{ fontSize: "18px", fontFamily: "cubano" }}
+      >
+        <thead className="table-dark">
+          <tr>
+            <th className="text-start fw-normal">PLAYER</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1} className="d-none d-sm-table-cell">
+                {i + 1}
+              </th>
+            ))}
+            <th className="fw-normal">TOT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedByPutts.map((r, idx) => (
+            <tr key={r.id}>
+              <th className="text-start">
+                {r.firstName} {r.lastName[0]}
+              </th>
+              {Object.values(r.putts).map((putt, idx) => (
+                <td key={idx} className="d-none d-sm-table-cell">
+                  {putt}
+                </td>
+              ))}
+              <td>{r.totalPutts}</td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Box>
+  );
+}
+
+function SkinsDetailsTable({ skinsData, handicaps }) {
+  return (
+    <Box>
+      <Typography variant="h3" align="center" sx={{ mb: 3 }}>
+        Skins Details
       </Typography>
       <Table
         responsive
@@ -607,6 +711,30 @@ function SkinsModalContent({ skinsData, handicaps, handleClose }) {
           ÷ 2 holes for each golfer. Adjusted hole scores are shown in{" "}
           <span style={{ color: "red" }}>red</span>.
         </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+function PointsDetailsTable({ data, setShowFullTable }) {
+  return (
+    <Box>
+      <Typography variant="h4" gutterBottom align="center">
+        Points Details
+      </Typography>
+      <RankingsTable data={data} />
+    </Box>
+  );
+}
+
+function DetailsTableWrapper({ setShowFullTable, ...props }) {
+  return (
+    <Box>
+      {props.children}
+      <Box sx={{ textAlign: "end", mb: 3 }}>
+        <Button variant="contained" onClick={() => setShowFullTable(null)}>
+          Go Back
+        </Button>
       </Box>
     </Box>
   );

@@ -59,7 +59,7 @@ const MemberList = () => {
                 <thead>
                   <tr className="table-dark">
                     <th className="text-start">NAME</th>
-                    <th>RND</th>
+                    {/* <th>ROUNDS</th> */}
                     <th>STR</th>
                     <th>PUT</th>
                     <th>GRN</th>
@@ -73,10 +73,10 @@ const MemberList = () => {
                           to={`/members/${m.username}`}
                           className="text-decoration-none"
                         >
-                          {m.firstName} {m.lastName[0]}
+                          {m.firstName} {m.lastName}
                         </Link>
                       </th>
-                      <td>{m.totalRounds}</td>
+                      {/* <td>{m.totalRounds}</td> */}
                       <td>{m.avgStrokes}</td>
                       <td>{m.avgPutts}</td>
 

@@ -102,38 +102,22 @@ class User {
    *
    * Returns [{ username, first_name, last_name, is_admin, avgStrokes, avgPutts, avgGreenies }, ...]
    *
-   *
-   *  bug with trying to double join users to rounds to greenies so don't do it
    **/
 
   static async findAll() {
-    // const usersRes = await db.query(
-    //   `SELECT users.username,
-    //               first_name AS "firstName",
-    //               last_name AS "lastName",
-    //               is_admin AS "isAdmin",
-    //               ROUND(AVG(total_strokes), 2) AS "avgStrokes",
-    //               ROUND(AVG(total_putts), 2) AS "avgPutts",
-    //               COUNT(rounds.id) AS "totalRounds"
-    //        FROM users
-    //        LEFT JOIN ROUNDS on users.username = rounds.username
-    //        GROUP BY users.username
-    //        ORDER BY AVG(total_strokes) ASC`
-    // );
-
     const usersRes = await db.query(
       `SELECT users.username,
                   first_name AS "firstName",
                   last_name AS "lastName",
                   is_admin AS "isAdmin",
                   email,
-                  ROUND(AVG(total_strokes), 2) AS "avgStrokes",
-                  ROUND(AVG(total_putts), 2) AS "avgPutts",
+                  ROUND(AVG(total_strokes), 1) AS "avgStrokes",
+                  ROUND(AVG(total_putts), 1) AS "avgPutts",
                   COUNT(rounds.id) AS "totalRounds"
            FROM users
            LEFT JOIN ROUNDS on users.username = rounds.username
            GROUP BY users.username
-           ORDER BY COUNT(rounds.id) DESC`
+           ORDER BY first_name`
     );
 
     const users = usersRes.rows;
@@ -152,10 +136,11 @@ class User {
 
     result.members = users;
 
+    // Add avgGreenies to each user for member averages page
     users.map((m) => {
       greenies.map((g) => {
         if (g.username === m.username) {
-          m.avgGreenies = (g.totalGreenies / m.totalRounds).toFixed(2);
+          m.avgGreenies = (g.totalGreenies / m.totalRounds).toFixed(1);
         }
       });
     });

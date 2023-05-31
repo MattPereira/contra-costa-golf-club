@@ -162,6 +162,16 @@ class Tournament {
 
       const strokes = strokesRes.rows;
 
+      const puttsRes = await db.query(
+        `SELECT round_id AS "roundId",
+                hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9,
+                hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18
+                FROM putts
+                WHERE round_id IN (${roundsIds.join(",")})`
+      );
+
+      const putts = puttsRes.rows;
+
       const pointsRes = await db.query(
         `SELECT round_id AS "roundId",
                 strokes
@@ -177,6 +187,12 @@ class Tournament {
           if (s.roundId === r.id) {
             delete s.roundId;
             r.strokes = s;
+          }
+        });
+        putts.map((p) => {
+          if (p.roundId === r.id) {
+            delete p.roundId;
+            r.putts = p;
           }
         });
         points.map((p) => {

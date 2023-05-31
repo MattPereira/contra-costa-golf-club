@@ -74,15 +74,12 @@ class Round {
     let playerIndex;
     let courseHandicap;
 
-    //Hard to account for player with less than 4 rounds without WET code
-
-    ///////////////// IF THE ROUND IS FULLY COMPLETED ///////////////////////
-    /******** calculate the score differential and net strokes  ******/
+    /**** IF THE ROUND IS FULLY COMPLETED : calculate the score differential and net strokes ****/
     if (
       Object.values(strokes).every((val) => val !== null) &&
       Object.values(putts).every((val) => val !== null)
     ) {
-      /***** Compute score_differential for round: (113 / course_slope) * (total_strokes - course_rating) *****/
+      // Compute score_differential for round: (113 / course_slope) * (total_strokes - course_rating)
       scoreDifferential = +(
         (113 / courseSlope) *
         (totalStrokes - courseRating)
@@ -112,8 +109,7 @@ class Round {
       netStrokes = totalStrokes - courseHandicap;
       // console.log("NET STROKES", netStrokes);
     } else {
-      ///////////////// IF THE ROUND IS ONLY PARTIALLY COMPLETED ///////////////////////
-      /******** leave score differential and net strokes as null ******/
+      /***** IF THE ROUND IS ONLY PARTIALLY COMPLETED: leave score differential and net strokes as null ******/
 
       //sort from lowest to highest and slice to get the two lowest
       const lowestDiffs = scoreDiffsArr.sort((a, b) => a - b).slice(0, 2);

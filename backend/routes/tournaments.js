@@ -74,7 +74,7 @@ router.get("/", async function (req, res, next) {
  *
  *  points is ...
  *
- *  strokesLeaderboard is { date, course_handle, season_end_year, rounds }
+ *  StrokesWinnersTable is { date, course_handle, season_end_year, rounds }
  *  where rounds is [{ username, strokes, total_strokes, net_strokes, player_index, score_differential, course_handicap }, ...]
  *  where strokes is {hole1, hole2, ..., hole18}
  *
