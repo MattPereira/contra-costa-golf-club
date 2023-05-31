@@ -33,6 +33,7 @@ let theme = createTheme({
     },
     p: {
       fontFamily: "Poppins",
+      fontSize: "1.1rem",
     },
   },
   components: {

@@ -9,13 +9,11 @@ import { RankingsTable } from "../standings/StandingsDetails";
 import PageHero from "../../components/PageHero";
 
 // prettier-ignore
-import { Button, Container, Box, Tab, Typography, Grid, Tabs, Modal } from "@mui/material";
+import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Table } from "react-bootstrap";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import CloseIcon from "@mui/icons-material/Close";
 
 /** Tournament Details Page
  *
@@ -389,6 +387,15 @@ function WinnersTab({ rounds, points, handicaps }) {
     skins: <SkinsDetailsTable skinsData={skinsData} handicaps={handicaps} />,
   };
 
+  const StyledTypography = styled(Typography)(({ theme }) => ({
+    "&:hover": {
+      color: theme.palette.primary.dark,
+    },
+    color: theme.palette.primary.main,
+    cursor: "pointer",
+    textDecoration: "underline",
+  }));
+
   return (
     <section>
       <Box sx={{ mb: 5 }}>
@@ -409,20 +416,27 @@ function WinnersTab({ rounds, points, handicaps }) {
                   <SkinsWinnersTable winners={skinsData} />
                 </Grid>
               </Grid>
-              <Grid container spacing={4} sx={{ mt: 5 }}>
-                {["strokes", "putts", "skins", "points"].map((category) => (
-                  <Grid item xs={6} lg={3} key={category}>
-                    <Button
-                      key={category}
-                      variant="contained"
-                      onClick={() => setShowFullTable(category)}
-                      sx={{ width: "100%" }}
-                    >
-                      {category}
-                    </Button>
-                  </Grid>
-                ))}
-              </Grid>
+
+              <Box sx={{ mt: 5, textAlign: "end" }}>
+                <Typography variant="p">
+                  *See all round data for this tournament's{" "}
+                </Typography>
+                {["strokes", "putts", "skins", "points"].map(
+                  (category, idx) => (
+                    <span key={category}>
+                      <StyledTypography
+                        variant="p"
+                        onClick={() => setShowFullTable(category)}
+                      >
+                        {category}
+                      </StyledTypography>
+                      <span>
+                        {idx !== 3 && ", "} {idx === 2 && "and "}
+                      </span>
+                    </span>
+                  )
+                )}
+              </Box>
             </Box>
           </>
         )}
@@ -564,7 +578,7 @@ function StrokesDetailsTable({ rounds }) {
   return (
     <Box>
       <Typography variant="h3" align="center" gutterBottom>
-        Strokes Details
+        Strokes
       </Typography>
       <Table
         responsive
@@ -617,7 +631,7 @@ function PuttsDetailsTable({ rounds }) {
   return (
     <Box>
       <Typography variant="h3" align="center" sx={{ mb: 3 }}>
-        Putts Details
+        Putts
       </Typography>
       <Table
         responsive
@@ -662,7 +676,7 @@ function SkinsDetailsTable({ skinsData, handicaps }) {
   return (
     <Box>
       <Typography variant="h3" align="center" sx={{ mb: 3 }}>
-        Skins Details
+        Skins
       </Typography>
       <Table
         responsive
@@ -719,8 +733,8 @@ function SkinsDetailsTable({ skinsData, handicaps }) {
 function PointsDetailsTable({ data, setShowFullTable }) {
   return (
     <Box>
-      <Typography variant="h4" gutterBottom align="center">
-        Points Details
+      <Typography variant="h3" gutterBottom align="center">
+        Points
       </Typography>
       <RankingsTable data={data} />
     </Box>

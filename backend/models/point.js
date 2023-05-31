@@ -243,7 +243,7 @@ class Point {
     //   [tourYears]
     // );
 
-    /*** Sums only top 3 rounds points for each golfer for a given tourYear ***/
+    /*** Sums only top 10 rounds points for each golfer for a given tourYear ***/
     const standingsRes = await db.query(
       `WITH ranked_rounds AS (
           SELECT 
@@ -318,8 +318,6 @@ class Point {
             ORDER BY total DESC`,
       [tournamentDate]
     );
-
-    console.log("GETSTANDINGS", result.rows);
 
     return result.rows;
   }
