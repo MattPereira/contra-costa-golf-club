@@ -4,8 +4,6 @@ const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
-/** Related functions for courses. */
-
 class Round {
   /** Create a round from data, update db, return new round data.
    *
@@ -14,7 +12,6 @@ class Round {
    *  and putts is {hole1, hole2, hole3, ...}
    *
    * Returns { tournamentDate, username, strokes, putts }
-   *
    *
    * Throws BadRequestError if round already in database.
    * */
@@ -99,13 +96,13 @@ class Round {
       playerIndex = (
         lowestDiffs.reduce((a, b) => a + b, 0) / lowestDiffs.length
       ).toFixed(1);
-      console.log("PLAYER INDEX", playerIndex);
+      // console.log("PLAYER INDEX", playerIndex);
 
-      /** Compute the course_handicap = (player_index * (course_slope)) / 113 ***/
+      // Compute the course_handicap = (player_index * (course_slope)) / 113
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
-      console.log("COURSE HANDICAP", courseHandicap);
+      // console.log("COURSE HANDICAP", courseHandicap);
 
-      /** Compute the net_strokes = (total_strokes - course_handicap) ***/
+      // only computing net strokes if the round is fully completed
       netStrokes = totalStrokes - courseHandicap;
       // console.log("NET STROKES", netStrokes);
     } else {
@@ -118,15 +115,13 @@ class Round {
       playerIndex = (
         lowestDiffs.reduce((a, b) => a + b, 0) / lowestDiffs.length
       ).toFixed(1);
-      console.log("PLAYER INDEX", playerIndex);
+      // console.log("PLAYER INDEX", playerIndex);
 
-      /** Compute the course_handicap = (player_index * course_slope) / 113 ***/
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
-      console.log("COURSE HANDICAP", courseHandicap);
+      // console.log("COURSE HANDICAP", courseHandicap);
     }
 
-    /*** ALL TABLE INSERTION HAPPENS BELOW THE CONDITIONALS THAT COMPUTE ROUND COLUMN VALUES */
-    // Insert into rounds table first and grab the round_id
+    // Insert into rounds table first to grab the round_id
     const roundRes = await db.query(
       `INSERT INTO rounds
                (tournament_date, username, total_strokes, total_putts, score_differential, player_index, course_handicap, net_strokes)
@@ -150,7 +145,7 @@ class Round {
 
     const round = roundRes.rows[0];
 
-    /*** Insert all the strokes for the round ***/
+    // Insert all the strokes for the round
     const strokesRes = await db.query(
       `INSERT INTO strokes
       (round_id, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18)
@@ -159,7 +154,7 @@ class Round {
       [round.id, ...Object.values(strokes)]
     );
 
-    /*** Insert all the putts for the round ***/
+    // Insert all the putts for the round
     const puttsRes = await db.query(
       `INSERT INTO putts
       (round_id, hole1, hole2, hole3, hole4, hole5, hole6, hole7, hole8, hole9, hole10, hole11, hole12, hole13, hole14, hole15, hole16, hole17, hole18)
@@ -459,7 +454,7 @@ class Round {
 
     const { strokes, putts, username } = data;
 
-    /** STEP 1 : Sum strokes and putts objects to get new total_strokes and total_putts */
+    // Sum strokes and putts objects to get total_strokes and total_putts
     const totalStrokes = Object.values(strokes).reduce((a, b) => a + b, 0);
     const totalPutts = Object.values(putts).reduce((a, b) => a + b, 0);
     // console.log("TOTAL STROKES", totalStrokes);
@@ -504,13 +499,11 @@ class Round {
     let playerIndex;
     let courseHandicap;
 
-    ///////////////// IF THE ROUND IS FULLY COMPLETED ///////////////////////
-    /******** calculate the score differential and net strokes  ******/
+    /****** IF THE ROUND IS FULLY COMPLETED:  calculate the score differential and net strokes *****/
     if (
       Object.values(strokes).every((val) => val !== null) &&
       Object.values(putts).every((val) => val !== null)
     ) {
-      /** Compute score_differential = (113 / course_slope) * (total_strokes - course_rating) */
       scoreDifferential = +(
         (113 / courseSlope) *
         (totalStrokes - courseRating)
@@ -521,44 +514,39 @@ class Round {
       if (scoreDiffsArr.length > 0 && scoreDiffsArr.length < 4) {
         scoreDiffsArr.push(scoreDifferential);
       }
-      console.log("SCORE DIFFS ARRAY", scoreDiffsArr);
+      // console.log("SCORE DIFFS ARRAY", scoreDiffsArr);
 
-      //sort from lowest to highest and slice to get the two lowest
+      //grab the two lowest score diffs to calculate player index
       const lowestDiffs = scoreDiffsArr.sort((a, b) => a - b).slice(0, 2);
       // console.log("LOWEST DIFFS", lowestDiffs);
 
       playerIndex = (
         lowestDiffs.reduce((a, b) => a + b, 0) / lowestDiffs.length
       ).toFixed(1);
-      console.log("PLAYER INDEX", playerIndex);
+      // console.log("PLAYER INDEX", playerIndex);
 
-      /** Compute the course_handicap = (player_index * (course_slope)) / 113 ***/
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
-      console.log("COURSE HANDICAP", courseHandicap);
+      // console.log("COURSE HANDICAP", courseHandicap);
 
-      /** Compute the net_strokes = (total_strokes - course_handicap) ***/
       netStrokes = totalStrokes - courseHandicap;
       // console.log("NET STROKES", netStrokes);
     } else {
-      ///////////////// IF THE ROUND IS ONLY PARTIALLY COMPLETED ///////////////////////
-      /******** leave score differential and net strokes as null ******/
+      /***** IF THE ROUND IS ONLY PARTIALLY COMPLETED: leave score diff and net strokes as null *****/
 
-      //sort from lowest to highest and slice to get the two lowest
+      //sort from lowest to highest and slice to get the two lowest score diffs
       const lowestDiffs = scoreDiffsArr.sort((a, b) => a - b).slice(0, 2);
-      console.log("LOWEST DIFFS", lowestDiffs);
+      // console.log("LOWEST DIFFS", lowestDiffs);
 
       playerIndex = (
         lowestDiffs.reduce((a, b) => a + b, 0) / lowestDiffs.length
       ).toFixed(1);
-      console.log("PLAYER INDEX", playerIndex);
+      // console.log("PLAYER INDEX", playerIndex);
 
-      /** Compute the course_handicap = (player_index * course_slope) / 113 ***/
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
-      console.log("COURSE HANDICAP", courseHandicap);
+      // console.log("COURSE HANDICAP", courseHandicap);
     }
 
-    /*** ALL TABLE UPDATES HAPPEN BELOW THE CONDITIONALS THAT COMPUTE ROUND COLUMN VALUES */
-    /*** Update all computed data into rounds table ***/
+    // Update all the freshly computed data into rounds table
     const roundRes = await db.query(
       `UPDATE rounds
                SET total_strokes=$1, total_putts=$2, score_differential=$3, player_index=$4, course_handicap=$5, net_strokes=$6
