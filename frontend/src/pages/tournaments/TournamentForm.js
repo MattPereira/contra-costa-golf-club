@@ -102,7 +102,7 @@ const TournamentForm = ({ courseHandles, tournament }) => {
     }
 
     //navigate to the course detail page for the newly created course
-    navigate(`/tournaments/${formData.date}`);
+    navigate(`/tournaments/${tournament ? formData.date : dateValue}`);
   };
 
   console.log(tournament);

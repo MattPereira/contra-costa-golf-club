@@ -309,22 +309,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 function WinnersTab({ rounds, points, handicaps, greenies }) {
   const [selectedDetailsTable, setSelectedDetailsTable] = useState(null);
 
-  // sort rounds by total putts and slice to only top 3
-  const puttsWinners = [...rounds]
-    .sort((a, b) => a.totalPutts - b.totalPutts)
-    .slice(0, 3);
-
-  // sort rounds by net strokes and slice to only top 3
-  let strokesWinners = [...rounds]
-    .sort((a, b) => a.netStrokes - b.netStrokes)
-    .slice(0, 3);
-
-  // TODO: HANDLE TIES
-  // if there are at least three rounds completed
-  // grab the third round from sorted array and see if there are any ties
-
-  /***** SKINS GAME ******/
-
+  // ADJUSTING EACH ROUNDS STROKES FOR SKINS USING HANDICAPS
   const adjustedSkinsScores = rounds.map((r) => {
     // Transform rounds data to subtract strokes for each golfer based on their handicap
     const strokesValues = Object.values(r.strokes);
@@ -344,6 +329,7 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
 
       // take a stroke off if handicap is less than or equal to the hole handicap
       if (hole.handicap <= adjustedHandicap) {
+        // turn into string to differentiate to display ajusted strokes in red text color
         hole.strokes = (hole.strokes - 1).toString();
       }
 
@@ -364,8 +350,6 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
       round: adjustedRound,
     };
   });
-
-  console.log(`ADJUSTED SCORES`, adjustedSkinsScores);
 
   const detailsTables = {
     strokes: <StrokesDetailsTable rounds={rounds} />,
@@ -395,13 +379,13 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
-                <StrokesWinnersTable winners={strokesWinners} />
+                <StrokesWinnersTable rounds={rounds} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <PuttsWinnersTable winners={puttsWinners} />
+                <PuttsWinnersTable rounds={rounds} />
               </Grid>
               <Grid item xs={12} md={6}>
-                <GreeniesWinnersTable winners="coming soon" />
+                <GreeniesWinnersTable greenies={greenies} />
               </Grid>
               <Grid item xs={12} md={6}>
                 <SkinsWinnersTable adjustedSkinsScores={adjustedSkinsScores} />
@@ -440,7 +424,16 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
   );
 }
 
-function StrokesWinnersTable({ winners }) {
+function StrokesWinnersTable({ rounds }) {
+  // sort rounds by net strokes and slice to only top 3
+  let strokesWinners = [...rounds]
+    .sort((a, b) => a.netStrokes - b.netStrokes)
+    .slice(0, 3);
+
+  // TODO: HANDLE TIES
+  // if there are at least three rounds completed
+  // grab the third round from sorted array and see if there are any ties
+
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
@@ -461,7 +454,7 @@ function StrokesWinnersTable({ winners }) {
           </tr>
         </thead>
         <tbody>
-          {winners.map((player, idx) => (
+          {strokesWinners.map((player, idx) => (
             <tr key={idx}>
               <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
               <td style={{ textAlign: "start", fontFamily: "cubano" }}>
@@ -476,7 +469,16 @@ function StrokesWinnersTable({ winners }) {
   );
 }
 
-function PuttsWinnersTable({ winners }) {
+function PuttsWinnersTable({ rounds }) {
+  // sort rounds by total putts and slice to only top 3
+  const puttsWinners = [...rounds]
+    .sort((a, b) => a.totalPutts - b.totalPutts)
+    .slice(0, 3);
+
+  // TODO: HANDLE TIES
+  // if there are at least three rounds completed
+  // grab the third round from sorted array and see if there are any ties
+
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
@@ -497,7 +499,7 @@ function PuttsWinnersTable({ winners }) {
           </tr>
         </thead>
         <tbody>
-          {winners.map((winner, idx) => (
+          {puttsWinners.map((winner, idx) => (
             <tr key={idx}>
               <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
               <td style={{ fontFamily: "cubano", textAlign: "start" }}>
@@ -512,7 +514,31 @@ function PuttsWinnersTable({ winners }) {
   );
 }
 
-function GreeniesWinnersTable({ winners }) {
+function GreeniesWinnersTable({ greenies }) {
+  const winners = [];
+
+  // determines number of holes that can be won
+  const uniqueHoleNums = new Set(greenies.map((g) => g.holeNumber));
+
+  const alreadyWonHoles = [];
+  const alreadyWonPlayers = [];
+
+  // for each hole that can be won
+  for (let i = 0; i < uniqueHoleNums.size; i++) {
+    // each hole can only have one winner && each player cannot win more than one hole
+    let filteredGreenies = greenies.filter(
+      (g) =>
+        !alreadyWonHoles.includes(g.holeNumber) &&
+        !alreadyWonPlayers.includes(g.roundId)
+    );
+
+    // push the 0th index of the filtered array (pre-sorted by distance) to winners
+    winners.push(filteredGreenies[0]);
+    // push the hole number and player id to alreadyWon arrays
+    alreadyWonHoles.push(filteredGreenies[0].holeNumber);
+    alreadyWonPlayers.push(filteredGreenies[0].roundId);
+  }
+
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
@@ -532,14 +558,29 @@ function GreeniesWinnersTable({ winners }) {
             <th>LENGTH</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {winners.map((winner, idx) => (
+            <tr key={idx}>
+              <td style={{ fontFamily: "cubano" }}>{winner.holeNumber}</td>
+              <td style={{ fontFamily: "cubano", textAlign: "start" }}>
+                {winner.firstName} {winner.lastName}
+              </td>
+              <td>
+                {winner.feet}' {winner.inches}"
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
+      <Typography variant="p">
+        Each player can only win one hole starting with their closest.
+      </Typography>
     </Box>
   );
 }
 
 function SkinsWinnersTable({ adjustedSkinsScores }) {
-  // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
+  // TODO: Decide on how skins winners table should behave as incomplete rounds are entered
   // step 1: make an array of arrays (one for each hole)
   // inside the nested arrays will be an object for each player with their name and score for that hole
   // i.e. [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
@@ -576,7 +617,6 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
   // if it is unique, find it from original array of objects and push onto skinsWinners
 
   scoresByHoleNum.forEach((hole) => {
-    console.log(hole);
     // make array of just hole scores i.e. [5,7,3,4]
     const holeScores = hole.map((golfer) => golfer.strokes);
     // find the lowest value in the array
@@ -593,7 +633,7 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
     }
   });
 
-  console.log("SKINS WINNERS", skinsWinners);
+  // console.log("SKINS WINNERS", skinsWinners);s
 
   return (
     <Box>
