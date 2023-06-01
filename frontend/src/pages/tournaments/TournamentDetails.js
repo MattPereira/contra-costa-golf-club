@@ -424,15 +424,41 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
   );
 }
 
+/***** EVERYTHING BELOW IS COMPONENTS FOR WinnersTab *****/
 function StrokesWinnersTable({ rounds }) {
-  // sort rounds by net strokes and slice to only top 3
-  let strokesWinners = [...rounds]
-    .sort((a, b) => a.netStrokes - b.netStrokes)
-    .slice(0, 3);
+  // sort rounds by net strokes
+  const sortedRounds = [...rounds].sort((a, b) => a.netStrokes - b.netStrokes);
 
+  // top 3 will be winners of some sort
+  const strokesWinners = sortedRounds.slice(0, 3);
   // TODO: HANDLE TIES
   // if there are at least three rounds completed
   // grab the third round from sorted array and see if there are any ties
+
+  if (strokesWinners.length > 2) {
+    sortedRounds.forEach((round) => {
+      if (
+        round.netStrokes === strokesWinners[2].netStrokes &&
+        round.id !== strokesWinners[2].id
+      ) {
+        strokesWinners.push(round);
+      }
+    });
+  }
+  console.log("third", strokesWinners[2]);
+
+  let position = 1;
+
+  const winners = strokesWinners.map((round, idx) => {
+    // only increment poisition if the previous round's net strokes is different
+    if (idx > 0 && round.netStrokes !== strokesWinners[idx - 1].netStrokes) {
+      position++;
+    }
+
+    return { position: position, ...round };
+  });
+
+  console.log("winners", winners);
 
   return (
     <Box>
@@ -454,9 +480,9 @@ function StrokesWinnersTable({ rounds }) {
           </tr>
         </thead>
         <tbody>
-          {strokesWinners.map((player, idx) => (
+          {winners.map((player, idx) => (
             <tr key={idx}>
-              <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+              <td style={{ fontFamily: "cubano" }}>{player.position}</td>
               <td style={{ textAlign: "start", fontFamily: "cubano" }}>
                 {player.firstName + " " + player.lastName}
               </td>
@@ -470,14 +496,38 @@ function StrokesWinnersTable({ rounds }) {
 }
 
 function PuttsWinnersTable({ rounds }) {
-  // sort rounds by total putts and slice to only top 3
-  const puttsWinners = [...rounds]
-    .sort((a, b) => a.totalPutts - b.totalPutts)
-    .slice(0, 3);
+  // sort rounds by total putts
+  const sortedByPutts = [...rounds].sort((a, b) => a.totalPutts - b.totalPutts);
 
-  // TODO: HANDLE TIES
-  // if there are at least three rounds completed
-  // grab the third round from sorted array and see if there are any ties
+  //slice the top 3 rounds who for sure win
+  const puttsWinners = sortedByPutts.slice(0, 3);
+
+  if (puttsWinners.length > 2) {
+    sortedByPutts.forEach((round) => {
+      // if there is a tie for third place, add the tied round to the winners array
+      if (
+        round.totalPutts === puttsWinners[2].totalPutts &&
+        !puttsWinners.map((w) => w.id).includes(round.id)
+      ) {
+        puttsWinners.push(round);
+      }
+    });
+  }
+
+  let position = 1;
+
+  const winners = puttsWinners.map((round, idx) => {
+    // only increment poisition if the previous round's total putts is different
+    if (idx > 0 && round.totalPutts !== puttsWinners[idx - 1].totalPutts) {
+      console.log("puttsWinners", puttsWinners[idx - 1].totalPutts);
+
+      position++;
+    }
+
+    return { position: position, ...round };
+  });
+
+  console.log("winners", winners);
 
   return (
     <Box>
@@ -499,9 +549,9 @@ function PuttsWinnersTable({ rounds }) {
           </tr>
         </thead>
         <tbody>
-          {puttsWinners.map((winner, idx) => (
+          {winners.map((winner, idx) => (
             <tr key={idx}>
-              <td style={{ fontFamily: "cubano" }}>{idx + 1}</td>
+              <td style={{ fontFamily: "cubano" }}>{winner.position}</td>
               <td style={{ fontFamily: "cubano", textAlign: "start" }}>
                 {winner.firstName} {winner.lastName}
               </td>
@@ -542,7 +592,7 @@ function GreeniesWinnersTable({ greenies }) {
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
-        Greenies
+        Greenies*
       </Typography>
       <Table
         responsive
@@ -561,7 +611,7 @@ function GreeniesWinnersTable({ greenies }) {
         <tbody>
           {winners.map((winner, idx) => (
             <tr key={idx}>
-              <td style={{ fontFamily: "cubano" }}>{winner.holeNumber}</td>
+              <td style={{ fontFamily: "cubano" }}>#{winner.holeNumber}</td>
               <td style={{ fontFamily: "cubano", textAlign: "start" }}>
                 {winner.firstName} {winner.lastName}
               </td>
@@ -573,7 +623,7 @@ function GreeniesWinnersTable({ greenies }) {
         </tbody>
       </Table>
       <Typography variant="p">
-        Each player can only win one hole starting with their closest.
+        *Each player can only win one hole starting with their closest.
       </Typography>
     </Box>
   );
@@ -638,8 +688,9 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
-        Skins
+        Skins*
       </Typography>
+
       <Table
         responsive
         bordered
@@ -664,6 +715,9 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
           ))}
         </tbody>
       </Table>
+      <Typography variant="p" align="center" gutterBottom>
+        *Uses adjusted scores to determine if unique low score for a hole
+      </Typography>
     </Box>
   );
 }
