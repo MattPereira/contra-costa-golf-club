@@ -306,7 +306,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
   );
 }
 
-function WinnersTab({ rounds, points, handicaps }) {
+function WinnersTab({ rounds, points, handicaps, greenies }) {
   const [selectedDetailsTable, setSelectedDetailsTable] = useState(null);
 
   // sort rounds by total putts and slice to only top 3
@@ -319,9 +319,9 @@ function WinnersTab({ rounds, points, handicaps }) {
     .sort((a, b) => a.netStrokes - b.netStrokes)
     .slice(0, 3);
 
-  // TODO: HANDLE THIRD PLACE TIES
+  // TODO: HANDLE TIES
   // if there are at least three rounds completed
-  // grab the third round and see if there are any ties
+  // grab the third round from sorted array and see if there are any ties
 
   /***** SKINS GAME ******/
 
@@ -356,7 +356,7 @@ function WinnersTab({ rounds, points, handicaps }) {
 
     const playerName = r.username.split("-");
     const shortName =
-      playerName[0] + " " + (playerName[1] ? playerName[1][0] : "");
+      playerName[0] + " " + (playerName[1] ? playerName[1] : "");
 
     return {
       name: shortName,
@@ -365,17 +365,7 @@ function WinnersTab({ rounds, points, handicaps }) {
     };
   });
 
-  console.log(`SKINS SCORES`, adjustedSkinsScores);
-
-  const skinsWinners = [];
-
-  // step 1: make an array of arrays (one for each hole)
-  // inside the nested arrays will be an object for each player with their name and score for that hole
-
-  // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
-  // Start with transforming adjustedSkinsScores to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
-
-  for (let i = 0; i < 18; i++) {}
+  console.log(`ADJUSTED SCORES`, adjustedSkinsScores);
 
   const detailsTables = {
     strokes: <StrokesDetailsTable rounds={rounds} />,
@@ -414,7 +404,7 @@ function WinnersTab({ rounds, points, handicaps }) {
                 <GreeniesWinnersTable winners="coming soon" />
               </Grid>
               <Grid item xs={12} md={6}>
-                <SkinsWinnersTable winners={adjustedSkinsScores} />
+                <SkinsWinnersTable adjustedSkinsScores={adjustedSkinsScores} />
               </Grid>
             </Grid>
 
@@ -548,7 +538,63 @@ function GreeniesWinnersTable({ winners }) {
   );
 }
 
-function SkinsWinnersTable({ winners }) {
+function SkinsWinnersTable({ adjustedSkinsScores }) {
+  // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
+  // step 1: make an array of arrays (one for each hole)
+  // inside the nested arrays will be an object for each player with their name and score for that hole
+  // i.e. [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
+
+  const scoresByHoleNum = [];
+
+  // loop 18 times to create an array of arrays
+  for (let i = 0; i < 18; i++) {
+    const holeScores = [];
+    // loop over each golfer's round trying to add their score to the correct hole
+    adjustedSkinsScores.forEach((golfer) => {
+      // for each hole, add the golfer's name and score to the array
+      if (i + 1 === golfer.round[i].holeNumber) {
+        const scores = {
+          name: golfer.name,
+          strokes: +golfer.round[i].strokes,
+          holeNumber: golfer.round[i].holeNumber,
+        };
+
+        holeScores.push(scores);
+      }
+    });
+
+    scoresByHoleNum.push(holeScores);
+  }
+
+  // scoresByHoleNum looks like: [[{name: "Dennis", strokes: 5, holeNumber: 1},{name: "Matt", strokes: 3, holeNumber: 1} ], [...], [...]]
+  // console.log(`SCORES BY HOLE`, scoresByHoleNum);
+
+  const skinsWinners = [];
+  //step 2: figure out if there is a holeScore that is lower than the rest
+  // if there is, push that object onto skinsWinners
+  // mabye make an array from just the strokes values and use Math.min() to find the lowest score and then check if its unique using a set
+  // if it is unique, find it from original array of objects and push onto skinsWinners
+
+  scoresByHoleNum.forEach((hole) => {
+    console.log(hole);
+    // make array of just hole scores i.e. [5,7,3,4]
+    const holeScores = hole.map((golfer) => golfer.strokes);
+    // find the lowest value in the array
+    const lowestScore = Math.min(...holeScores);
+    // if that score is unique, push it onto skinsWinners
+    const frequencyOfLowestScore = holeScores.filter(
+      (score) => score === lowestScore
+    );
+
+    if (frequencyOfLowestScore.length === 1) {
+      // search array for golfer with strokes score equal to unique lowest score
+      const winner = hole.find((golfer) => golfer.strokes === lowestScore);
+      skinsWinners.push(winner);
+    }
+  });
+
+  console.log("SKINS WINNERS", skinsWinners);
+
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
@@ -568,7 +614,15 @@ function SkinsWinnersTable({ winners }) {
             <th>SCORE</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          {skinsWinners.map((winner, idx) => (
+            <tr key={idx}>
+              <th>#{winner.holeNumber}</th>
+              <th className="text-start">{winner.name}</th>
+              <td>{winner.strokes}</td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
     </Box>
   );
