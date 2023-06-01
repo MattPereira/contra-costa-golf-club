@@ -83,7 +83,6 @@ export default function TournamentDetails() {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          aria-label="tournament details tabs"
         >
           <StyledTab label="Rounds" />
           <StyledTab label="Greenies" />
@@ -222,7 +221,6 @@ function RoundsTab({ rounds, tournamentDate }) {
 
 function GreeniesTab({ greenies, tournamentDate, rounds }) {
   const { currentUser } = useContext(UserContext);
-  console.log("GREENIES", greenies);
 
   const AddGreenieButton =
     currentUser && rounds.length !== 0 ? (
@@ -310,7 +308,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 }
 
 function WinnersTab({ rounds, points, handicaps }) {
-  const [showFullTable, setShowFullTable] = useState(null);
+  const [selectedDetailsTable, setSelectedDetailsTable] = useState(null);
 
   // sort rounds by total putts and slice to only top 3
   const puttsWinners = [...rounds]
@@ -328,7 +326,7 @@ function WinnersTab({ rounds, points, handicaps }) {
   // }
 
   // Transform rounds data to subtract strokes for each golfer based on their handicap
-  const skinsData = rounds.map((r) => {
+  const adjustedSkinsScores = rounds.map((r) => {
     const strokesValues = Object.values(r.strokes);
     const handicapValues = Object.values(handicaps);
 
@@ -367,11 +365,16 @@ function WinnersTab({ rounds, points, handicaps }) {
     };
   });
 
-  console.log(`SKINS TAB`, skinsData);
+  console.log(`SKINS SCORES`, adjustedSkinsScores);
+
+  const skinsWinners = [];
+
+  // step 1: make an array of arrays (one for each hole)
+  // inside the nested arrays will be an object for each player with their name and score for that hole
 
   // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
-  // Maybe start with transforming skinsData to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
-  // const winners = skinsData.map((item) => {
+  // Maybe start with transforming adjustedSkinsScores to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
+  // const winners = adjustedSkinsScores.map((item) => {
   //   return {
   //     name: item.name,
   //     hole: item.round[0].holeNumber,
@@ -380,11 +383,16 @@ function WinnersTab({ rounds, points, handicaps }) {
   // });
   // console.log(`WINNERS`, winners);
 
-  const fullTables = {
+  const detailsTables = {
     strokes: <StrokesDetailsTable rounds={rounds} />,
     putts: <PuttsDetailsTable rounds={rounds} />,
     points: <PointsDetailsTable data={points} />,
-    skins: <SkinsDetailsTable skinsData={skinsData} handicaps={handicaps} />,
+    skins: (
+      <SkinsDetailsTable
+        adjustedSkinsScores={adjustedSkinsScores}
+        handicaps={handicaps}
+      />
+    ),
   };
 
   const StyledTypography = styled(Typography)(({ theme }) => ({
@@ -399,50 +407,48 @@ function WinnersTab({ rounds, points, handicaps }) {
   return (
     <section>
       <Box sx={{ mb: 5 }}>
-        {!showFullTable && (
-          <>
-            <Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <StrokesWinnersTable winners={strokesWinners} />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <PuttsWinnersTable winners={puttsWinners} />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <GreeniesWinnersTable winners="coming soon" />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <SkinsWinnersTable winners={skinsData} />
-                </Grid>
+        {!selectedDetailsTable && (
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <StrokesWinnersTable winners={strokesWinners} />
               </Grid>
+              <Grid item xs={12} md={6}>
+                <PuttsWinnersTable winners={puttsWinners} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <GreeniesWinnersTable winners="coming soon" />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <SkinsWinnersTable winners={adjustedSkinsScores} />
+              </Grid>
+            </Grid>
 
-              <Box sx={{ mt: 5, textAlign: "end" }}>
-                <Typography variant="p">
-                  *See all round data for this tournament's{" "}
-                </Typography>
-                {["strokes", "putts", "skins", "points"].map(
-                  (category, idx) => (
-                    <span key={category}>
-                      <StyledTypography
-                        variant="p"
-                        onClick={() => setShowFullTable(category)}
-                      >
-                        {category}
-                      </StyledTypography>
-                      <span>
-                        {idx !== 3 && ", "} {idx === 2 && "and "}
-                      </span>
-                    </span>
-                  )
-                )}
-              </Box>
+            <Box sx={{ mt: 5 }}>
+              <Typography variant="p">
+                See all round data for this tournament's{" "}
+              </Typography>
+              {["strokes", "putts", "skins", "points"].map((category, idx) => (
+                <span key={category}>
+                  <StyledTypography
+                    variant="p"
+                    onClick={() => setSelectedDetailsTable(category)}
+                  >
+                    {category}
+                  </StyledTypography>
+                  <>
+                    {idx !== 3 && ", "} {idx === 2 && "and "}
+                  </>
+                </span>
+              ))}
             </Box>
-          </>
+          </Box>
         )}
-        {showFullTable && (
-          <DetailsTableWrapper setShowFullTable={setShowFullTable}>
-            {fullTables[showFullTable]}
+        {selectedDetailsTable && (
+          <DetailsTableWrapper
+            setSelectedDetailsTable={setSelectedDetailsTable}
+          >
+            {detailsTables[selectedDetailsTable]}
           </DetailsTableWrapper>
         )}
       </Box>
@@ -672,7 +678,7 @@ function PuttsDetailsTable({ rounds }) {
   );
 }
 
-function SkinsDetailsTable({ skinsData, handicaps }) {
+function SkinsDetailsTable({ adjustedSkinsScores, handicaps }) {
   return (
     <Box>
       <Typography variant="h3" align="center" sx={{ mb: 3 }}>
@@ -700,7 +706,7 @@ function SkinsDetailsTable({ skinsData, handicaps }) {
           </tr>
         </thead>
         <tbody>
-          {skinsData.map((player, idx) => (
+          {adjustedSkinsScores.map((player, idx) => (
             <tr key={idx}>
               <th className="text-start">
                 {player.name} ({player.courseHandicap})
@@ -730,7 +736,7 @@ function SkinsDetailsTable({ skinsData, handicaps }) {
   );
 }
 
-function PointsDetailsTable({ data, setShowFullTable }) {
+function PointsDetailsTable({ data }) {
   return (
     <Box>
       <Typography variant="h3" gutterBottom align="center">
@@ -741,14 +747,22 @@ function PointsDetailsTable({ data, setShowFullTable }) {
   );
 }
 
-function DetailsTableWrapper({ setShowFullTable, ...props }) {
+function DetailsTableWrapper({ setSelectedDetailsTable, ...props }) {
   return (
     <Box>
       {props.children}
       <Box sx={{ textAlign: "end", mb: 3 }}>
-        <Button variant="contained" onClick={() => setShowFullTable(null)}>
-          Go Back
-        </Button>
+        <Typography
+          variant="p"
+          sx={{
+            color: "primary.main",
+            textDecoration: "underline",
+            cursor: "pointer",
+          }}
+          onClick={() => setSelectedDetailsTable(null)}
+        >
+          Back to Winners
+        </Typography>
       </Box>
     </Box>
   );

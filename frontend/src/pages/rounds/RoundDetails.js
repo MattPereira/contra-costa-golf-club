@@ -12,12 +12,13 @@ import PageHero from "../../components/PageHero";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 // prettier-ignore
-import { Button, Typography, Container, Box, Modal, Tab, Grid, Table, TableHead, TableBody, TableRow, TableCell, TableContainer, Paper , Tabs} from "@mui/material";
+import { Button, Typography, Container, Box, Modal, Tab, Grid, TableHead, TableBody, tr, TableCell, TableContainer, Tabs} from "@mui/material";
 
 import { v4 as uuidv4 } from "uuid";
 
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
+import { Table } from "react-bootstrap";
 
 /** Round details page.
  *
@@ -97,7 +98,7 @@ export default function RoundDetails() {
   });
 
   const memberButtons = (
-    <Box sx={{ mb: 3, textAlign: "center" }}>
+    <Box sx={{ my: 3, textAlign: "center" }}>
       <Button
         variant="contained"
         color="error"
@@ -140,17 +141,16 @@ export default function RoundDetails() {
           indicatorColor="secondary"
           value={value}
         >
-          <StyledTab label="Round" />
+          <StyledTab label="Scores" />
           <StyledTab label="Greenies" />
           <StyledTab label="Handicap" />
         </Tabs>
       </Box>
 
-      <Container sx={{ py: 3 }}>
+      <Container sx={{ py: 5 }}>
         <TabPanel value={value} index={0}>
-          {currentUser ? memberButtons : null}
-
           <ScoresTable round={round} />
+          {currentUser ? memberButtons : null}
         </TabPanel>
         <TabPanel value={value} index={1}>
           {round.greenies.length ? (
@@ -234,56 +234,30 @@ function ScoresTable({ round }) {
   }
 
   return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ border: "1px solid rgb(224, 224, 224)" }}
-    >
-      <Table sx={{ display: { xs: "none", lg: "table" } }}>
-        <TableHead sx={{ bgcolor: "dark.main" }}>
-          <TableRow>
-            <TableCell
-              align="center"
-              sx={{
-                color: "white",
-                borderRight: "1px solid rgb(224, 224, 224)",
-                fontWeight: "bold",
-              }}
-            >
-              Hole
-            </TableCell>
+    <Box>
+      <Table
+        bordered
+        striped
+        responsive
+        variant="light"
+        className="d-none d-lg-table"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>Hole</th>
             {[...Array(18)].map((_, i) => (
-              <TableCell
-                align="center"
-                sx={{
-                  color: "white",
-                  borderRight: "1px solid rgb(224, 224, 224)",
-                  fontWeight: "bold",
-                }}
-                key={uuidv4()}
-              >
+              <th className="text-center" key={uuidv4()}>
                 {i + 1}
-              </TableCell>
+              </th>
             ))}
-            <TableCell align="center" sx={{ color: "white" }}>
-              Total
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <TableRow sx={{ backgroundColor: "gray" }}>
-            <TableCell
-              align="center"
-              sx={{
-                borderRight: "1px solid rgb(224,224,224)",
-                fontWeight: "bold",
-                color: "white",
-              }}
-            >
-              Par
-            </TableCell>
+            <th className="text-center">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Par</th>
             {Object.values(pars).map((p) => (
-              <TableCell
+              <td
                 key={uuidv4()}
                 align="center"
                 sx={{
@@ -293,132 +267,52 @@ function ScoresTable({ round }) {
                 }}
               >
                 {p}
-              </TableCell>
+              </td>
             ))}
-          </TableRow>
-          <TableRow>
-            <TableCell
-              align="center"
-              sx={{ borderRight: "1px solid rgb(224,224,224)" }}
-            >
-              Strokes
-            </TableCell>
+          </tr>
+          <tr className="text-center">
+            <th className="text-start">Strokes</th>
             {Object.values(strokes).map((s) => (
-              <TableCell
-                key={uuidv4()}
-                align="center"
-                sx={{ borderRight: "1px solid rgb(224,224,224)" }}
-              >
-                {s}
-              </TableCell>
+              <td key={uuidv4()}>{s}</td>
             ))}
-            <TableCell align="center">{round.totalStrokes}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell
-              align="center"
-              sx={{ borderRight: "1px solid rgb(224,224,224)" }}
-            >
-              Putts
-            </TableCell>
+            <td align="center">{round.totalStrokes}</td>
+          </tr>
+          <tr className="text-center">
+            <th className="text-start">Putts</th>
             {Object.values(putts).map((p) => (
-              <TableCell
-                key={uuidv4()}
-                align="center"
-                sx={{ borderRight: "1px solid rgb(224,224,224)" }}
-              >
-                {p}
-              </TableCell>
+              <td key={uuidv4()}>{p}</td>
             ))}
-            <TableCell align="center">{round.totalPutts}</TableCell>
-          </TableRow>
-        </TableBody>
+            <td>{round.totalPutts}</td>
+          </tr>
+        </tbody>
       </Table>
-      <Table size="small" sx={{ display: { xs: "table", lg: "none" } }}>
-        <TableHead sx={{ backgroundColor: "rgb(33,37,41)" }}>
-          <TableRow>
-            <TableCell
-              align="center"
-              sx={{
-                color: "white",
-                py: 1,
-                borderRight: "1px solid rgb(224, 224, 224)",
-              }}
-            >
-              Hole
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{
-                color: "white",
-                borderRight: "1px solid rgb(224, 224, 224)",
-              }}
-            >
-              Par
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{
-                color: "white",
-                borderRight: "1px solid rgb(224, 224, 224)",
-              }}
-            >
-              Strokes
-            </TableCell>
-            <TableCell
-              align="center"
-              sx={{
-                color: "white",
-                borderRight: "1px solid rgb(224, 224, 224)",
-              }}
-            >
-              Putts
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
+      <Table
+        bordered
+        responsive
+        variant="light"
+        className="text-center d-xs-flex d-lg-none"
+      >
+        <thead className="table-dark">
+          <tr>
+            <th>Hole</th>
+            <th>Par</th>
+            <th>Strokes</th>
+            <th>Putts</th>
+          </tr>
+        </thead>
+        <tbody>
           {mobileRows.map((hole) => (
-            <TableRow key={hole.holeNumber}>
-              <TableCell
-                variant="head"
-                align="center"
-                width="20%"
-                sx={{
-                  backgroundColor: "rgb(33,37,41)",
-                  color: "white",
-                  borderRight: "1px solid rgb(224, 224, 224)",
-                }}
-              >
-                {hole.holeNumber}
-              </TableCell>
-              <TableCell
-                align="center"
-                sx={{
-                  backgroundColor: "grey.600",
-                  color: "white",
-                  borderRight: "1px solid rgb(224, 224, 224)",
-                  fontWeight: "bold",
-                }}
-                width="20%"
-              >
-                {hole.par}
-              </TableCell>
+            <tr key={hole.holeNumber}>
+              <th className="table-dark">{hole.holeNumber}</th>
+              <th className="table-secondary">{hole.par}</th>
 
-              <TableCell
-                align="center"
-                width="30%"
-                sx={{ borderRight: "1px solid rgb(224, 224, 224)" }}
-              >
-                {hole.strokes}
-              </TableCell>
-              <TableCell align="center" width="30%">
-                {hole.putts}
-              </TableCell>
-            </TableRow>
+              <td>{hole.strokes}</td>
+              <td>{hole.putts}</td>
+            </tr>
           ))}
-        </TableBody>
+        </tbody>
       </Table>
-    </TableContainer>
+    </Box>
   );
 }
 
@@ -449,11 +343,6 @@ function HandicapTab({ round }) {
 
   const courseHandicap = Math.round((playerIndex * round.courseSlope) / 113);
 
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    fontFamily: "Cubano",
-    fontSize: "1.15rem",
-  }));
-
   return (
     <Grid
       container
@@ -465,43 +354,31 @@ function HandicapTab({ round }) {
         <Typography variant="h4" sx={{ mb: 2 }}>
           Past Rounds
         </Typography>
-        <TableContainer
-          sx={{ border: "1px solid black", borderRadius: "10px" }}
-        >
-          <Table>
-            <TableHead sx={{ bgcolor: "dark.main", color: "white" }}>
-              <TableRow>
-                <StyledTableCell sx={{ color: "white" }}>Date</StyledTableCell>
-                <StyledTableCell align="right" sx={{ color: "white" }}>
-                  Total
-                </StyledTableCell>
-                <StyledTableCell align="right" sx={{ color: "white" }}>
-                  Score Diff
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {round.recentScoreDiffs.map((diff) => (
-                <TableRow key={diff.tournamentDate}>
-                  <StyledTableCell>
-                    {new Date(diff.tournamentDate).toLocaleDateString("en-US", {
-                      month: "numeric",
-                      day: "numeric",
-                      year: "numeric",
-                      timeZone: "UTC",
-                    })}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {diff.totalStrokes}
-                  </StyledTableCell>
-                  <StyledTableCell align="right" sx={{ color: "#ef6c00" }}>
-                    {diff.scoreDifferential}
-                  </StyledTableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Table striped bordered responsive variant="light">
+          <thead className="table-dark">
+            <tr>
+              <th sx={{ color: "white" }}>Date</th>
+              <th>Tot Str</th>
+              <th>Scr Dif</th>
+            </tr>
+          </thead>
+          <tbody>
+            {round.recentScoreDiffs.map((diff) => (
+              <tr key={diff.tournamentDate}>
+                <td>
+                  {new Date(diff.tournamentDate).toLocaleDateString("en-US", {
+                    month: "numeric",
+                    day: "numeric",
+                    year: "numeric",
+                    timeZone: "UTC",
+                  })}
+                </td>
+                <td>{diff.totalStrokes}</td>
+                <td>{diff.scoreDifferential}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
       </Grid>
       <Grid item xs={12} md={8} lg={6}>
         <Typography variant="h4" sx={{ mb: 2 }}>
@@ -526,16 +403,16 @@ function HandicapTab({ round }) {
         </Box>
         <Box sx={{ border: "1px solid black", borderRadius: "10px", py: 0.5 }}>
           {lowestTwoDiffs.length ? (
-            <Typography variant="h6" fontFamily="cubano">
+            <Typography variant="h6">
               ({" "}
-              <span style={{ color: "#ef6c00" }}>
+              <span>
                 {lowestTwoDiffs[0] || 0} +{" "}
                 {lowestTwoDiffs[1] || lowestTwoDiffs[0]}
               </span>{" "}
               ) ÷ 2 = <span style={{ color: "royalblue" }}>{playerIndex}</span>
             </Typography>
           ) : (
-            <Typography variant="h6" fontFamily="cubano">
+            <Typography variant="h6">
               {playerIndex * 2} ÷ 2 ={" "}
               <span style={{ color: "royalblue" }}>{playerIndex}</span>
             </Typography>
@@ -547,34 +424,23 @@ function HandicapTab({ round }) {
         <Typography variant="h4" sx={{ mb: 2 }}>
           Golf Course
         </Typography>
-        <TableContainer
-          sx={{ border: "1px solid black", borderRadius: "10px" }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow sx={{ bgcolor: "dark.main", color: "white" }}>
-                <StyledTableCell sx={{ color: "white" }}>Name</StyledTableCell>
-                <StyledTableCell align="right" sx={{ color: "white" }}>
-                  Rating
-                </StyledTableCell>
-                <StyledTableCell align="right" sx={{ color: "white" }}>
-                  Slope
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <StyledTableCell>{round.courseName}</StyledTableCell>
-                <StyledTableCell align="right">
-                  {round.courseRating}
-                </StyledTableCell>
-                <StyledTableCell align="right" sx={{ color: "success.main" }}>
-                  {round.courseSlope}
-                </StyledTableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+
+        <Table striped bordered responsive>
+          <thead className="table-dark">
+            <tr>
+              <th sx={{ color: "white" }}>Name</th>
+              <th sx={{ color: "white" }}>Rating</th>
+              <th sx={{ color: "white" }}>Slope</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{round.courseName}</td>
+              <td>{round.courseRating}</td>
+              <th className="text-success">{round.courseSlope}</th>
+            </tr>
+          </tbody>
+        </Table>
       </Grid>
       <Grid item xs={12} md={8} lg={6}>
         <Typography variant="h4" sx={{ mb: 2 }}>

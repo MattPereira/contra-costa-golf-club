@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 // prettier-ignore
-import { Box, Container, Grid, FormControl, MenuItem, Select } from "@mui/material";
+import { Box, Container, Grid, FormControl, MenuItem, Select, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import PageHero from "../../components/PageHero";
@@ -66,6 +66,12 @@ export default function StandingsDetails() {
       <Container sx={{ py: 3 }}>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="p">
+                Top 10 rounds for each player by tour year
+              </Typography>
+            </Box>
+
             <Grid container sx={{ mb: 3 }}>
               <Grid item xs={12} lg={6}>
                 <FormControl fullWidth>
