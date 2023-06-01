@@ -12,7 +12,7 @@ import PageHero from "../../components/PageHero";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 // prettier-ignore
-import { Button, Typography, Container, Box, Modal, Tab, Grid, TableHead, TableBody, tr, TableCell, TableContainer, Tabs} from "@mui/material";
+import { Button, Typography, Container, Box, Modal, Tab, Grid, Tabs} from "@mui/material";
 
 import { v4 as uuidv4 } from "uuid";
 
