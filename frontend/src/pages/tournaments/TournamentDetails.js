@@ -73,7 +73,6 @@ export default function TournamentDetails() {
         title={shortCourseName}
         backgroundImage={course.courseImg}
         date={tournamentDate}
-        hasScores={rounds.length ? true : false}
       />
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
@@ -321,12 +320,13 @@ function WinnersTab({ rounds, points, handicaps }) {
     .slice(0, 3);
 
   // TODO: HANDLE THIRD PLACE TIES
-  // if (strokesWinners.length === 3){
-  //   if(strokesWinners[2])
-  // }
+  // if there are at least three rounds completed
+  // grab the third round and see if there are any ties
 
-  // Transform rounds data to subtract strokes for each golfer based on their handicap
+  /***** SKINS GAME ******/
+
   const adjustedSkinsScores = rounds.map((r) => {
+    // Transform rounds data to subtract strokes for each golfer based on their handicap
     const strokesValues = Object.values(r.strokes);
     const handicapValues = Object.values(handicaps);
 
@@ -335,7 +335,7 @@ function WinnersTab({ rounds, points, handicaps }) {
       return { hole: idx + 1, strokes: value, handicap: handicapValues[idx] };
     });
 
-    // Only adjust this many holes
+    // Only adjust this many holes scores
     let adjustedHandicap = r.courseHandicap / 2;
 
     // Map over existing hole scores and adjust based on handicap
@@ -373,15 +373,9 @@ function WinnersTab({ rounds, points, handicaps }) {
   // inside the nested arrays will be an object for each player with their name and score for that hole
 
   // TODO: Figure out how to determine if there is a winner for each hole and who is the winner
-  // Maybe start with transforming adjustedSkinsScores to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
-  // const winners = adjustedSkinsScores.map((item) => {
-  //   return {
-  //     name: item.name,
-  //     hole: item.round[0].holeNumber,
-  //     score: item.round[0].strokes,
-  //   };
-  // });
-  // console.log(`WINNERS`, winners);
+  // Start with transforming adjustedSkinsScores to be [{ holeNumber: 1, scores: [{name: "Dave", strokes: 4}, {name: "Tom", strokes: 3}]}, ...]
+
+  for (let i = 0; i < 18; i++) {}
 
   const detailsTables = {
     strokes: <StrokesDetailsTable rounds={rounds} />,

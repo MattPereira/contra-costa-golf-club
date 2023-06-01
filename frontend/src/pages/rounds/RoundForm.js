@@ -3,7 +3,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 // prettier-ignore
-import { Button, Typography, Box, Container, Grid, FormControl, InputLabel, MenuItem, Select, TextField, Alert, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import { Button, Typography, Box, Container, Grid, FormControl, MenuItem, Select, TextField, Alert, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 import { styled } from "@mui/material/styles";
 
@@ -11,6 +11,39 @@ import { styled } from "@mui/material/styles";
 import UserContext from "../../lib/UserContext";
 import PageHero from "../../components/PageHero";
 import CcgcApi from "../../api/api";
+
+/***** Styles *****/
+const StyledAccordion = styled((props) => (
+  <Accordion disableGutters elevation={0} square {...props} />
+))(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: "4px",
+  // backgroundColor: theme.palette.secondary.main,
+  "&:before": {
+    display: "none",
+  },
+}));
+
+const StyledAccordionSummary = styled((props) => (
+  <AccordionSummary
+    expandIcon={
+      <ArrowForwardIosSharpIcon sx={{ fontSize: "1rem", color: "white" }} />
+    }
+    {...props}
+  />
+))(({ theme }) => ({
+  color: "white",
+  backgroundColor: "black",
+  borderRadius: "4px",
+
+  flexDirection: "row-reverse",
+  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
+    transform: "rotate(90deg)",
+  },
+  "& .MuiAccordionSummary-content": {
+    marginLeft: theme.spacing(1),
+  },
+}));
 
 /** Form to create a new round
  *
@@ -205,39 +238,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
     .slice(10, 19)
     .filter((item) => item !== "").length;
 
-  /***** MUI Accordion Styles *****/
-  const StyledAccordion = styled((props) => (
-    <Accordion disableGutters elevation={0} square {...props} />
-  ))(({ theme }) => ({
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: "4px",
-    backgroundColor: theme.palette.secondary.main,
-    "&:before": {
-      display: "none",
-    },
-  }));
-
-  const StyledAccordionSummary = styled((props) => (
-    <AccordionSummary
-      expandIcon={
-        <ArrowForwardIosSharpIcon sx={{ fontSize: "1rem", color: "white" }} />
-      }
-      {...props}
-    />
-  ))(({ theme }) => ({
-    color: "white",
-    backgroundColor: "black",
-    borderRadius: "4px",
-
-    flexDirection: "row-reverse",
-    "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-      transform: "rotate(90deg)",
-    },
-    "& .MuiAccordionSummary-content": {
-      marginLeft: theme.spacing(1),
-    },
-  }));
-
   return (
     <Box>
       <PageHero
@@ -339,7 +339,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
                           min="1"
                           onChange={handleChange}
                           value={formData[`strokes${num}`]}
-                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -352,7 +351,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
                           min="0"
                           onChange={handleChange}
                           value={formData[`putts${num}`]}
-                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -404,7 +402,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
                           min="1"
                           onChange={handleChange}
                           value={formData[`strokes${num}`]}
-                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>
@@ -417,7 +414,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
                           min="0"
                           onChange={handleChange}
                           value={formData[`putts${num}`]}
-                          sx={{ bgcolor: "white" }}
                           fullWidth
                         />
                       </Grid>

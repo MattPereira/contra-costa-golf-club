@@ -93,7 +93,7 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
 
     //navigate to the tournament detail page associated with the new greenie
     if (greenie) {
-      navigate(`/greenies/${greenie.id}`);
+      navigate(`/tournaments/${greenie.tournamentDate}`);
     } else {
       navigate(`/tournaments/${date}`);
     }
