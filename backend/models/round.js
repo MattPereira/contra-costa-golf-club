@@ -102,8 +102,12 @@ class Round {
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
       // console.log("COURSE HANDICAP", courseHandicap);
 
+      // MAX HANDICAP OF 36
+      if (courseHandicap > 36) courseHandicap = 36;
+
       // only computing net strokes if the round is fully completed
       netStrokes = totalStrokes - courseHandicap;
+
       // console.log("NET STROKES", netStrokes);
     } else {
       /***** IF THE ROUND IS ONLY PARTIALLY COMPLETED: leave score differential and net strokes as null ******/
@@ -119,6 +123,9 @@ class Round {
 
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
       // console.log("COURSE HANDICAP", courseHandicap);
+
+      // MAX HANDICAP OF 36
+      if (courseHandicap > 36) courseHandicap = 36;
     }
 
     // Insert into rounds table first to grab the round_id
@@ -527,6 +534,8 @@ class Round {
 
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
       // console.log("COURSE HANDICAP", courseHandicap);
+      // MAX HANDICAP OF 36
+      if (courseHandicap > 36) courseHandicap = 36;
 
       netStrokes = totalStrokes - courseHandicap;
       // console.log("NET STROKES", netStrokes);
@@ -544,6 +553,8 @@ class Round {
 
       courseHandicap = Math.round((playerIndex * courseSlope) / 113);
       // console.log("COURSE HANDICAP", courseHandicap);
+      // MAX HANDICAP OF 36
+      if (courseHandicap > 36) courseHandicap = 36;
     }
 
     // Update all the freshly computed data into rounds table

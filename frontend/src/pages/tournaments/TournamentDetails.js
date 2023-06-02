@@ -105,6 +105,7 @@ export default function TournamentDetails() {
             points={points}
             greenies={greenies}
             handicaps={course.handicaps}
+            setValue={setValue}
           />
         </TabPanel>
       </Container>
@@ -306,7 +307,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
   );
 }
 
-function WinnersTab({ rounds, points, handicaps, greenies }) {
+function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
   const [selectedDetailsTable, setSelectedDetailsTable] = useState(null);
 
   // ADJUSTING EACH ROUNDS STROKES FOR SKINS USING HANDICAPS
@@ -363,7 +364,7 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
     ),
   };
 
-  const StyledTypography = styled(Typography)(({ theme }) => ({
+  const StyledSpan = styled("span")(({ theme }) => ({
     "&:hover": {
       color: theme.palette.primary.dark,
     },
@@ -380,36 +381,43 @@ function WinnersTab({ rounds, points, handicaps, greenies }) {
             <Grid container spacing={2}>
               <Grid item xs={12} md={6}>
                 <StrokesWinnersTable rounds={rounds} />
+                <Typography variant="p">
+                  See{" "}
+                  <StyledSpan
+                    onClick={() => setSelectedDetailsTable("strokes")}
+                  >
+                    strokes table
+                  </StyledSpan>
+                </Typography>
               </Grid>
               <Grid item xs={12} md={6}>
                 <PuttsWinnersTable rounds={rounds} />
+                <Typography variant="p">
+                  See{" "}
+                  <StyledSpan onClick={() => setSelectedDetailsTable("putts")}>
+                    putts table
+                  </StyledSpan>
+                </Typography>
               </Grid>
               <Grid item xs={12} md={6}>
                 <GreeniesWinnersTable greenies={greenies} />
+                <Typography variant="p">
+                  See{" "}
+                  <StyledSpan onClick={() => setValue(1)}>
+                    greenies table
+                  </StyledSpan>
+                </Typography>
               </Grid>
               <Grid item xs={12} md={6}>
                 <SkinsWinnersTable adjustedSkinsScores={adjustedSkinsScores} />
+                <Typography variant="p">
+                  See{" "}
+                  <StyledSpan onClick={() => setSelectedDetailsTable("skins")}>
+                    skins table
+                  </StyledSpan>
+                </Typography>
               </Grid>
             </Grid>
-
-            <Box sx={{ mt: 5 }}>
-              <Typography variant="p">
-                See all round data for this tournament's{" "}
-              </Typography>
-              {["strokes", "putts", "skins", "points"].map((category, idx) => (
-                <span key={category}>
-                  <StyledTypography
-                    variant="p"
-                    onClick={() => setSelectedDetailsTable(category)}
-                  >
-                    {category}
-                  </StyledTypography>
-                  <>
-                    {idx !== 3 && ", "} {idx === 2 && "and "}
-                  </>
-                </span>
-              ))}
-            </Box>
           </Box>
         )}
         {selectedDetailsTable && (
@@ -622,9 +630,6 @@ function GreeniesWinnersTable({ greenies }) {
           ))}
         </tbody>
       </Table>
-      <Typography variant="p">
-        *Each player can only win one hole starting with their closest.
-      </Typography>
     </Box>
   );
 }
@@ -688,7 +693,7 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
-        Skins*
+        Skins
       </Typography>
 
       <Table
@@ -715,9 +720,6 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
           ))}
         </tbody>
       </Table>
-      <Typography variant="p" align="center" gutterBottom>
-        *Uses adjusted scores to determine if unique low score for a hole
-      </Typography>
     </Box>
   );
 }
