@@ -427,6 +427,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
             {detailsTables[selectedDetailsTable]}
           </DetailsTableWrapper>
         )}
+        <PointsDetailsTable points={points} />
       </Box>
     </section>
   );
@@ -880,13 +881,13 @@ function SkinsDetailsTable({ adjustedSkinsScores, handicaps }) {
   );
 }
 
-function PointsDetailsTable({ data }) {
+function PointsDetailsTable({ points }) {
   return (
-    <Box>
-      <Typography variant="h3" gutterBottom align="center">
+    <Box sx={{ mt: 5 }}>
+      <Typography variant="h4" gutterBottom align="center">
         Points
       </Typography>
-      <RankingsTable data={data} />
+      <RankingsTable data={points} />
     </Box>
   );
 }
