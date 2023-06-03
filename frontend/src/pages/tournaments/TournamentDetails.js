@@ -382,7 +382,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
               <Grid item xs={12} md={6}>
                 <StrokesWinnersTable rounds={rounds} />
                 <Typography variant="p">
-                  See{" "}
+                  Lowest net strokes for this tournament. See the{" "}
                   <StyledSpan
                     onClick={() => setSelectedDetailsTable("strokes")}
                   >
@@ -393,7 +393,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
               <Grid item xs={12} md={6}>
                 <PuttsWinnersTable rounds={rounds} />
                 <Typography variant="p">
-                  See{" "}
+                  Lowest total putts for this tournament. See the{" "}
                   <StyledSpan onClick={() => setSelectedDetailsTable("putts")}>
                     putts table
                   </StyledSpan>
@@ -402,7 +402,8 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
               <Grid item xs={12} md={6}>
                 <GreeniesWinnersTable greenies={greenies} />
                 <Typography variant="p">
-                  See{" "}
+                  Closest to the pin wins the hole. Each player can win only one
+                  par 3 per tournament. See{" "}
                   <StyledSpan onClick={() => setValue(1)}>
                     greenies table
                   </StyledSpan>
@@ -411,13 +412,15 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
               <Grid item xs={12} md={6}>
                 <SkinsWinnersTable adjustedSkinsScores={adjustedSkinsScores} />
                 <Typography variant="p">
-                  See{" "}
+                  Scores are adjusted based on hole difficulty and player
+                  handicap. See{" "}
                   <StyledSpan onClick={() => setSelectedDetailsTable("skins")}>
                     skins table
                   </StyledSpan>
                 </Typography>
               </Grid>
             </Grid>
+            <PointsDetailsTable points={points} />
           </Box>
         )}
         {selectedDetailsTable && (
@@ -427,7 +430,6 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
             {detailsTables[selectedDetailsTable]}
           </DetailsTableWrapper>
         )}
-        <PointsDetailsTable points={points} />
       </Box>
     </section>
   );
@@ -601,7 +603,7 @@ function GreeniesWinnersTable({ greenies }) {
   return (
     <Box>
       <Typography variant="h4" align="center" gutterBottom>
-        Greenies*
+        Greenies
       </Typography>
       <Table
         responsive
