@@ -218,7 +218,7 @@ class Point {
    * sum the column values and group by username
    *
    * */
-  static async getYearlyStandings(tourYears) {
+  static async getYearlyStandings(tourYears, numberOfRounds) {
     /**** OG query that sums ALL rounds points for each golfer for a given tourYear ****/
     // const standingsRes = await db.query(
     //   `SELECT rounds.username,
@@ -281,10 +281,10 @@ class Point {
           SUM(aces) AS "aces",
           (SUM(strokes) + SUM(putts) + SUM(greenies) + SUM(participation) + SUM(pars) + SUM(birdies) + SUM(eagles) + SUM(aces)) AS "total"
         FROM ranked_rounds
-        WHERE rn <= 10
+        WHERE rn <= $2
         GROUP BY username, last_name, first_name
         ORDER BY total DESC`,
-      [tourYears]
+      [tourYears, numberOfRounds]
     );
 
     return standingsRes.rows;

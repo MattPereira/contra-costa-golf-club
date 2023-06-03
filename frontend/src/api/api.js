@@ -216,8 +216,10 @@ class CcgcApi {
 
   //////////////////// POINTS ROUTES ////////////////////
   /**Get season standings points */
-  static async getStandings(tourYears) {
-    let res = await this.request(`points/standings/${tourYears}`);
+  static async getStandings(tourYears, numberOfRounds) {
+    let res = await this.request(
+      `points/standings/${tourYears}?numberOfRounds=${numberOfRounds}`
+    );
     return res.standings;
   }
 

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 // prettier-ignore
-import { Box, Container, Grid, FormControl, MenuItem, Select, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, Container, Grid, FormControl, MenuItem, Select } from "@mui/material";
+import { Link, useSearchParams } from "react-router-dom";
 
 import PageHero from "../../components/PageHero";
 import standingsImage from "../../assets/tour-standings.webp";
@@ -23,10 +23,16 @@ export default function StandingsDetails() {
   const [standings, setStandings] = useState(null);
   const [tourYear, setTourYear] = useState("2022-23");
   const [tournaments, setTournaments] = useState(null);
+  const [numberOfRounds, setNumberOfRounds] = useState(10);
 
-  const handleChange = (event) => {
+  const handleYearChange = (event) => {
     setTourYear(event.target.value);
   };
+  const handleNumberOfRoundsChange = (event) => {
+    setNumberOfRounds(event.target.value);
+  };
+
+  console.log(numberOfRounds);
 
   /* On component mount, load club standings from API */
   useEffect(
@@ -34,7 +40,7 @@ export default function StandingsDetails() {
       console.debug("Standings useEffect getStandingsOnMount");
 
       async function getStandings() {
-        setStandings(await CcgcApi.getStandings(tourYear));
+        setStandings(await CcgcApi.getStandings(tourYear, numberOfRounds));
       }
       async function getTournaments() {
         setTournaments(await CcgcApi.getTournaments());
@@ -42,7 +48,7 @@ export default function StandingsDetails() {
       getStandings();
       getTournaments();
     },
-    [tourYear]
+    [tourYear, numberOfRounds]
   );
 
   if (!standings || !tournaments) return <LoadingSpinner />;
@@ -63,28 +69,41 @@ export default function StandingsDetails() {
     <Box>
       <PageHero title="Standings" backgroundImage={standingsImage} />
 
-      <Container sx={{ py: 3 }}>
+      <Container sx={{ pb: 5 }}>
         <Grid container justifyContent="center" sx={{ mt: 3 }}>
           <Grid item xs={12} lg={9} sx={{ textAlign: "center" }}>
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="p">
-                Top 10 rounds for each player by tour year
-              </Typography>
-            </Box>
-
-            <Grid container sx={{ mb: 3 }}>
+            <Grid container spacing={4} sx={{ mb: 5 }}>
               <Grid item xs={12} lg={6}>
                 <FormControl fullWidth>
-                  <label style={{ textAlign: "start" }}>Tour Year:</label>
+                  <label style={{ textAlign: "start" }}>Tour Year</label>
                   <Select
                     id="tour-year"
                     value={tourYear}
-                    onChange={handleChange}
+                    onChange={handleYearChange}
                     sx={{ fontFamily: "cubano", fontSize: "1.5rem" }}
                   >
                     {tourYearsOptions.map((year) => (
                       <MenuItem key={year} value={year}>
                         {year}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <FormControl fullWidth>
+                  <label style={{ textAlign: "start" }}>
+                    Top {numberOfRounds} Rounds
+                  </label>
+                  <Select
+                    id="tour-year"
+                    value={numberOfRounds}
+                    onChange={handleNumberOfRoundsChange}
+                    sx={{ fontFamily: "cubano", fontSize: "1.5rem" }}
+                  >
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                      <MenuItem key={num} value={num}>
+                        {num}
                       </MenuItem>
                     ))}
                   </Select>

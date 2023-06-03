@@ -28,8 +28,12 @@ const router = new express.Router();
  */
 router.get("/standings/:tourYears", async function (req, res, next) {
   try {
+    console.log(req.query.numberOfRounds);
     console.log(req.params.tourYears);
-    const standings = await Point.getYearlyStandings(req.params.tourYears);
+    const standings = await Point.getYearlyStandings(
+      req.params.tourYears,
+      req.query.numberOfRounds
+    );
     return res.status(200).json({ standings });
   } catch (err) {
     return next(err);
