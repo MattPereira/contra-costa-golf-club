@@ -153,6 +153,16 @@ export default function RoundDetails() {
           {currentUser ? memberButtons : null}
         </TabPanel>
         <TabPanel value={value} index={1}>
+          <Box sx={{ mb: 3, textAlign: "center" }}>
+            <Button
+              variant="contained"
+              color="success"
+              component={Link}
+              to={`/greenies/create/${round.tournamentDate}`}
+            >
+              Add Greenie
+            </Button>
+          </Box>
           {round.greenies.length ? (
             <GreenieCardList greenies={round.greenies} />
           ) : null}

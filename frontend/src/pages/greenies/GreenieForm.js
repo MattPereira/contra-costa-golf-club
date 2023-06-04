@@ -98,6 +98,18 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      await CcgcApi.deleteGreenie(id);
+    } catch (errors) {
+      setFormErrors(errors);
+      return;
+    }
+
+    //navigate to the tournament detail page associated with the new or updated or deleted greenie
+    navigate(`/tournaments/${greenie.tournamentDate}`);
+  };
+
   const tournamentDate = new Date(
     date || greenie.tournamentDate
   ).toLocaleDateString("en-US", {
@@ -225,13 +237,23 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
                     />
                   </Grid>
                 </Grid>
-                <Box sx={{ display: "flex", justifyContent: "end" }}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    type="submit"
-                    size="large"
-                  >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: greenie ? "space-between" : "end",
+                  }}
+                >
+                  {greenie && (
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDelete(greenie.id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+
+                  <Button variant="contained" type="submit">
                     Submit
                   </Button>
                 </Box>
