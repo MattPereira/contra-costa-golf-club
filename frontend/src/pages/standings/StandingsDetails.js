@@ -3,7 +3,7 @@ import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 // prettier-ignore
 import { Box, Container, Grid, FormControl, MenuItem, Select } from "@mui/material";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import PageHero from "../../components/PageHero";
 import standingsImage from "../../assets/tour-standings.webp";
@@ -23,7 +23,7 @@ export default function StandingsDetails() {
   const [standings, setStandings] = useState(null);
   const [tourYear, setTourYear] = useState("2022-23");
   const [tournaments, setTournaments] = useState(null);
-  const [numberOfRounds, setNumberOfRounds] = useState(10);
+  const [numberOfRounds, setNumberOfRounds] = useState(3);
 
   const handleYearChange = (event) => {
     setTourYear(event.target.value);

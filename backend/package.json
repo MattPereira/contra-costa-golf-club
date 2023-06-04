@@ -10,15 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MattPereira/contra-costa-golf-club.git"
+    "url": "https://github.com/MattPereira/contra-costa-golf-club.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Matt Pereira",
   "bugs": {
-    "url": "https://github.com/MattPereira/CCGC-backend/issues"
+    "url": "https://github.com/MattPereira/contra-costa-golf-club/issues"
   },
-  "homepage": "https://github.com/MattPereira/CCGC-backend#readme",
+  "homepage": "https://github.com/MattPereira/contra-costa-golf-club#readme",
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
