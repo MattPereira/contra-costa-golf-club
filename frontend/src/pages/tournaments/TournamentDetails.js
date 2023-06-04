@@ -590,14 +590,14 @@ function GreeniesWinnersTable({ greenies }) {
     let filteredGreenies = greenies.filter(
       (g) =>
         !alreadyWonHoles.includes(g?.holeNumber) &&
-        !alreadyWonPlayers.includes(g.roundId)
+        !alreadyWonPlayers.includes(g?.roundId)
     );
 
     // push the 0th index of the filtered array (pre-sorted by distance) to winners
     winners.push(filteredGreenies[0]);
     // push the hole number and player id to alreadyWon arrays
     alreadyWonHoles.push(filteredGreenies[0]?.holeNumber);
-    alreadyWonPlayers.push(filteredGreenies[0].roundId);
+    alreadyWonPlayers.push(filteredGreenies[0]?.roundId);
   }
 
   return (
