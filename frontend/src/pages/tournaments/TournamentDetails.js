@@ -278,7 +278,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
                         {`${g.firstName} ${g.lastName[0]}`}
                       </Link>
                     </th>
-                    <td>#{g.holeNumber}</td>
+                    <td>#{g?.holeNumber}</td>
                     <td>{g.feet}'</td>
                     <td>{g.inches}"</td>
                     {currentUser && (
@@ -579,7 +579,7 @@ function GreeniesWinnersTable({ greenies }) {
   const winners = [];
 
   // determines number of holes that can be won
-  const uniqueHoleNums = new Set(greenies.map((g) => g.holeNumber));
+  const uniqueHoleNums = new Set(greenies.map((g) => g?.holeNumber));
 
   const alreadyWonHoles = [];
   const alreadyWonPlayers = [];
@@ -589,14 +589,14 @@ function GreeniesWinnersTable({ greenies }) {
     // each hole can only have one winner && each player cannot win more than one hole
     let filteredGreenies = greenies.filter(
       (g) =>
-        !alreadyWonHoles.includes(g.holeNumber) &&
+        !alreadyWonHoles.includes(g?.holeNumber) &&
         !alreadyWonPlayers.includes(g.roundId)
     );
 
     // push the 0th index of the filtered array (pre-sorted by distance) to winners
     winners.push(filteredGreenies[0]);
     // push the hole number and player id to alreadyWon arrays
-    alreadyWonHoles.push(filteredGreenies[0].holeNumber);
+    alreadyWonHoles.push(filteredGreenies[0]?.holeNumber);
     alreadyWonPlayers.push(filteredGreenies[0].roundId);
   }
 
@@ -622,7 +622,7 @@ function GreeniesWinnersTable({ greenies }) {
         <tbody>
           {winners.map((winner, idx) => (
             <tr key={idx}>
-              <td style={{ fontFamily: "cubano" }}>#{winner.holeNumber}</td>
+              <td style={{ fontFamily: "cubano" }}>#{winner?.holeNumber}</td>
               <td style={{ fontFamily: "cubano", textAlign: "start" }}>
                 {winner.firstName} {winner.lastName}
               </td>
@@ -651,11 +651,11 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
     // loop over each golfer's round trying to add their score to the correct hole
     adjustedSkinsScores.forEach((golfer) => {
       // for each hole, add the golfer's name and score to the array
-      if (i + 1 === golfer.round[i].holeNumber) {
+      if (i + 1 === golfer.round[i]?.holeNumber) {
         const scores = {
           name: golfer.name,
           strokes: +golfer.round[i].strokes,
-          holeNumber: golfer.round[i].holeNumber,
+          holeNumber: golfer.round[i]?.holeNumber,
         };
 
         holeScores.push(scores);
@@ -716,7 +716,7 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
         <tbody>
           {skinsWinners.map((winner, idx) => (
             <tr key={idx}>
-              <th>#{winner.holeNumber}</th>
+              <th>#{winner?.holeNumber}</th>
               <th className="text-start">{winner.name}</th>
               <td>{winner.strokes}</td>
             </tr>
