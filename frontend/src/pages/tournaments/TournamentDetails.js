@@ -594,7 +594,9 @@ function GreeniesWinnersTable({ greenies }) {
     );
 
     // push the 0th index of the filtered array (pre-sorted by distance) to winners
-    winners.push(filteredGreenies[0]);
+    if (filteredGreenies[0]) {
+      winners.push(filteredGreenies[0]);
+    }
     // push the hole number and player id to alreadyWon arrays
     alreadyWonHoles.push(filteredGreenies[0]?.holeNumber);
     alreadyWonPlayers.push(filteredGreenies[0]?.roundId);
