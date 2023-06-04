@@ -373,6 +373,13 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
     textDecoration: "underline",
   }));
 
+  const tournamentIsComplete = rounds.every((r) => {
+    return (
+      Object.values(r.strokes).every((s) => s !== null) &&
+      Object.values(r.putts).every((p) => p !== null)
+    );
+  });
+
   return (
     <section>
       <Box sx={{ mb: 5 }}>
@@ -420,7 +427,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
                 </Typography>
               </Grid>
             </Grid>
-            <PointsDetailsTable points={points} />
+            {tournamentIsComplete && <PointsDetailsTable points={points} />}
           </Box>
         )}
         {selectedDetailsTable && (
@@ -437,8 +444,18 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
 
 /***** EVERYTHING BELOW IS COMPONENTS FOR WinnersTab *****/
 function StrokesWinnersTable({ rounds }) {
+  console.log("rounds", rounds);
+
+  const completedRounds = rounds.filter((r) => {
+    return Object.values(r.strokes).every((s) => s !== null);
+  });
+
+  console.log("completedRounds", completedRounds);
+
   // sort rounds by net strokes
-  const sortedRounds = [...rounds].sort((a, b) => a.netStrokes - b.netStrokes);
+  const sortedRounds = [...completedRounds].sort(
+    (a, b) => a.netStrokes - b.netStrokes
+  );
 
   // top 3 will be winners of some sort
   const strokesWinners = sortedRounds.slice(0, 3);
@@ -507,8 +524,14 @@ function StrokesWinnersTable({ rounds }) {
 }
 
 function PuttsWinnersTable({ rounds }) {
+  const completedRounds = rounds.filter((r) => {
+    return Object.values(r.putts).every((s) => s !== null);
+  });
+
   // sort rounds by total putts
-  const sortedByPutts = [...rounds].sort((a, b) => a.totalPutts - b.totalPutts);
+  const sortedByPutts = [...completedRounds].sort(
+    (a, b) => a.totalPutts - b.totalPutts
+  );
 
   //slice the top 3 rounds who for sure win
   const puttsWinners = sortedByPutts.slice(0, 3);
@@ -583,6 +606,11 @@ function GreeniesWinnersTable({ greenies }) {
 
   const alreadyWonHoles = [];
   const alreadyWonPlayers = [];
+
+  console.log("GREENIES", greenies);
+
+  /****** BUG HOTFIX AREA*****/
+  // somehow the winners array was getting an undefined item in it
 
   // for each hole that can be won
   for (let i = 0; i < uniqueHoleNums.size; i++) {
