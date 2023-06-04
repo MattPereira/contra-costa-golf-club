@@ -704,17 +704,19 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
   // mabye make an array from just the strokes values and use Math.min() to find the lowest score and then check if its unique using a set
   // if it is unique, find it from original array of objects and push onto skinsWinners
 
+  console.log("SCORES BY HOLE", scoresByHoleNum);
+
   scoresByHoleNum.forEach((hole) => {
     // make array of just hole scores i.e. [5,7,3,4]
     const holeScores = hole.map((golfer) => golfer.strokes);
-    // find the lowest value in the array
-    const lowestScore = Math.min(...holeScores);
+    // find the lowest value in the array that is greater than 1
+    const lowestScore = Math.min(...holeScores.filter((score) => score >= 1));
     // if that score is unique, push it onto skinsWinners
     const frequencyOfLowestScore = holeScores.filter(
       (score) => score === lowestScore
     );
 
-    if (frequencyOfLowestScore.length === 1) {
+    if (frequencyOfLowestScore.length === 1 && lowestScore >= 1) {
       // search array for golfer with strokes score equal to unique lowest score
       const winner = hole.find((golfer) => golfer.strokes === lowestScore);
       skinsWinners.push(winner);
