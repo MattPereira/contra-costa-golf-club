@@ -1,2 +1,5 @@
 node_modules
 /frontend/build
+
+backup.md
+prod.dump
