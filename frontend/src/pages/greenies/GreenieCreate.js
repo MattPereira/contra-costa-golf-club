@@ -4,12 +4,9 @@ import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import GreenieForm from "./GreenieForm";
 
-/** This component is used to fetch tournament data to pass to <NewGreenieForm/>
- *  to populate the form's golfer select field with
- *  options from the tournament
+/** This component is used to fetch tournament data to pass to <GreenieForm />
  *
  * Routed as /greenies/:date/new
- * Routes -> NewGreenie -> NewGreenieForm
  */
 
 export default function GreenieCreate() {
@@ -40,8 +37,6 @@ export default function GreenieCreate() {
   );
 
   if (!rounds || !tournament) return <LoadingSpinner />;
-  console.log("ROUNDS", rounds);
-  console.log("TOURNAMENT", tournament);
 
   const usernames = rounds.map((round) => [round.id, round.username]);
 

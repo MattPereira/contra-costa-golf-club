@@ -6,26 +6,13 @@ import { Button, Typography, Alert, Box, Container, Grid, Paper, TextField, Form
 
 import PageHero from "../../components/PageHero";
 
-/** Form to create a new greenie
- *
- *
- * Displays new greenie form and handles changes to local form state.
- * Submission of form calls the API to save the greenie.
- *
- * Redirects to CourseDetails page upon form submission.
- *
- * Routed as /greenies/:date/new
- * Routes -> NewGreenie -> NewGreenieForm
+/** Form to handle creating and updating Greenies
  */
 
 const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
   let navigate = useNavigate();
   const { date } = useParams();
-
-  /// HOW TO SEND AND SET THE ROUND ID AS SELECT INPUT OPTIONS CHANGE?
-  /// NEED TO USE NAMES FOR THE SELECT INPUT OPTIONS USER SEES BUT KEEP ROUND ID IN STATE
-
-  console.log(usernames);
+  const [formErrors, setFormErrors] = useState([]);
 
   //dynamically set initial state of formData based on whether creating or updating
   //a greenie by looking to see if greenie is passed in as a prop
@@ -36,15 +23,6 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
     inches: greenie ? greenie.inches : "",
   });
 
-  const [formErrors, setFormErrors] = useState([]);
-
-  console.debug(
-    "NewGreenieForm",
-    "formData=",
-    formData,
-    "formErrors=",
-    formErrors
-  );
   //update state of formData onChange of any form input field
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,14 +33,6 @@ const GreenieForm = ({ par3HoleNums, usernames, greenie, course }) => {
     }));
     setFormErrors([]);
   };
-
-  /**on form submission:
-   * -attempt save to backend & report any errors
-   * -if successful
-   *  -clear previous error messages and password
-   *  - show update-confirmed alert
-   *  - set current user info throughout the site
-   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();

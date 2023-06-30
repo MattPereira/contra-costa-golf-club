@@ -4,11 +4,9 @@ import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import GreenieForm from "./GreenieForm";
 
-/** This component is used to fetch tournament data to pass to <NewGreenieForm/>
- *  to populate the form's golfer select field with
- *  options from the tournament
+/** This component is used to fetch tournament data to pass to <GreenieForm/>
  *
- * Path: "/greenies/create/:roundId"
+ * Routed as /greenies/update/:id
  */
 
 export default function UpdateGreenie() {
@@ -16,8 +14,6 @@ export default function UpdateGreenie() {
 
   /** Fetch the greenie data first to set formData state properly */
   const [greenie, setGreenie] = useState(null);
-
-  // Grab the greenie from API to populate the form data
 
   /* On component mount, load courses from API */
   useEffect(

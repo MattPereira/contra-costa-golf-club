@@ -409,8 +409,8 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
               <Grid item xs={12} md={6}>
                 <GreeniesWinnersTable greenies={greenies} />
                 <Typography variant="p">
-                  Closest to the pin wins the hole. Each player can win only one
-                  par 3 per tournament. See{" "}
+                  Closest to the pin wins the hole, but each player can only win
+                  one par 3 per tournament. See{" "}
                   <StyledSpan onClick={() => setValue(1)}>
                     greenies table
                   </StyledSpan>
