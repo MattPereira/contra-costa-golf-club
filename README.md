@@ -1,7 +1,7 @@
 
 # [Contra Costa Golf Club](https://ccgc.app/)
 
-[<img src="https://i.ibb.co/72nKCSf/ccgc-Logo11.png" width="200" height="250"/>](https://ccgc.vercel.app/) 
+[ccgc-tour.webm](https://github.com/MattPereira/contra-costa-golf-club/assets/73561520/f1bcb71f-bb22-45e8-b08e-2f48704f70b9)
 
 
 
