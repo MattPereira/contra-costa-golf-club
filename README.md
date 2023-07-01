@@ -1,13 +1,11 @@
 
 # [Contra Costa Golf Club](https://ccgc.app/)
 
-[ccgc-tour.webm](https://github.com/MattPereira/contra-costa-golf-club/assets/73561520/f1bcb71f-bb22-45e8-b08e-2f48704f70b9)
-
-
-
-
 ## Description
 A full stack web application that manages all of the [tournaments](https://ccgc.vercel.app/tournaments), [greenies](https://ccgc.vercel.app/greenies), [members](https://ccgc.vercel.app/members), [courses](https://ccgc.vercel.app/courses), and [standings](https://ccgc.vercel.app/standings) data for the contra costa golf club. Users are able to input their strokes, putts, and greenies as they play each round. Handicaps and points are automatically calculated to determine individual tournament and season long champions.
+
+[ccgc-tour.webm](https://github.com/MattPereira/contra-costa-golf-club/assets/73561520/f1bcb71f-bb22-45e8-b08e-2f48704f70b9)
+
 
 ## Features
 **Full CRUD**
