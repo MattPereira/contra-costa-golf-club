@@ -77,7 +77,7 @@ export default function ProfileForm({ memberData }) {
     let profileData = {
       firstName: formData.firstName,
       lastName: formData.lastName,
-      email: formData.email,
+      email: formData.email.toLowerCase(),
       password: formData.password,
       username: memberData ? memberData.username : currentUser.username,
     };

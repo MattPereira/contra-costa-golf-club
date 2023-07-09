@@ -24,6 +24,8 @@ class User {
    **/
 
   static async authenticate(email, password) {
+    console.log("EMAIL", email);
+
     // try to find the user first
     const result = await db.query(
       `SELECT email,
@@ -37,7 +39,11 @@ class User {
       [email]
     );
 
+    console.log("RESULT", result.rows);
+
     const user = result.rows[0];
+
+    console.log("USER", user);
 
     if (user) {
       //** TURNING OFF PASSWORD AUTH FOR NOW SINCE USERS CANT REMEMBER PASSWORDS */
