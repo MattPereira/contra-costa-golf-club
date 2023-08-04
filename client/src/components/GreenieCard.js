@@ -89,7 +89,7 @@ const GreenieCard = ({ greenie }) => {
   }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    fontFamily: "Poppins",
+    // fontFamily: "Poppins",
   }));
 
   const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({

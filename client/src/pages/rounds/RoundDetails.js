@@ -245,13 +245,7 @@ function ScoresTable({ round }) {
 
   return (
     <Box>
-      <Table
-        bordered
-        striped
-        responsive
-        variant="light"
-        className="d-none d-lg-table"
-      >
+      <Table bordered responsive className="d-none d-lg-table">
         <thead className="table-dark">
           <tr>
             <th>Hole</th>
@@ -265,11 +259,12 @@ function ScoresTable({ round }) {
         </thead>
         <tbody>
           <tr>
-            <th>Par</th>
+            <th className="table-secondary">Par</th>
             {Object.values(pars).map((p) => (
               <td
                 key={uuidv4()}
                 align="center"
+                className="table-secondary"
                 sx={{
                   borderRight: "1px solid rgb(224,224,224)",
 
@@ -281,7 +276,7 @@ function ScoresTable({ round }) {
             ))}
           </tr>
           <tr className="text-center">
-            <th className="text-start">Strokes</th>
+            <th className="text-start">Stroke</th>
             {Object.values(strokes).map((s) => (
               <td key={uuidv4()}>{s}</td>
             ))}
@@ -306,7 +301,7 @@ function ScoresTable({ round }) {
           <tr>
             <th>Hole</th>
             <th>Par</th>
-            <th>Strokes</th>
+            <th>Stroke</th>
             <th>Putts</th>
           </tr>
         </thead>

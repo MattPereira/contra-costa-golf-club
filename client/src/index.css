@@ -1,14 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Itim&family=Poppins:wght@300;400;500;600;700;800;900&family=Varela+Round&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Itim&family=Didact+Gothic&display=swap");
 @import url("https://fonts.cdnfonts.com/css/cubano");
-
-html,
-body {
-  height: 100%;
-  margin: 0;
-  /* padding-right: 0; */
-}
-
-/**** Global styles *****/
 
 th {
   white-space: nowrap;
