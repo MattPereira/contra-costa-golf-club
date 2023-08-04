@@ -6,9 +6,6 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 
 /** This component is used to fetch course data to pass to <CourseForm/>
  *  in order to populate the form with the course's current data.
- *
- * Routed as /course/:handle/edit
- * Routes -> EditCourse -> CourseForm
  */
 
 export default function EditCourse() {
@@ -17,22 +14,15 @@ export default function EditCourse() {
   const [course, setCourse] = useState(null);
 
   /* On component mount, load course from API to populate form data */
-  useEffect(
-    function getCourseOnMount() {
-      console.debug("EditCourse useEffect getCourseOnMount");
-
-      async function getCourse() {
-        setCourse(await CcgcApi.getCourse(handle));
-      }
-      getCourse();
-    },
-    [handle]
-  );
-  console.log("COURSE", course);
-
-  console.debug("EditCourse", "course=", course);
+  useEffect(() => {
+    async function getCourse() {
+      setCourse(await CcgcApi.getCourse(handle));
+    }
+    getCourse();
+  }, [handle]);
 
   if (!course) return <LoadingSpinner />;
+  console.log("COURSE", course);
 
   return <CourseForm course={course} />;
 }

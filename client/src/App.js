@@ -18,7 +18,7 @@ import theme from "./theme/theme";
 
 /** Contra Costa Golf Club App
  *
- *  * - infoLoaded: has user data been pulled from API?
+ * - infoLoaded: has user data been pulled from API?
  *  (this manages the loading spinner)
  *
  * - currentUser: user obj from API used to tell if someone

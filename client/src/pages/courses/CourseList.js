@@ -20,14 +20,10 @@ import courseImage from "../../assets/golf-courses.jpg";
  */
 
 export default function CourseList() {
-  console.debug("CourseList");
-
   const [courses, setCourses] = useState(null);
 
-  /* On component mount, load courses from API */
-  useEffect(function getCoursesOnMount() {
-    console.debug("CourseList useEffect getCoursesOnMount");
-
+  /* On component mount, load courses from API one time */
+  useEffect(() => {
     async function fetchAllCourses() {
       let courses = await CcgcApi.getCourses();
       setCourses(courses);
@@ -36,6 +32,7 @@ export default function CourseList() {
   }, []);
 
   if (!courses) return <LoadingSpinner />;
+  console.log("courses", courses);
 
   return (
     <Box>
@@ -60,24 +57,24 @@ export default function CourseList() {
   );
 }
 
-function CourseCard({ handle, rating, slope, name, imgUrl }) {
-  const StyledPaper = styled(Paper)(({ theme }) => ({
-    borderRadius: "30px",
-    backgroundColor: "black",
-    color: "white",
-    "&:hover": {
-      backgroundColor: "#eeeeee",
-      color: "black",
-    },
-  }));
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  borderRadius: "30px",
+  backgroundColor: "black",
+  color: "white",
+  "&:hover": {
+    backgroundColor: "#eeeeee",
+    color: "black",
+  },
+}));
 
-  const StyledCardImage = styled(Box)(({ theme }) => ({
-    width: "100%",
-    height: "203.984px",
-    borderRadius: "30px",
-    objectFit: "cover",
-  }));
+const StyledCardImage = styled(Box)(({ theme }) => ({
+  width: "100%",
+  height: "203.984px",
+  borderRadius: "30px",
+  objectFit: "cover",
+}));
 
+function CourseCard({ handle, name, imgUrl }) {
   return (
     <Box>
       <Link to={`/courses/${handle}`} style={{ textDecoration: "none" }}>

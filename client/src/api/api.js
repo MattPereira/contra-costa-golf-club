@@ -5,9 +5,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001";
 /** API Class.
  *
  * Static class tying together methods used to get/send to to the API.
- * There shouldn't be any frontend-specific stuff here, and there shouldn't
- * be any API-aware stuff elsewhere in the frontend.
  *
+ * All requests to the server are handled here.
  */
 
 class CcgcApi {
@@ -15,10 +14,7 @@ class CcgcApi {
   static token;
 
   static async request(endpoint, data = {}, method = "get") {
-    console.debug("API Call:", endpoint, data, method);
-
-    //there are multiple ways to pass an authorization token, this is how you pass it in the header.
-    //this has been provided to show you another way to pass the token.
+    //there are multiple ways to pass an authorization token, this is how you pass it in the header
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { Authorization: `Bearer ${CcgcApi.token}` };
     const params = method === "get" ? data : {};
