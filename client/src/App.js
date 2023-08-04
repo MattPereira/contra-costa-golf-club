@@ -29,7 +29,7 @@ import theme from "./theme/theme";
  *   read from localStorage and synced to there via the custom
  *   useLocalStorage hook.
  *
- *   App -> Routes
+ *   App -> Router
  *
  */
 
@@ -38,25 +38,13 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [token, setToken] = useLocalStorage("ccgc-token");
 
-  // console.debug(
-  //   "App",
-  //   "infoLoaded=",
-  //   infoLoaded,
-  //   "currentUser=",
-  //   currentUser,
-  //   "token=",
-  //   token
-  // );
-
-  /**Load user info from API. loadUserInfo() only runs if user is logged in and has a token.
+  /** Load user info from API. loadUserInfo() only runs if user is logged in and has a token.
    * loadUserInfo() only needs to re-run when a user logs out, so the value of the token
    * is a depndency for this useEffect().
    */
 
   useEffect(
     function loadUserInfo() {
-      // console.debug("App useEffect loadUserInfo", "token=", token);
-
       async function getCurrentUser() {
         if (token) {
           try {

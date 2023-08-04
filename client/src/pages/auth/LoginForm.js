@@ -42,16 +42,6 @@ const LoginForm = ({ login }) => {
 
   const [formErrors, setFormErrors] = useState([]);
 
-  console.debug(
-    "LoginForm",
-    "login=",
-    typeof login,
-    "formData=",
-    formData,
-    "formErrors=",
-    formErrors
-  );
-
   //update state of formData onChange of any form input field
   const handleChange = (e) => {
     const { name, value } = e.target;

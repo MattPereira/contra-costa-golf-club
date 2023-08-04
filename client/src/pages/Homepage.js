@@ -13,28 +13,55 @@ import { styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 import { Container, Box, Grid, Paper, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
-/** Homepage component { path :"/" }
+
+// Styles
+const StyledFadeInBox = styled(Box)({
+  animation: "fadeIn 3s",
+  "@keyframes fadeIn": {
+    "100%": {
+      opacity: 1,
+    },
+    "0%": {
+      opacity: 0,
+    },
+  },
+});
+
+const StyledCardPaper = styled(Paper)(({ theme }) => ({
+  borderRadius: "30px",
+  backgroundColor: theme.palette.secondary.main,
+  height: "100%",
+  "&:hover": {
+    backgroundColor: "black",
+    color: "white",
+  },
+}));
+
+const StyledCardImage = styled(Box)(({ theme }) => ({
+  width: "100%",
+  height: "203.984px",
+  borderRadius: "30px",
+  objectFit: "cover",
+}));
+
+const StyledCardTitle = styled(Typography)(({ theme }) => ({
+  marginBottom: "1rem",
+}));
+
+/** Homepage component displays cards for "current events" and "club resources"
  *
- * displays cards for "current events" and "club resources"
+ * path -> "/"
  *
  * Router -> Homepage
  */
 
 export default function Homepage() {
-  const theme = useTheme();
-
-  console.log(theme);
-
   const [tournament, setTournament] = useState(null);
 
-  useEffect(function getUpcomingTournamentOnMount() {
-    console.debug("Homepage useEffect getUpcomingTournamentOnMount");
-
+  useEffect(() => {
     async function getUpcomingTournament() {
       setTournament(await CcgcApi.getUpcomingTournament());
     }
-
     getUpcomingTournament();
   }, []);
 
@@ -109,39 +136,6 @@ export default function Homepage() {
       ],
     },
   ];
-
-  const StyledFadeInBox = styled(Box)({
-    animation: "fadeIn 3s",
-    "@keyframes fadeIn": {
-      "100%": {
-        opacity: 1,
-      },
-      "0%": {
-        opacity: 0,
-      },
-    },
-  });
-
-  const StyledCardPaper = styled(Paper)(({ theme }) => ({
-    borderRadius: "30px",
-    backgroundColor: theme.palette.secondary.main,
-    height: "100%",
-    "&:hover": {
-      backgroundColor: "black",
-      color: "white",
-    },
-  }));
-
-  const StyledCardImage = styled(Box)(({ theme }) => ({
-    width: "100%",
-    height: "203.984px",
-    borderRadius: "30px",
-    objectFit: "cover",
-  }));
-
-  const StyledCardTitle = styled(Typography)(({ theme }) => ({
-    marginBottom: "1rem",
-  }));
 
   return (
     <StyledFadeInBox>
