@@ -56,6 +56,9 @@ app.get("/", (req, res) => {
   });
 });
 
+/** So server logs dont throw error looking for /favicon.ico when I visit with browser */
+app.get("/favicon.ico", (req, res) => res.status(204));
+
 /** Handle 404 errors -- if an endpoint that doesnt exist gets requested */
 app.use(function (req, res, next) {
   console.log("THIS ENDPOINT DOES NOT EXIST");
