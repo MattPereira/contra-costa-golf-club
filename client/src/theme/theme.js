@@ -32,8 +32,8 @@ let theme = createTheme({
       fontFamily: "Cubano",
     },
     p: {
-      fontFamily: "Poppins",
-      fontSize: "1.1rem",
+      fontFamily: "Didact Gothic",
+      fontSize: "1.25rem",
     },
   },
   components: {

@@ -89,11 +89,13 @@ const GreenieCard = ({ greenie }) => {
   }));
 
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    // fontFamily: "Poppins",
+    fontFamily: "Didact Gothic",
+    fontSize: "1rem",
   }));
 
   const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-    fontFamily: "Poppins",
+    fontFamily: "Didact gothic",
+    fontSize: "1rem",
     fontWeight: "bold",
   }));
 

@@ -63,6 +63,11 @@ export default function TournamentDetails() {
     fontFamily: "Cubano",
     fontSize: "1.25rem",
     color: "white",
+    "&.Mui-selected": {
+      backgroundColor: "white",
+      color: "black",
+      borderRadius: "5px",
+    },
   }));
 
   const shortCourseName = course.courseName.split(" ").slice(0, 2).join(" ");
@@ -82,6 +87,11 @@ export default function TournamentDetails() {
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
+          sx={{
+            "& .MuiTabs-indicator": {
+              backgroundColor: "transparent",
+            },
+          }}
         >
           <StyledTab label="Rounds" />
           <StyledTab label="Greenies" />
