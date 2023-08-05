@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import UserContext from "../../lib/UserContext";
+
 import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
@@ -7,8 +9,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import PageHero from "../../components/PageHero";
 import courseImage from "../../assets/golf-courses.jpg";
 
-import { Container, Row, Table } from "react-bootstrap";
-import { Box } from "@mui/material";
+import { Table } from "react-bootstrap";
+import { Box, Button, Container } from "@mui/material";
 
 /** Course details page.
  *
@@ -24,6 +26,7 @@ import { Box } from "@mui/material";
  */
 
 export default function CourseDetails() {
+  const { currentUser } = useContext(UserContext);
   const { handle } = useParams();
 
   console.debug("CourseDetails", "handle=", handle);
@@ -51,77 +54,65 @@ export default function CourseDetails() {
     <Box>
       <PageHero title="Course Details" backgroundImage={courseImage} />
 
-      <Container className="py-5">
-        <Row className="justify-content-center">
-          <div className="col-lg-9">
-            <Table responsive bordered className="mb-3">
-              <thead>
-                <tr className="table-dark">
-                  <th>Name</th>
-                  <th>Rating</th>
-                  <th>Slope</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="table-light">
-                  <td>{course.name}</td>
-                  <td>{course.rating}</td>
-                  <td>{course.slope}</td>
-                </tr>
-              </tbody>
-            </Table>
-            <img
-              src={course.imgUrl}
-              alt={`${course.name}`}
-              className="img-fluid mb-3"
-            />
+      <Container sx={{ py: 10 }}>
+        <Box
+          component="img"
+          src={course.imgUrl}
+          alt={`${course.name}`}
+          sx={{ width: "100%" }}
+        />
+        <div className="mb-5">
+          <Table responsive bordered hover className="text-center">
+            <thead>
+              <tr className="table-dark">
+                <th colspan={10}>Name</th>
+                <th colspan={5}>Rating</th>
+                <th colspan={5}>Slope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan={10}>{course.name}</td>
+                <td colSpan={5}>{course.rating}</td>
+                <td colspan={5}>{course.slope}</td>
+              </tr>
+            </tbody>
+            <thead>
+              <tr className="table-dark">
+                <th>HOLE</th>
+                {Array.from({ length: 18 }, (_, i) => (
+                  <th key={i + 1}>{i + 1}</th>
+                ))}
+                <th>TOT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="table-secondary">
+                <th>PAR</th>
+                {Object.values(course.pars).map((p) => (
+                  <td key={uuidv4()}>{p}</td>
+                ))}
+              </tr>
 
-            <div className="mb-5">
-              <CourseTable
-                key={course.handle}
-                handle={course.handle}
-                name={course.name}
-                rating={course.rating}
-                slope={course.slope}
-                pars={course.pars}
-                handicaps={course.handicaps}
-              />
-            </div>
-          </div>
-        </Row>
+              <tr className="table-light">
+                <th>HCP</th>
+                {Object.values(course.handicaps).map((h) => (
+                  <td key={uuidv4()}>{h}</td>
+                ))}
+                <td>--</td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
+
+        {currentUser && currentUser.isAdmin && (
+          <Box sx={{ mt: 3, display: "flex", justifyContent: "end" }}>
+            <Button variant="contained" href={`/courses/update/${handle}`}>
+              Edit Course
+            </Button>
+          </Box>
+        )}
       </Container>
     </Box>
-  );
-}
-
-function CourseTable({ pars, handicaps, slope, rating }) {
-  return (
-    <Table responsive bordered hover className="text-center">
-      <thead>
-        <tr className="table-dark">
-          <th>HOLE</th>
-          {Array.from({ length: 18 }, (_, i) => (
-            <th key={i + 1}>{i + 1}</th>
-          ))}
-          <th>TOT</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr className="table-secondary">
-          <th>PAR</th>
-          {Object.values(pars).map((p) => (
-            <td key={uuidv4()}>{p}</td>
-          ))}
-        </tr>
-
-        <tr className="table-light">
-          <th>HCP</th>
-          {Object.values(handicaps).map((h) => (
-            <td key={uuidv4()}>{h}</td>
-          ))}
-          <td>--</td>
-        </tr>
-      </tbody>
-    </Table>
   );
 }
