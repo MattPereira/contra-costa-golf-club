@@ -10,6 +10,9 @@ import PageHero from "../../components/PageHero";
 
 /** Form for creating or updating a golf course
  *
+ * If a course prop is passed, the form is in edit mode
+ * if in edit mode, user can upload a photo for the course
+ * the photo is uploaded to AWS S3 using pre-signed url
  */
 
 export default function CourseForm({ course }) {
@@ -114,17 +117,8 @@ export default function CourseForm({ course }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //create course handle from formData.name
-    const courseHandle = formData.name
-      .toLowerCase()
-      .replaceAll("'", "")
-      .split(" ")
-      .slice(0, 2)
-      .join("-");
-
     //package the formData into the format that the API wants
-    let courseData = {
-      handle: courseHandle,
+    const courseData = {
       name: formData.name,
       rating: +formData.rating,
       slope: +formData.slope,
@@ -141,9 +135,18 @@ export default function CourseForm({ course }) {
 
     try {
       if (course) {
-        delete courseData.handle;
         await CcgcApi.updateCourse(course.handle, courseData);
       } else {
+        //create course handle from formData.name
+        const courseHandle = formData.name
+          .toLowerCase()
+          .replaceAll("'", "")
+          .split(" ")
+          .slice(0, 2)
+          .join("-");
+
+        courseData.handle = courseHandle;
+
         await CcgcApi.createCourse(courseData);
       }
     } catch (errors) {
@@ -156,7 +159,7 @@ export default function CourseForm({ course }) {
     if (course) {
       navigate(`/courses/${course.handle}`);
     } else {
-      navigate(`/courses/${courseHandle}`);
+      navigate(`/courses/${courseData.handle}`);
     }
   };
 
