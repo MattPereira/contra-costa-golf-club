@@ -1,17 +1,10 @@
 import axios from "axios";
-
+import { readAndCompressImage } from "browser-image-resizer";
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Container,
-  Box,
-  Alert,
-  Grid,
-  Paper,
-  TextField,
-} from "@mui/material";
+//prettier-ignore
+import { Button, Container, Box, Alert, Grid, Paper, TextField } from "@mui/material";
 
 import PageHero from "../../components/PageHero";
 
@@ -43,27 +36,41 @@ export default function CourseForm({ course }) {
 
   const handleFileChange = async (event) => {
     try {
+      let file = event.target.files[0];
+      console.log("file.size before:", file.size);
+
+      const config = {
+        quality: 0.9,
+        maxWidth: 1200, // Increase the max width
+        maxHeight: 675, // Increase the max height (still maintaining 16:9 ratio)
+        autoRotate: true,
+      };
+      // Compress image if it is larger than 1MB
+      if (file.size > 1000000) {
+        setUploadStatus("Compressing image...");
+
+        // Compress image aggresively it is larger than 3MB
+        if (file.size > 3000000) {
+          config.quality = 0.8;
+        }
+        file = await readAndCompressImage(file, config);
+
+        console.log("file.size after", file.size);
+      }
+
       setUploadStatus("Uploading image...");
-      const file = event.target.files[0];
+      const { url } = await CcgcApi.getUploadUrl(course.handle);
 
-      const res = await CcgcApi.getUploadUrl(course.handle);
-
-      const { url } = res;
-
-      console.log("url", url);
-
-      // Use Axios to PUT the file to the pre-signed URL
+      // Send request using presigned URL to upload image to s3 bucket
       const result = await axios.put(url, file, {
         headers: {
           "Content-Type": file.type,
         },
       });
 
-      console.log("result", result);
-
       if (result.status === 200) {
         setUploadStatus("Upload Success!");
-        // update formData with aws url that will be changed
+        // update formData with aws url
         setFormData((fData) => {
           return {
             ...fData,
