@@ -55,28 +55,31 @@ export default function CourseDetails() {
       <PageHero title="Course Details" backgroundImage={courseImage} />
 
       <Container sx={{ py: 10 }}>
+        <Table responsive bordered hover className="text-center mb-0">
+          <thead>
+            <tr className="table-dark">
+              <th>Name</th>
+              <th>Rating</th>
+              <th>Slope</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{course.name}</td>
+              <td>{course.rating}</td>
+              <td>{course.slope}</td>
+            </tr>
+          </tbody>
+        </Table>
         <Box
           component="img"
           src={course.imgUrl}
           alt={`${course.name}`}
           sx={{ width: "100%" }}
         />
+
         <div className="mb-5">
           <Table responsive bordered hover className="text-center">
-            <thead>
-              <tr className="table-dark">
-                <th colspan={10}>Name</th>
-                <th colspan={5}>Rating</th>
-                <th colspan={5}>Slope</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td colSpan={10}>{course.name}</td>
-                <td colSpan={5}>{course.rating}</td>
-                <td colspan={5}>{course.slope}</td>
-              </tr>
-            </tbody>
             <thead>
               <tr className="table-dark">
                 <th>HOLE</th>

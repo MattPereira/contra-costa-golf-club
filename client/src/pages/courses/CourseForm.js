@@ -150,7 +150,7 @@ export default function CourseForm({ course }) {
         await CcgcApi.createCourse(courseData);
       }
     } catch (errors) {
-      debugger;
+      // debugger;
       setFormErrors(errors);
       return;
     }
