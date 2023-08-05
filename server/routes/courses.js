@@ -5,16 +5,20 @@
  * get all courses,
  * get a specific course,
  * update a specific course,
- * delete a specific course */
+ * delete a specific course,
+ * get a presigned url from aws s3 for uploading a course image
+ */
 
 const jsonschema = require("jsonschema");
 const express = require("express");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3();
 
 const { BadRequestError } = require("../expressError");
 const { ensureAdmin } = require("../middleware/auth");
 const Course = require("../models/course");
 
-const courseNewSchema = require("../schemas/courseNew.json");
+// const courseNewSchema = require("../schemas/courseNew.json");
 const courseUpdateSchema = require("../schemas/courseUpdate.json");
 
 const router = new express.Router();
@@ -35,11 +39,11 @@ const router = new express.Router();
 
 router.post("/", ensureAdmin, async function (req, res, next) {
   try {
-    const validator = jsonschema.validate(req.body, courseNewSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map((e) => e.stack);
-      throw new BadRequestError(errs);
-    }
+    // const validator = jsonschema.validate(req.body, courseNewSchema);
+    // if (!validator.valid) {
+    //   const errs = validator.errors.map((e) => e.stack);
+    //   throw new BadRequestError(errs);
+    // }
 
     const course = await Course.create(req.body);
     return res.status(201).json({ course });
@@ -64,6 +68,38 @@ router.get("/", async function (req, res, next) {
   try {
     const courses = await Course.findAll();
     return res.json({ courses });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/** GET aws presigned url for image upload
+ *
+ * after response sent to client, client will send request to aws s3 directly
+ * with the pre-authenticated url
+ *
+ */
+
+router.get("/image-upload", async function (req, res, next) {
+  try {
+    const { course } = req.query;
+    console.log("course", course);
+
+    const params = {
+      Bucket: "contra-costa-golf-club",
+      Key: course,
+      Expires: 300, // seconds
+      ContentType: "image/jpeg", // only allow JPEG files
+    };
+
+    s3.getSignedUrl("putObject", params, (err, url) => {
+      if (err) {
+        console.log("error", err);
+        return next(err);
+      }
+      console.log("url", url);
+      return res.json({ url });
+    });
   } catch (err) {
     return next(err);
   }

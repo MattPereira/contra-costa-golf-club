@@ -1,3 +1,5 @@
+import axios from "axios";
+
 import React, { useState } from "react";
 import CcgcApi from "../../api/api";
 import { useNavigate } from "react-router-dom";
@@ -31,6 +33,49 @@ export default function CourseForm({ course }) {
       handicap: course ? course.handicaps[`hole${i + 1}`] : "",
     })),
   });
+
+  const fileInputRef = React.useRef();
+
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = async (event) => {
+    try {
+      const file = event.target.files[0];
+
+      const res = await CcgcApi.getUploadUrl(course.handle);
+
+      const { url } = res;
+
+      console.log("url", url);
+
+      // Use Axios to PUT the file to the pre-signed URL
+      const result = await axios.put(url, file, {
+        headers: {
+          "Content-Type": file.type,
+        },
+      });
+
+      console.log("result", result);
+
+      if (result.status === 200) {
+        // update formData with aws url that will be changed
+        setFormData((fData) => {
+          return {
+            ...fData,
+            imgUrl: `https://contra-costa-golf-club.s3.us-west-1.amazonaws.com/${course.handle}`,
+          };
+        });
+
+        console.log("Success!");
+      } else {
+        console.error("Failed to upload file", result);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   //update state of formData onChange of any form input field
   const handleChange = (e) => {
@@ -74,7 +119,7 @@ export default function CourseForm({ course }) {
       name: formData.name,
       rating: +formData.rating,
       slope: +formData.slope,
-      imgUrl: formData.imgUrl,
+      imgUrl: formData.imgUrl || "test.com",
       pars: formData.holes.reduce((acc, hole, i) => {
         acc[`hole${i + 1}`] = +hole.par;
         return acc;
@@ -136,19 +181,6 @@ export default function CourseForm({ course }) {
                   />
                 </Box>
 
-                <Box sx={{ mb: 2 }}>
-                  <label htmlFor="name">Image URL</label>
-                  <TextField
-                    className="form-control"
-                    id="imgUrl"
-                    name="imgUrl"
-                    type="text"
-                    onChange={handleChange}
-                    value={formData.imgUrl}
-                    required
-                  />
-                </Box>
-
                 <Grid container spacing={4} sx={{ mb: 2 }}>
                   <Grid item xs={6}>
                     <Box>
@@ -180,6 +212,27 @@ export default function CourseForm({ course }) {
                     </Box>
                   </Grid>
                 </Grid>
+
+                {course ? (
+                  <Box sx={{ mb: 2 }}>
+                    <label htmlFor="name">Image</label>
+                    <div>
+                      <input
+                        type="file"
+                        style={{ display: "none" }}
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                      />
+                      <Button
+                        sx={{ width: "100%", bgcolor: "black", color: "white" }}
+                        variant="contained"
+                        onClick={handleButtonClick}
+                      >
+                        Upload Photo
+                      </Button>
+                    </div>
+                  </Box>
+                ) : null}
 
                 <div className="row text-center">
                   <div className="col-2">

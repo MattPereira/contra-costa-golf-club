@@ -75,7 +75,7 @@ class CcgcApi {
   }
 
   //////////////////// COURSE ROUTES ////////////////////
-  /** Get all courses */
+  /** Get all courses **/
   static async getCourses() {
     let res = await this.request("courses");
     return res.courses;
@@ -97,6 +97,12 @@ class CcgcApi {
   static async updateCourse(handle, data) {
     let res = await this.request(`courses/${handle}`, data, "patch");
     return res.course;
+  }
+
+  /** Get a presigned url from S3 for image upload */
+  static async getUploadUrl(courseHandle) {
+    let res = await this.request(`courses/image-upload?course=${courseHandle}`);
+    return res;
   }
 
   /** Delete a course */
