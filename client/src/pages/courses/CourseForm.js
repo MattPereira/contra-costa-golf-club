@@ -22,6 +22,7 @@ import PageHero from "../../components/PageHero";
 export default function CourseForm({ course }) {
   let navigate = useNavigate();
 
+  const [uploadStatus, setUploadStatus] = useState();
   const [formErrors, setFormErrors] = useState([]);
   const [formData, setFormData] = useState({
     name: course ? course.name : "",
@@ -42,6 +43,7 @@ export default function CourseForm({ course }) {
 
   const handleFileChange = async (event) => {
     try {
+      setUploadStatus("Uploading image...");
       const file = event.target.files[0];
 
       const res = await CcgcApi.getUploadUrl(course.handle);
@@ -60,6 +62,7 @@ export default function CourseForm({ course }) {
       console.log("result", result);
 
       if (result.status === 200) {
+        setUploadStatus("Upload Success!");
         // update formData with aws url that will be changed
         setFormData((fData) => {
           return {
@@ -67,13 +70,12 @@ export default function CourseForm({ course }) {
             imgUrl: `https://contra-costa-golf-club.s3.us-west-1.amazonaws.com/${course.handle}`,
           };
         });
-
-        console.log("Success!");
       } else {
         console.error("Failed to upload file", result);
       }
     } catch (err) {
-      console.log(err);
+      setUploadStatus("Upload Failed!");
+      console.error("Failed to upload file", err);
     }
   };
 
@@ -212,27 +214,46 @@ export default function CourseForm({ course }) {
                     </Box>
                   </Grid>
                 </Grid>
-
-                {course ? (
-                  <Box sx={{ mb: 2 }}>
-                    <label htmlFor="name">Image</label>
-                    <div>
-                      <input
-                        type="file"
-                        style={{ display: "none" }}
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                      />
-                      <Button
-                        sx={{ width: "100%", bgcolor: "black", color: "white" }}
-                        variant="contained"
-                        onClick={handleButtonClick}
+                <Box sx={{ mb: 2 }}>
+                  {course &&
+                    (uploadStatus ? (
+                      <Box
+                        sx={{
+                          bgcolor: "black",
+                          p: 2,
+                          color: "white",
+                          fontFamily: "cubano",
+                          textAlign: "center",
+                          borderRadius: "5px",
+                        }}
                       >
-                        Upload Photo
-                      </Button>
-                    </div>
-                  </Box>
-                ) : null}
+                        {uploadStatus}
+                      </Box>
+                    ) : (
+                      <>
+                        <label htmlFor="name">Image</label>
+                        <div>
+                          <input
+                            type="file"
+                            style={{ display: "none" }}
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                          />
+                          <Button
+                            sx={{
+                              width: "100%",
+                              bgcolor: "black",
+                              color: "white",
+                            }}
+                            variant="contained"
+                            onClick={handleButtonClick}
+                          >
+                            Upload Photo
+                          </Button>
+                        </div>
+                      </>
+                    ))}
+                </Box>
 
                 <div className="row text-center">
                   <div className="col-2">
