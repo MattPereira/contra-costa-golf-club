@@ -219,7 +219,7 @@ export default function CourseForm({ course }) {
                     (uploadStatus ? (
                       <Box
                         sx={{
-                          bgcolor: "black",
+                          bgcolor: "primary.main",
                           p: 2,
                           color: "white",
                           fontFamily: "cubano",
