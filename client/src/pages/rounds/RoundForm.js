@@ -3,8 +3,8 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 // prettier-ignore
-import { Button, Typography, Box, Container, Grid, FormControl, MenuItem, Select, TextField, Alert, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
-import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
+import { Button, Typography, Box, Container, Grid, FormControl, MenuItem, Select, TextField, Alert,Tab, Tabs } from "@mui/material";
+
 import { styled } from "@mui/material/styles";
 
 // Internal Imports
@@ -13,37 +13,36 @@ import PageHero from "../../components/PageHero";
 import CcgcApi from "../../api/api";
 
 /***** Styles *****/
-const StyledAccordion = styled((props) => (
-  <Accordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  borderRadius: "4px",
-  // backgroundColor: theme.palette.secondary.main,
-  "&:before": {
-    display: "none",
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  "& .MuiTabs-indicator": {
+    backgroundColor: "transparent",
   },
 }));
 
-const StyledAccordionSummary = styled((props) => (
-  <AccordionSummary
-    expandIcon={
-      <ArrowForwardIosSharpIcon sx={{ fontSize: "1rem", color: "white" }} />
-    }
-    {...props}
-  />
-))(({ theme }) => ({
+const StyledTab = styled(Tab)(({ theme }) => ({
+  fontFamily: "Cubano",
+  fontSize: "1.25rem",
   color: "white",
-  backgroundColor: "black",
-  borderRadius: "4px",
-
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
-  },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
+  "&.Mui-selected": {
+    backgroundColor: "white",
+    color: "black",
+    borderRadius: "5px",
   },
 }));
+
+function TabPanel({ children, value, index, ...other }) {
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box>{children}</Box>}
+    </div>
+  );
+}
 
 /** Form to create a new round
  *
@@ -61,11 +60,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
   const { strokes, putts } = round || {};
 
   const [formErrors, setFormErrors] = useState([]);
-  const [expanded, setExpanded] = useState(false);
-
-  const handleAccordionChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
-  };
 
   //Gracefully handling react requirement that form input value not be null lol
   const [formData, setFormData] = useState({
@@ -112,8 +106,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
     putts18: putts ? (putts.hole18 === null ? "" : putts.hole18) : "",
   });
 
-  console.debug("RoundForm", "formData=", formData, "formErrors=", formErrors);
-
   /***** Update state of formData onChange of any form input field *****/
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -124,14 +116,6 @@ const RoundForm = ({ availableUsernames, round, course }) => {
     }));
     setFormErrors([]);
   };
-
-  /** On form submission:
-   * -attempt save to backend & report any errors
-   * -if successful
-   *  -clear previous error messages and password
-   *  - show update-confirmed alert
-   *  - set current user info throughout the site
-   */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -196,7 +180,7 @@ const RoundForm = ({ availableUsernames, round, course }) => {
 
     if (round) {
       //navigate to the tournament details page after editing a round
-      navigate(`/tournaments/${round.tournamentDate}`);
+      navigate(`/rounds/${round.id}`);
     } else {
       //navigate to the tournament details page for a newly created round
       navigate(`/tournaments/${date}`);
@@ -227,16 +211,32 @@ const RoundForm = ({ availableUsernames, round, course }) => {
 
   const shortCourseName = courseName.split(" ").slice(0, 2).join(" ");
 
-  const frontNine = Array.from({ length: 9 }, (v, i) => i + 1);
+  // const frontNine = Array.from({ length: 9 }, (v, i) => i + 1);
   const backNine = Array.from({ length: 9 }, (v, i) => i + 10);
 
-  // Naive progress tracker for how many holes played that only looks at strokes NOT putts
-  const frontProgress = Object.values(formData)
-    .slice(1, 10)
-    .filter((item) => item !== "").length;
-  const backProgress = Object.values(formData)
-    .slice(10, 19)
-    .filter((item) => item !== "").length;
+  const [value, setValue] = useState(0);
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const formattedRound = [];
+
+  for (let hole in round.strokes) {
+    let obj = {};
+    obj[hole] = {
+      par: round.pars[hole],
+      strokes: round.strokes[hole],
+      putts: round.putts[hole],
+    };
+    formattedRound.push(obj);
+  }
+
+  console.log("formattedRound", formattedRound);
+
+  const frontNine = formattedRound.slice(0, 9);
+
+  // console.log("course", course);
+  // console.log("round", round);
 
   return (
     <Box>
@@ -245,7 +245,18 @@ const RoundForm = ({ availableUsernames, round, course }) => {
         backgroundImage={round ? round.courseImg : course.courseImg}
         date={tournamentDate}
       />
-
+      <Box sx={{ bgcolor: "black", py: 1 }}>
+        <StyledTabs
+          value={value}
+          centered
+          onChange={handleTabChange}
+          textColor="secondary"
+          indicatorColor="secondary"
+        >
+          <StyledTab label="Front" />
+          <StyledTab label="Back" />
+        </StyledTabs>
+      </Box>
       <Container sx={{ pb: 5, pt: 1 }} disableGutters>
         <Grid container justifyContent="center">
           <Grid item xs={12} sm={10} md={8} lg={6}>
@@ -295,132 +306,82 @@ const RoundForm = ({ availableUsernames, round, course }) => {
                 </Box>
               )}
 
-              <StyledAccordion
-                elevation={0}
-                expanded={expanded === "panel1"}
-                onChange={handleAccordionChange("panel1")}
-              >
-                <StyledAccordionSummary
-                  aria-controls="front-nine-content"
-                  id="front-nine-header"
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <Typography variant="h4">Front</Typography>
-                    <Typography variant="h4">{frontProgress} / 9</Typography>
-                  </Box>
-                </StyledAccordionSummary>
-                <AccordionDetails>
-                  <Grid container sx={{ mb: 2, mt: 1 }}>
+              <TabPanel value={value} index={0}>
+                <table className="table table-bordered">
+                  <thead>
+                    <tr className="table-dark text-center">
+                      <th scope="col">#</th>
+                      <th scope="col">Par</th>
+                      <th scope="col">STR</th>
+                      <th scope="col">PUT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {frontNine.map((hole, idx) => (
+                      <tr key={idx} className="text-center">
+                        <td className="bg-secondary text-white px-3">
+                          {idx + 1}
+                        </td>
+                        <td className="bg-primary text-white">
+                          {hole[`hole${idx + 1}`].par}
+                        </td>
+                        <td>
+                          <input
+                            id={`strokes${idx + 1}`}
+                            name={`strokes${idx + 1}`}
+                            type="number"
+                            min="1"
+                            onChange={handleChange}
+                            value={formData[`strokes${idx + 1}`]}
+                            className="form-control"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            id={`putts${idx + 1}`}
+                            name={`putts${idx + 1}}`}
+                            type="number"
+                            min="0"
+                            onChange={handleChange}
+                            value={formData[`putts${idx + 1}`]}
+                            className="form-control"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </TabPanel>
+              <TabPanel value={value} index={1}>
+                {backNine.map((num) => (
+                  <Grid container spacing={2} key={num} sx={{ mb: 1.5 }}>
                     <Grid item xs={6}>
-                      <Typography variant="h5" align="center">
-                        Strokes
-                      </Typography>
+                      <TextField
+                        id={`strokes${num}`}
+                        name={`strokes${num}`}
+                        label={`Hole ${num}`}
+                        type="number"
+                        min="1"
+                        onChange={handleChange}
+                        value={formData[`strokes${num}`]}
+                        fullWidth
+                      />
                     </Grid>
                     <Grid item xs={6}>
-                      <Typography variant="h5" align="center">
-                        Putts
-                      </Typography>
+                      <TextField
+                        id={`putts${num}`}
+                        name={`putts${num}`}
+                        label={`Hole ${num}`}
+                        type="number"
+                        min="0"
+                        onChange={handleChange}
+                        value={formData[`putts${num}`]}
+                        fullWidth
+                      />
                     </Grid>
                   </Grid>
-                  {frontNine.map((num) => (
-                    <Grid container spacing={2} key={num} sx={{ mb: 1.5 }}>
-                      <Grid item xs={6}>
-                        <TextField
-                          id={`strokes${num}`}
-                          name={`strokes${num}`}
-                          label={`Hole ${num}`}
-                          type="number"
-                          min="1"
-                          onChange={handleChange}
-                          value={formData[`strokes${num}`]}
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          id={`putts${num}`}
-                          name={`putts${num}`}
-                          label={`Hole ${num}`}
-                          type="number"
-                          min="0"
-                          onChange={handleChange}
-                          value={formData[`putts${num}`]}
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-                  ))}
-                </AccordionDetails>
-              </StyledAccordion>
-              <StyledAccordion
-                elevation={0}
-                expanded={expanded === "panel2"}
-                onChange={handleAccordionChange("panel2")}
-              >
-                <StyledAccordionSummary
-                  aria-controls="back-nine-content"
-                  id="back-nine-header"
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <Typography variant="h4">Back</Typography>
-                    <Typography variant="h4">{backProgress} / 9</Typography>
-                  </Box>
-                </StyledAccordionSummary>
-                <AccordionDetails>
-                  <Grid container sx={{ mb: 2, mt: 1 }}>
-                    <Grid item xs={6}>
-                      <Typography variant="h5" align="center">
-                        Strokes
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="h5" align="center">
-                        Putts
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                  {backNine.map((num) => (
-                    <Grid container spacing={2} key={num} sx={{ mb: 1.5 }}>
-                      <Grid item xs={6}>
-                        <TextField
-                          id={`strokes${num}`}
-                          name={`strokes${num}`}
-                          label={`Hole ${num}`}
-                          type="number"
-                          min="1"
-                          onChange={handleChange}
-                          value={formData[`strokes${num}`]}
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          id={`putts${num}`}
-                          name={`putts${num}`}
-                          label={`Hole ${num}`}
-                          type="number"
-                          min="0"
-                          onChange={handleChange}
-                          value={formData[`putts${num}`]}
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-                  ))}
-                </AccordionDetails>
-              </StyledAccordion>
+                ))}
+              </TabPanel>
 
               <Box sx={{ textAlign: "end", mt: 3 }}>
                 <Button

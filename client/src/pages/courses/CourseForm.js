@@ -44,15 +44,14 @@ export default function CourseForm({ course }) {
 
       const config = {
         quality: 0.9,
-        maxWidth: 1200, // Increase the max width
-        maxHeight: 675, // Increase the max height (still maintaining 16:9 ratio)
+        maxWidth: 1200,
+        maxHeight: 675,
         autoRotate: true,
       };
       // Compress image if it is larger than 1MB
       if (file.size > 1000000) {
         setUploadStatus("Compressing image...");
-
-        // Compress image aggresively it is larger than 3MB
+        // Compress image aggresively if it is larger than 3MB
         if (file.size > 3000000) {
           config.quality = 0.8;
         }

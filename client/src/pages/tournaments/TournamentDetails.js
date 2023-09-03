@@ -7,6 +7,7 @@ import UserContext from "../../lib/UserContext";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { RankingsTable } from "../standings/StandingsDetails";
 import PageHero from "../../components/PageHero";
+import GreeniesTable from "../../components/GreeniesTable";
 
 // prettier-ignore
 import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
@@ -14,6 +15,24 @@ import { styled } from "@mui/material/styles";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Table } from "react-bootstrap";
+
+// STYLES
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  "& .MuiTabs-indicator": {
+    backgroundColor: "transparent",
+  },
+}));
+
+const StyledTab = styled(Tab)(({ theme }) => ({
+  fontFamily: "Cubano",
+  fontSize: "1.25rem",
+  color: "white",
+  "&.Mui-selected": {
+    backgroundColor: "white",
+    color: "black",
+    borderRadius: "5px",
+  },
+}));
 
 /** Tournament Details Page
  *
@@ -59,17 +78,6 @@ export default function TournamentDetails() {
     timeZone: "UTC",
   });
 
-  const StyledTab = styled(Tab)(({ theme }) => ({
-    fontFamily: "Cubano",
-    fontSize: "1.25rem",
-    color: "white",
-    "&.Mui-selected": {
-      backgroundColor: "white",
-      color: "black",
-      borderRadius: "5px",
-    },
-  }));
-
   const shortCourseName = course.courseName.split(" ").slice(0, 2).join(" ");
 
   return (
@@ -81,22 +89,17 @@ export default function TournamentDetails() {
       />
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
-        <Tabs
+        <StyledTabs
           value={value}
           centered
           onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
-          sx={{
-            "& .MuiTabs-indicator": {
-              backgroundColor: "transparent",
-            },
-          }}
         >
           <StyledTab label="Rounds" />
           <StyledTab label="Greenies" />
           <StyledTab label="Winners" />
-        </Tabs>
+        </StyledTabs>
       </Box>
       <Container sx={{ py: 5 }}>
         <TabPanel value={value} index={0}>
@@ -262,55 +265,7 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
-          <Table striped bordered variant="light" className="text-center">
-            <thead className="table-dark">
-              <tr>
-                <th className="text-start">PLAYER</th>
-                <th>HOLE</th>
-                <th>FEET</th>
-                <th>INCH</th>
-                {currentUser && (
-                  <th className="fw-normal">
-                    <BorderColorIcon />
-                  </th>
-                )}
-              </tr>
-            </thead>
-            {greenies.length ? (
-              <tbody>
-                {greenies.map((g) => (
-                  <tr key={g.id}>
-                    <th className="text-start">
-                      <Link
-                        to={`/rounds/${g.roundId}`}
-                        className="text-decoration-none"
-                      >
-                        {`${g.firstName} ${g.lastName[0]}`}
-                      </Link>
-                    </th>
-                    <td>#{g?.holeNumber}</td>
-                    <td>{g.feet}'</td>
-                    <td>{g.inches}"</td>
-                    {currentUser && (
-                      <td>
-                        <Button
-                          to={`/greenies/update/${g.id}`}
-                          component={Link}
-                          sx={{
-                            p: 0.5,
-                            minWidth: "auto",
-                            "&:hover": { color: "primary.dark" },
-                          }}
-                        >
-                          <BorderColorIcon />
-                        </Button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            ) : null}
-          </Table>
+          <GreeniesTable greenies={greenies} />
         </Grid>
       </Grid>
     </Box>

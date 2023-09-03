@@ -43,17 +43,6 @@ export default function RegisterForm({ register }) {
 
   const [formErrors, setFormErrors] = useState([]);
 
-  console.log("FORM ERRORS", formErrors);
-  console.debug(
-    "RegisterForm",
-    "register=",
-    typeof register,
-    "formData=",
-    formData,
-    "formErrors=",
-    formErrors
-  );
-
   //update state of formData onChange of any form input field
   const handleChange = (e) => {
     const { name, value } = e.target;

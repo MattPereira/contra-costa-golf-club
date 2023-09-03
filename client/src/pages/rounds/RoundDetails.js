@@ -4,7 +4,7 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import CcgcApi from "../../api/api";
 
 import UserContext from "../../lib/UserContext";
-import GreenieCardList from "../../components/GreenieCardList";
+import GreeniesTable from "../../components/GreeniesTable";
 import { Link } from "react-router-dom";
 
 import PageHero from "../../components/PageHero";
@@ -19,6 +19,24 @@ import { v4 as uuidv4 } from "uuid";
 import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
 import { Table } from "react-bootstrap";
+
+// STYLES
+const StyledTab = styled(Tab)(({ theme }) => ({
+  fontFamily: "Cubano",
+  fontSize: "1.25rem",
+  color: "white",
+  "&.Mui-selected": {
+    backgroundColor: "white",
+    color: "black",
+    borderRadius: "5px",
+  },
+}));
+
+const StyledTabs = styled(Tabs)(({ theme }) => ({
+  "& .MuiTabs-indicator": {
+    backgroundColor: "transparent",
+  },
+}));
 
 /** Round details page.
  *
@@ -84,12 +102,6 @@ export default function RoundDetails() {
     p: 4,
   };
 
-  const StyledTab = styled(Tab)(({ theme }) => ({
-    fontFamily: "Cubano",
-    fontSize: "1.15rem",
-    color: "white",
-  }));
-
   const date = new Date(round.tournamentDate).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -134,7 +146,7 @@ export default function RoundDetails() {
       />
 
       <Box sx={{ py: 1, bgcolor: "black" }}>
-        <Tabs
+        <StyledTabs
           centered
           onChange={handleChange}
           textColor="secondary"
@@ -144,7 +156,7 @@ export default function RoundDetails() {
           <StyledTab label="Scores" />
           <StyledTab label="Greenies" />
           <StyledTab label="Handicap" />
-        </Tabs>
+        </StyledTabs>
       </Box>
 
       <Container sx={{ py: 5 }}>
@@ -164,8 +176,10 @@ export default function RoundDetails() {
             </Button>
           </Box>
           {round.greenies.length ? (
-            <GreenieCardList greenies={round.greenies} />
-          ) : null}
+            <GreeniesTable greenies={round.greenies} />
+          ) : (
+            <div>No greenies entered for this round.</div>
+          )}
         </TabPanel>
         <TabPanel value={value} index={2}>
           <HandicapTab round={round} />
