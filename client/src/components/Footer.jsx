@@ -1,8 +1,6 @@
 import React from "react";
 import MPLogo from "../assets/MP_CIRCLE.svg";
 import { Box, Grid, Typography } from "@mui/material";
-
-import { SvgIcon } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
@@ -46,9 +44,11 @@ function Footer() {
           <Grid container justifyContent="center" spacing={3}>
             <Grid item>
               <a href="https://matt-pereira.vercel.app">
-                <SvgIcon sx={{ fontSize: "32px" }}>
-                  <img src={MPLogo} alt="MP Logo" />
-                </SvgIcon>
+                <img
+                  src={MPLogo}
+                  alt="MP Logo"
+                  style={{ width: "30px", paddingTop: "2px" }}
+                />
               </a>
             </Grid>
             <Grid item>
