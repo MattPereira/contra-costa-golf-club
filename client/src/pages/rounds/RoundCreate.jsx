@@ -35,7 +35,7 @@ export default function AddRound() {
 
     try {
       const round = await CcgcApi.createRound(roundData);
-      navigate(`/rounds/${round.id}`);
+      navigate(`/tournaments/${date}`);
     } catch (e) {
       console.error(e);
     }
@@ -96,13 +96,16 @@ export default function AddRound() {
         date={humanDate}
       />
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div>
-          <h3>Create Round</h3>
+        <div className="w-10/12  xl:w-1/4">
+          <h3 className="text-4xl my-5 font-cubano text-center">Add Round</h3>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-3">
-              <select {...register("username")}>
+            <div className="mb-4">
+              <select
+                {...register("username")}
+                className="w-full py-2 px-4 rounded font-gothic text-2xl cursor-pointer"
+              >
                 <option value="" disabled selected>
-                  Choose player...
+                  Choose Player...
                 </option>
                 {availableUsernames.map((username) => (
                   <option key={username} value={username}>
@@ -111,8 +114,12 @@ export default function AddRound() {
                 ))}
               </select>
             </div>
-
-            <input type="submit" className="btn btn-primary" />
+            <div className="flex justify-end">
+              <input
+                type="submit"
+                className="text-xl bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all duration-200 font-cubano"
+              />
+            </div>
           </form>
         </div>
       </div>

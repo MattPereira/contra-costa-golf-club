@@ -145,7 +145,7 @@ function RoundsTab({ rounds, tournamentDate }) {
   const { currentUser } = useContext(UserContext);
 
   const AddRoundButton = currentUser && (
-    <Box sx={{ display: "flex", justifyContent: "center" }}>
+    <Box sx={{ display: "flex", justifyContent: "end" }}>
       <Button
         variant="contained"
         component={Link}
@@ -162,7 +162,9 @@ function RoundsTab({ rounds, tournamentDate }) {
 
   return (
     <>
-      {AddRoundButton}
+      <p className="text-center text-xl mb-[35px] font-gothic">
+        Select a player by name to update scores
+      </p>
       <Table
         responsive
         bordered
@@ -184,11 +186,6 @@ function RoundsTab({ rounds, tournamentDate }) {
             <th className="fw-normal">HCP</th>
             <th className="fw-normal">NET</th>
             <th className="fw-normal">PUT</th>
-            {currentUser && (
-              <th className="fw-normal">
-                <BorderColorIcon />
-              </th>
-            )}
           </tr>
         </thead>
         <tbody>
@@ -196,7 +193,10 @@ function RoundsTab({ rounds, tournamentDate }) {
             <tr key={r.id}>
               {/* <th>{idx + 1}</th> */}
               <th className="text-start">
-                <Link to={`/rounds/${r.id}`} className="text-decoration-none">
+                <Link
+                  to={`/rounds/${r.id}`}
+                  className="font-gothic font-bold text-blue-500 underline"
+                >
                   {r.firstName} {r.lastName[0]}
                 </Link>
               </th>
@@ -209,25 +209,11 @@ function RoundsTab({ rounds, tournamentDate }) {
               <td style={{ color: "red" }}>{r.courseHandicap}</td>
               <td>{r.netStrokes}</td>
               <td>{r.totalPutts}</td>
-              {currentUser && (
-                <td>
-                  <Button
-                    to={`/rounds/update/${r.id}`}
-                    component={Link}
-                    sx={{
-                      p: 0.5,
-                      minWidth: "auto",
-                      "&:hover": { color: "primary.dark" },
-                    }}
-                  >
-                    <BorderColorIcon />
-                  </Button>
-                </td>
-              )}
             </tr>
           ))}
         </tbody>
       </Table>
+      {AddRoundButton}
     </>
   );
 }
