@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 // Internal Imports
-import UserContext from "../../lib/UserContext";
+// import UserContext from "../../lib/UserContext";
 import PageHero from "../../components/PageHero";
 import CcgcApi from "../../api/api";
 import LoadingSpinner from "../../components/LoadingSpinner";

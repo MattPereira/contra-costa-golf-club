@@ -1,5 +1,5 @@
 import React from "react";
-import { ReactComponent as MPLogo } from "../assets/MP_CIRCLE.svg";
+import MPLogo from "../assets/MP_CIRCLE.svg";
 import { Box, Grid, Typography } from "@mui/material";
 
 import { SvgIcon } from "@mui/material";
@@ -47,7 +47,7 @@ function Footer() {
             <Grid item>
               <a href="https://matt-pereira.vercel.app">
                 <SvgIcon sx={{ fontSize: "32px" }}>
-                  <MPLogo />
+                  <img src={MPLogo} alt="MP Logo" />
                 </SvgIcon>
               </a>
             </Grid>
