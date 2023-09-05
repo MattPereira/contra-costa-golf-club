@@ -26,9 +26,9 @@ import TournamentCreate from "../pages/tournaments/TournamentCreate";
 import TournamentUpdate from "../pages/tournaments/TournamentUpdate";
 
 /***** ROUNDS *****/
-import RoundDetails from "../pages/rounds/RoundDetails";
-import RoundCreate from "../pages/rounds/RoundCreate";
-import RoundUpdate from "../pages/rounds/RoundUpdate";
+import RoundDetails from "../pages/round/page";
+import RoundCreate from "../pages/round/RoundCreate";
+import RoundUpdate from "../pages/round/RoundUpdate";
 
 /***** AUTH *****/
 import LoginForm from "../pages/auth/LoginForm";
@@ -57,12 +57,6 @@ const PrivateRoutes = () => {
 };
 
 export default function Router({ login, register, logout }) {
-  // console.debug(
-  //   "Router",
-  //   `login=${typeof login}`,
-  //   `register=${typeof register}`
-  // );
-
   return (
     <Routes>
       <Route exact path="/" element={<Homepage />} />

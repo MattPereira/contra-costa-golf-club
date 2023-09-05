@@ -20,15 +20,13 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <Typography variant="h2" align="center">
-          {title}
-        </Typography>
+        <h2 className="font-cubano text-4xl">{title}</h2>
         {date && (
           <Link
             to={`/tournaments/${date}`}
             style={{ textDecorationColor: "white", color: "white" }}
           >
-            <Typography variant="h4">{date}</Typography>
+            <p className="font-gothic text-2xl font-bold underline">{date}</p>
           </Link>
         )}
       </Paper>
