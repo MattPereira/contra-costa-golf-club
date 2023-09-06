@@ -2,12 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import CcgcApi from "../../api/api";
-import UserContext from "../../lib/UserContext";
-import LoadingSpinner from "../../components/LoadingSpinner";
-import { RankingsTable } from "../standings/StandingsDetails";
-import PageHero from "../../components/PageHero";
-import GreeniesTable from "../../components/GreeniesTable";
+import CcgcApi from "../../../api/api";
+import UserContext from "../../../lib/UserContext";
+import LoadingSpinner from "../../../components/LoadingSpinner";
+import { RankingsTable } from "../../standings/StandingsDetails";
+import PageHero from "../../../components/PageHero";
+import GreeniesTable from "../../../components/GreeniesTable";
 
 // prettier-ignore
 import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";

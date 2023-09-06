@@ -26,11 +26,8 @@ const modalStyles = {
 
 export default function ScoresTab({ round, setRound }) {
   const navigate = useNavigate();
-  const { currentUser } = useContext(UserContext);
 
-  const [isEditMode, setEditMode] = useState(false);
-
-  // Delete Modal stuffs
+  // State & functions for modal that allows round deletion
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -45,8 +42,6 @@ export default function ScoresTab({ round, setRound }) {
         <ScoresTable
           round={round}
           setRound={setRound}
-          isEditMode={isEditMode}
-          setEditMode={setEditMode}
           handleOpen={handleOpen}
         />
         <Modal
@@ -91,8 +86,9 @@ export default function ScoresTab({ round, setRound }) {
   );
 }
 
-function ScoresTable({ round, setRound, isEditMode, setEditMode, handleOpen }) {
+function ScoresTable({ round, setRound, handleOpen }) {
   const { currentUser } = useContext(UserContext);
+  const [isEditMode, setEditMode] = useState(false);
 
   const strokes = Object.values(round.strokes);
   const putts = Object.values(round.putts);

@@ -20,8 +20,8 @@ import GreenieCreate from "../pages/greenies/GreenieCreate";
 import GreenieUpdate from "../pages/greenies/GreenieUpdate";
 
 /***** TOURNAMENTS *****/
-import TournamentList from "../pages/tournaments/TournamentList";
-import TournamentDetails from "../pages/tournaments/TournamentDetails";
+import TournamentList from "../pages/tournaments/page";
+import TournamentDetails from "../pages/tournaments/[date]/page";
 import TournamentCreate from "../pages/tournaments/TournamentCreate";
 import TournamentUpdate from "../pages/tournaments/TournamentUpdate";
 

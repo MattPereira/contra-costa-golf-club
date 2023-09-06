@@ -121,7 +121,9 @@ export default function CourseForm({ course }) {
       name: formData.name,
       rating: +formData.rating,
       slope: +formData.slope,
-      imgUrl: formData.imgUrl || "test.com",
+      imgUrl:
+        formData.imgUrl ||
+        "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg",
       pars: formData.holes.reduce((acc, hole, i) => {
         acc[`hole${i + 1}`] = +hole.par;
         return acc;

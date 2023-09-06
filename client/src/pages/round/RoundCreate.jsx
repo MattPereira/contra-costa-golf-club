@@ -103,8 +103,9 @@ export default function AddRound() {
               <select
                 {...register("username")}
                 className="w-full py-2 px-4 rounded font-gothic text-2xl cursor-pointer"
+                defaultValue=""
               >
-                <option value="" disabled selected>
+                <option value="" disabled>
                   Choose Player...
                 </option>
                 {availableUsernames.map((username) => (
