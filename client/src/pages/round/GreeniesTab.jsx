@@ -9,7 +9,7 @@ export default function GreeniesTab({ tournamentDate, greenies }) {
       {greenies.length ? (
         <GreeniesTable greenies={greenies} />
       ) : (
-        <div className="text-center font-gothic mb-5">
+        <div className="text-center font-gothic mb-5 text-xl">
           No greenies entered for this round.
         </div>
       )}

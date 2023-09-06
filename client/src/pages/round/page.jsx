@@ -2,13 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import CcgcApi from "../../api/api";
-
-import UserContext from "../../lib/UserContext";
-
 import PageHero from "../../components/PageHero";
 
-// prettier-ignore
-import { Button, Typography, Container, Box, Modal, Tab, Grid, Tabs} from "@mui/material";
+import { Container, Box, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import GreeniesTab from "./GreeniesTab";
@@ -33,9 +29,11 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
   },
 }));
 
-/** The Round Page
+/** The Round Details Page
  * @tab Scores
- * - See, edit, and delete scores
+ * - Shows round scorecard
+ * - Edit round scores
+ * - Delete whole round including greenis
  * @tab Greenies
  * - See, edit, and delete greenies
  * @tab Handicap
@@ -43,22 +41,15 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
  */
 
 export default function RoundDetails() {
-  let navigate = useNavigate();
   const { id } = useParams();
 
   const [round, setRound] = useState(null);
   const [value, setValue] = useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleDelete = async (id) => {
-    await CcgcApi.deleteRound(id);
-    navigate(`/tournaments/${round.tournamentDate}`);
-  };
-
-  /* On component mount, load round data from API */
   useEffect(
     function getRoundOnMount() {
       console.debug("RoundDetails useEffect getRoundOnMount");
@@ -93,7 +84,7 @@ export default function RoundDetails() {
       <Box sx={{ py: 1, bgcolor: "black" }}>
         <StyledTabs
           centered
-          onChange={handleChange}
+          onChange={handleTabChange}
           textColor="secondary"
           indicatorColor="secondary"
           value={value}
@@ -105,7 +96,7 @@ export default function RoundDetails() {
       </Box>
 
       <Container sx={{ py: 4 }}>
-        <h3 className="ml-5 text-3xl font-cubano text-center mb-4">
+        <h3 className="text-3xl font-cubano text-center mb-4">
           {formattedName}
         </h3>
         <TabPanel value={value} index={0}>

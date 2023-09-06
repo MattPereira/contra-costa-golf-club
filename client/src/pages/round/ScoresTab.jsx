@@ -3,6 +3,7 @@ import { Button, Typography, Box, Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CcgcApi from "../../api/api";
 
+import { useNavigate } from "react-router-dom";
 import UserContext from "../../lib/UserContext";
 
 const modalStyles = {
@@ -24,26 +25,30 @@ const modalStyles = {
  */
 
 export default function ScoresTab({ round, setRound }) {
+  const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
-  const [open, setOpen] = useState(false);
 
+  const [isEditMode, setEditMode] = useState(false);
+
+  // Delete Modal stuffs
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleDelete = async (id) => {
+    await CcgcApi.deleteRound(id);
+    navigate(`/tournaments/${round.tournamentDate}`);
+  };
 
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
-        <ScoresTable round={round} setRound={setRound} />
-        {currentUser && (
-          <Box sx={{ my: 3, textAlign: "start" }}>
-            <button
-              className="bg-red-600 text-white rounded py-2 font-cubano text-xl px-4"
-              onClick={handleOpen}
-            >
-              Delete
-            </button>
-          </Box>
-        )}
+        <ScoresTable
+          round={round}
+          setRound={setRound}
+          isEditMode={isEditMode}
+          setEditMode={setEditMode}
+          handleOpen={handleOpen}
+        />
         <Modal
           open={open}
           onClose={handleClose}
@@ -86,15 +91,12 @@ export default function ScoresTab({ round, setRound }) {
   );
 }
 
-function ScoresTable({ round, setRound }) {
+function ScoresTable({ round, setRound, isEditMode, setEditMode, handleOpen }) {
   const { currentUser } = useContext(UserContext);
-  const [isEditMode, setEditMode] = useState(false); // New state variable
 
   const strokes = Object.values(round.strokes);
   const putts = Object.values(round.putts);
   const pars = Object.values(round.pars);
-
-  console.log("ROUND", round);
 
   const {
     register,
@@ -130,7 +132,6 @@ function ScoresTable({ round, setRound }) {
           roundData[type][hole] = value;
         }
       });
-      console.log("ROUND DATA", roundData);
 
       await CcgcApi.updateRound(round.id, roundData);
 
@@ -162,20 +163,26 @@ function ScoresTable({ round, setRound }) {
   }
 
   return (
-    <div>
-      <div className="flex justify-end items-center mb-4">
+    <div className="mb-5">
+      <div className="flex justify-between items-center mb-4 px-2">
+        <button
+          className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
+          onClick={handleOpen}
+        >
+          Delete
+        </button>
         {currentUser && !isEditMode && (
           <button
             onClick={() => setEditMode(!isEditMode)}
-            className="text-blue-500 font-cubano bg-blue-500 text-white rounded w-24 py-2 text-xl"
+            className="text-blue-500 font-cubano bg-blue-500 text-white rounded w-28 py-2 text-xl"
           >
-            edit
+            update
           </button>
         )}
         {isEditMode && (
           <button
             onClick={handleSubmit(onSubmit)}
-            className=" font-cubano bg-green-600 text-white rounded w-24 py-2 text-xl"
+            className=" font-cubano bg-green-600 text-white rounded w-28 py-2 text-xl"
           >
             save
           </button>
@@ -185,7 +192,7 @@ function ScoresTable({ round, setRound }) {
         <form>
           <table className="min-w-full">
             <thead>
-              <tr className="text-white bg-black text-center">
+              <tr className="text-white bg-[#212529] text-center">
                 <th className="py-2 border-r">#</th>
                 <th className="py-2 w-1/4 border-r text-white">PAR</th>
                 <th className="py-2 w-1/4 border-r">STR</th>
@@ -200,11 +207,15 @@ function ScoresTable({ round, setRound }) {
                     index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
                   }`}
                 >
-                  <th className="py-2 border-r border-t bg-black text-white">
+                  <th className="py-2 border-r border-t bg-[#212529] text-white">
                     {hole.holeNumber}
                   </th>
-                  <td className="py-2 border-r w-1/4 border-t">{hole.par}</td>
-                  <td className={`px-2 border-r w-1/4`}>
+                  <td className="py-2 border-r border-[#212529] border-b w-1/4">
+                    {hole.par}
+                  </td>
+                  <td
+                    className={`px-2 border-r border-[#212529] border-b w-1/4`}
+                  >
                     {isEditMode ? (
                       <input
                         defaultValue={hole.strokes}
@@ -216,13 +227,13 @@ function ScoresTable({ round, setRound }) {
                       hole.strokes
                     )}
                   </td>
-                  <td className={`px-2 border-r w-1/4`}>
+                  <td className={`px-2 border-r border-b border-black w-1/4`}>
                     {isEditMode ? (
                       <input
                         defaultValue={hole.putts}
                         {...register(`putts${hole.holeNumber}`)}
                         type="number"
-                        className="w-full"
+                        className="w-full rounded"
                       />
                     ) : (
                       hole.putts
