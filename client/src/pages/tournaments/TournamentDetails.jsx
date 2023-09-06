@@ -150,12 +150,9 @@ function RoundsTab({ rounds, tournamentDate }) {
         variant="contained"
         component={Link}
         to={`/rounds/create/${tournamentDate}`}
-        sx={{ mb: 5, width: "150px" }}
+        sx={{ mb: 5 }}
       >
-        <AddCircleOutlineIcon />{" "}
-        <Box component="span" sx={{ ml: 1 }}>
-          Round
-        </Box>
+        <AddCircleOutlineIcon sx={{ fontSize: "30px" }} />
       </Button>
     </Box>
   );
@@ -163,7 +160,7 @@ function RoundsTab({ rounds, tournamentDate }) {
   return (
     <>
       <p className="text-center text-xl mb-[35px] font-gothic">
-        Select a player by name to update scores
+        Select player by name to update round
       </p>
       <Table
         responsive
@@ -223,18 +220,15 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 
   const AddGreenieButton =
     currentUser && rounds.length !== 0 ? (
-      <Box sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ display: "flex", justifyContent: "end" }}>
         <Button
           variant="contained"
           component={Link}
           color="success"
           to={`/greenies/create/${tournamentDate}`}
-          sx={{ mb: 5, width: "150px" }}
+          sx={{ mb: 5 }}
         >
-          <AddCircleOutlineIcon />{" "}
-          <Box component="span" sx={{ ml: 1 }}>
-            Greenie
-          </Box>
+          <AddCircleOutlineIcon sx={{ fontSize: "30px" }} />
         </Button>
       </Box>
     ) : (
@@ -247,13 +241,13 @@ function GreeniesTab({ greenies, tournamentDate, rounds }) {
 
   return (
     <Box>
-      {AddGreenieButton}
-
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
           <GreeniesTable greenies={greenies} />
         </Grid>
       </Grid>
+
+      {AddGreenieButton}
     </Box>
   );
 }

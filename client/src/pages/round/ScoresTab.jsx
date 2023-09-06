@@ -23,7 +23,7 @@ const modalStyles = {
  * if the user is the owner of the round
  */
 
-export default function ScoresTab({ round }) {
+export default function ScoresTab({ round, setRound }) {
   const { currentUser } = useContext(UserContext);
   const [open, setOpen] = useState(false);
 
@@ -33,7 +33,7 @@ export default function ScoresTab({ round }) {
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
-        <ScoresTable round={round} />
+        <ScoresTable round={round} setRound={setRound} />
         {currentUser && (
           <Box sx={{ my: 3, textAlign: "start" }}>
             <button
@@ -86,12 +86,15 @@ export default function ScoresTab({ round }) {
   );
 }
 
-function ScoresTable({ round }) {
+function ScoresTable({ round, setRound }) {
   const { currentUser } = useContext(UserContext);
   const [isEditMode, setEditMode] = useState(false); // New state variable
+
   const strokes = Object.values(round.strokes);
   const putts = Object.values(round.putts);
   const pars = Object.values(round.pars);
+
+  console.log("ROUND", round);
 
   const {
     register,
@@ -131,6 +134,14 @@ function ScoresTable({ round }) {
 
       await CcgcApi.updateRound(round.id, roundData);
 
+      setRound((prevRound) => {
+        return {
+          ...prevRound,
+          strokes: roundData.strokes,
+          putts: roundData.putts,
+        };
+      });
+
       setEditMode(false);
     } catch (err) {
       console.log(err);
@@ -150,12 +161,9 @@ function ScoresTable({ round }) {
     });
   }
 
-  const formattedName = round.username.split("-").join(" ");
-
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="ml-5 text-3xl font-cubano">{formattedName}</h3>
+      <div className="flex justify-end items-center mb-4">
         {currentUser && !isEditMode && (
           <button
             onClick={() => setEditMode(!isEditMode)}
@@ -165,66 +173,66 @@ function ScoresTable({ round }) {
           </button>
         )}
         {isEditMode && (
-          <div className="flex gap-2">
-            <button
-              onClick={handleSubmit(onSubmit)}
-              className=" font-cubano bg-green-600 text-white rounded w-24 py-2 text-xl"
-            >
-              save
-            </button>
-          </div>
+          <button
+            onClick={handleSubmit(onSubmit)}
+            className=" font-cubano bg-green-600 text-white rounded w-24 py-2 text-xl"
+          >
+            save
+          </button>
         )}
       </div>
       <div className="border rounded-xl overflow-hidden">
-        <table className="min-w-full">
-          <thead>
-            <tr className="text-white bg-black text-center">
-              <th className="py-2 border-r">#</th>
-              <th className="py-2 w-1/4 border-r text-white">PAR</th>
-              <th className="py-2 w-1/4 border-r">STR</th>
-              <th className="py-2 w-1/4">PUT</th>
-            </tr>
-          </thead>
-          <tbody>
-            {mobileRows.map((hole, index) => (
-              <tr
-                key={hole.holeNumber}
-                className={`text-gray-700 text-center ${
-                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
-                }`}
-              >
-                <th className="py-2 border-r border-t bg-black text-white">
-                  {hole.holeNumber}
-                </th>
-                <td className="py-2 border-r w-1/4 border-t">{hole.par}</td>
-                <td className={`px-2 border-r w-1/4`}>
-                  {isEditMode ? (
-                    <input
-                      defaultValue={hole.strokes}
-                      {...register(`strokes${hole.holeNumber}`)}
-                      type="number"
-                      className="w-full rounded"
-                    />
-                  ) : (
-                    hole.strokes
-                  )}
-                </td>
-                <td className={`px-2 border-r w-1/4`}>
-                  {isEditMode ? (
-                    <input
-                      defaultValue={hole.putts}
-                      {...register(`putts${hole.holeNumber}`)}
-                      type="number"
-                      className="w-full"
-                    />
-                  ) : (
-                    hole.putts
-                  )}
-                </td>
+        <form>
+          <table className="min-w-full">
+            <thead>
+              <tr className="text-white bg-black text-center">
+                <th className="py-2 border-r">#</th>
+                <th className="py-2 w-1/4 border-r text-white">PAR</th>
+                <th className="py-2 w-1/4 border-r">STR</th>
+                <th className="py-2 w-1/4">PUT</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {mobileRows.map((hole, index) => (
+                <tr
+                  key={hole.holeNumber}
+                  className={`text-gray-700 text-center ${
+                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
+                  }`}
+                >
+                  <th className="py-2 border-r border-t bg-black text-white">
+                    {hole.holeNumber}
+                  </th>
+                  <td className="py-2 border-r w-1/4 border-t">{hole.par}</td>
+                  <td className={`px-2 border-r w-1/4`}>
+                    {isEditMode ? (
+                      <input
+                        defaultValue={hole.strokes}
+                        {...register(`strokes${hole.holeNumber}`)}
+                        type="number"
+                        className="w-full rounded"
+                      />
+                    ) : (
+                      hole.strokes
+                    )}
+                  </td>
+                  <td className={`px-2 border-r w-1/4`}>
+                    {isEditMode ? (
+                      <input
+                        defaultValue={hole.putts}
+                        {...register(`putts${hole.holeNumber}`)}
+                        type="number"
+                        className="w-full"
+                      />
+                    ) : (
+                      hole.putts
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </form>
       </div>
     </div>
   );

@@ -72,7 +72,6 @@ export default function RoundDetails() {
   );
 
   if (!round) return <LoadingSpinner />;
-  console.log(round);
 
   const date = new Date(round.tournamentDate).toLocaleDateString("en-US", {
     month: "short",
@@ -80,6 +79,7 @@ export default function RoundDetails() {
     year: "numeric",
     timeZone: "UTC",
   });
+  const formattedName = round.username.split("-").join(" ");
 
   return (
     <Box>
@@ -105,8 +105,11 @@ export default function RoundDetails() {
       </Box>
 
       <Container sx={{ py: 4 }}>
+        <h3 className="ml-5 text-3xl font-cubano text-center mb-4">
+          {formattedName}
+        </h3>
         <TabPanel value={value} index={0}>
-          <ScoresTab round={round} />
+          <ScoresTab round={round} setRound={setRound} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <GreeniesTab {...round} />
