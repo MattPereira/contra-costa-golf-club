@@ -3,17 +3,16 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import CcgcApi from "../../../api/api";
-import UserContext from "../../../lib/UserContext";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import { RankingsTable } from "../../standings/StandingsDetails";
 import PageHero from "../../../components/PageHero";
-import GreeniesTable from "../../../components/GreeniesTable";
+
+import RoundsTab from "./RoundsTab";
+import GreeniesTab from "./GreeniesTab";
 
 // prettier-ignore
-import { Button, Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
+import { Container, Box, Tab, Typography, Grid, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Table } from "react-bootstrap";
 
 // STYLES
@@ -103,7 +102,11 @@ export default function TournamentDetails() {
       </Box>
       <Container sx={{ py: 5 }}>
         <TabPanel value={value} index={0}>
-          <RoundsTab rounds={rounds} tournamentDate={date} />
+          <RoundsTab
+            rounds={rounds}
+            tournamentDate={date}
+            setTournament={setTournament}
+          />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <GreeniesTab
@@ -137,118 +140,6 @@ function TabPanel({ children, value, index, ...other }) {
     >
       {value === index && <Box>{children}</Box>}
     </div>
-  );
-}
-
-function RoundsTab({ rounds, tournamentDate }) {
-  // Only show edit button if user is logged in
-  const { currentUser } = useContext(UserContext);
-
-  const AddRoundButton = currentUser && (
-    <Box sx={{ display: "flex", justifyContent: "end" }}>
-      <Button
-        variant="contained"
-        component={Link}
-        to={`/rounds/create/${tournamentDate}`}
-        sx={{ mb: 5 }}
-      >
-        <AddCircleOutlineIcon sx={{ fontSize: "30px" }} />
-      </Button>
-    </Box>
-  );
-
-  return (
-    <>
-      <p className="text-center text-xl mb-[35px] font-gothic">
-        Select player by name to update round
-      </p>
-      <Table
-        responsive
-        bordered
-        striped
-        variant="light"
-        className="text-center"
-        style={{ fontSize: "18px", fontFamily: "cubano" }}
-      >
-        <thead className="table-dark">
-          <tr>
-            {/* <th>NO</th> */}
-            <th className="text-start fw-normal">PLAYER</th>
-            {Array.from({ length: 18 }, (_, i) => (
-              <th key={i + 1} className="d-none d-sm-table-cell">
-                {i + 1}
-              </th>
-            ))}
-            <th className="fw-normal">TOT</th>
-            <th className="fw-normal">HCP</th>
-            <th className="fw-normal">NET</th>
-            <th className="fw-normal">PUT</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rounds.map((r, idx) => (
-            <tr key={r.id}>
-              {/* <th>{idx + 1}</th> */}
-              <th className="text-start">
-                <Link
-                  to={`/rounds/${r.id}`}
-                  className="font-gothic font-bold text-blue-500 underline"
-                >
-                  {r.firstName} {r.lastName[0]}
-                </Link>
-              </th>
-              {Object.values(r.strokes || r.putts).map((s, idx) => (
-                <td key={idx} className="d-none d-sm-table-cell">
-                  {s}
-                </td>
-              ))}
-              <td>{r.totalStrokes}</td>
-              <td style={{ color: "red" }}>{r.courseHandicap}</td>
-              <td>{r.netStrokes}</td>
-              <td>{r.totalPutts}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-      {AddRoundButton}
-    </>
-  );
-}
-
-function GreeniesTab({ greenies, tournamentDate, rounds }) {
-  const { currentUser } = useContext(UserContext);
-
-  const AddGreenieButton =
-    currentUser && rounds.length !== 0 ? (
-      <Box sx={{ display: "flex", justifyContent: "end" }}>
-        <Button
-          variant="contained"
-          component={Link}
-          color="success"
-          to={`/greenies/create/${tournamentDate}`}
-          sx={{ mb: 5 }}
-        >
-          <AddCircleOutlineIcon sx={{ fontSize: "30px" }} />
-        </Button>
-      </Box>
-    ) : (
-      <Box sx={{ textAlign: "center", mb: 3 }}>
-        <Typography variant="p">
-          Create round before entering a greenie
-        </Typography>
-      </Box>
-    );
-
-  return (
-    <Box>
-      <Grid container justifyContent="center">
-        <Grid item xs={12} md={8} lg={6}>
-          <GreeniesTable greenies={greenies} />
-        </Grid>
-      </Grid>
-
-      {AddGreenieButton}
-    </Box>
   );
 }
 

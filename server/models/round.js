@@ -172,6 +172,11 @@ class Round {
 
     round.strokes = strokesRes.rows[0];
     round.putts = puttsRes.rows[0];
+    round.totalStrokes = totalStrokes;
+    round.totalPutts = totalPutts;
+    round.courseHandicap = courseHandicap;
+    round.netStrokes = netStrokes;
+
     return round;
   }
 

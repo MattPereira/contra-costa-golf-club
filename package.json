@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "vite-plugin-rewrite-all": "^1.0.1"
   },
   "scripts": {
     "start": "concurrently \"npm run start --prefix ./client\" \"npm run dev --prefix ./server\""
