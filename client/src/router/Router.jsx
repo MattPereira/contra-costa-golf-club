@@ -27,7 +27,6 @@ import TournamentUpdate from "../pages/tournaments/TournamentUpdate";
 
 /***** ROUNDS *****/
 import RoundDetails from "../pages/round/page";
-import RoundCreate from "../pages/round/RoundCreate";
 
 /***** AUTH *****/
 import LoginForm from "../pages/auth/LoginForm";
@@ -99,7 +98,6 @@ export default function Router({ login, register, logout }) {
       />
 
       <Route exact path="/rounds/:id" element={<RoundDetails />} />
-      <Route exact path="/rounds/create/:date" element={<RoundCreate />} />
 
       <Route exact path="/greenies" element={<GreenieList />} />
       <Route exact path="/greenies/:id" element={<GreenieDetails />} />
