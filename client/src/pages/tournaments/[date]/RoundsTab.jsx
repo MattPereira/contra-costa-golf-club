@@ -58,9 +58,9 @@ function RoundsTable({ rounds }) {
             <th className="text-start">
               <Link
                 to={`/rounds/${r.id}`}
-                className="font-gothic font-bold text-blue-500"
+                className="font-gothic text-blue-600"
               >
-                {r.username.split("-").join(" ")}
+                {r.firstName} {r.lastName}
               </Link>
             </th>
             {Object.values(r.strokes || r.putts).map((s, idx) => (

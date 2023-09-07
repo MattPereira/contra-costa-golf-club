@@ -2,12 +2,14 @@ import { Paper, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function PageHero({ title, backgroundImage, position, date }) {
+  const isoDate = new Date(date);
+  const options = { year: "numeric", month: "numeric", day: "numeric" };
+  const compactDate = isoDate.toLocaleDateString("en-US", options);
   return (
     <Box>
       <Paper
         sx={{
           height: { xs: "175px", sm: "275px" },
-          color: "white",
           display: "flex",
           borderRadius: "0px",
           flexDirection: "column",
@@ -20,13 +22,13 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <h2 className="font-cubano text-4xl">{title}</h2>
+        <h2 className="font-cubano text-4xl text-white mb-2">{title}</h2>
         {date && (
           <Link
             to={`/tournaments/${date}`}
-            style={{ textDecorationColor: "white", color: "white" }}
+            className="bg-white px-2 py-[3px] rounded-md"
           >
-            <p className="font-gothic text-2xl font-bold underline">{date}</p>
+            <p className="font-cubano text-xl">{compactDate}</p>
           </Link>
         )}
       </Paper>

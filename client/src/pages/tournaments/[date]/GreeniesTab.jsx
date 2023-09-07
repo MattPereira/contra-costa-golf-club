@@ -32,6 +32,9 @@ export default function GreeniesTab({ greenies, tournamentDate, rounds }) {
     <div>
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
+          <p className="font-gothic text-center text-xl mb-4">
+            Select player by name to manage greenies
+          </p>
           <GreeniesTable greenies={greenies} />
           {AddGreenieButton}
         </Grid>

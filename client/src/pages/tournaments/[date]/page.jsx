@@ -66,25 +66,17 @@ export default function TournamentDetails() {
   );
 
   if (!tournament) return <LoadingSpinner />;
-  console.log("TOURNAMENT", tournament);
 
   const { greenies, rounds, points, course } = tournament;
-
-  const tournamentDate = new Date(date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
 
   const shortCourseName = course.courseName.split(" ").slice(0, 2).join(" ");
 
   return (
     <>
       <PageHero
-        title={shortCourseName}
+        title={"Tournament"}
         backgroundImage={course.courseImg}
-        date={tournamentDate}
+        date={date}
       />
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
@@ -177,12 +169,12 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
       };
     });
 
-    const playerName = r.username.split("-");
-    const shortName =
-      playerName[0] + " " + (playerName[1] ? playerName[1] : "");
+    const playerName = r.firstName + " " + r.lastName;
+
+    console.log("ROUNDS");
 
     return {
-      name: shortName,
+      name: playerName,
       courseHandicap: r.courseHandicap,
       round: adjustedRound,
     };
@@ -346,8 +338,8 @@ function StrokesWinnersTable({ rounds }) {
         <tbody>
           {winners.map((player, idx) => (
             <tr key={idx}>
-              <td style={{ fontFamily: "cubano" }}>{player.position}</td>
-              <td style={{ textAlign: "start", fontFamily: "cubano" }}>
+              <td className="font-cubano">{player.position}</td>
+              <td className="font-gothic text-start">
                 {player.firstName + " " + player.lastName}
               </td>
               <td>{player.netStrokes}</td>
@@ -422,7 +414,7 @@ function PuttsWinnersTable({ rounds }) {
           {winners.map((winner, idx) => (
             <tr key={idx}>
               <td style={{ fontFamily: "cubano" }}>{winner.position}</td>
-              <td style={{ fontFamily: "cubano", textAlign: "start" }}>
+              <td className="font-gothic text-start">
                 {winner.firstName} {winner.lastName}
               </td>
               <td>{winner.totalPutts}</td>
@@ -489,7 +481,7 @@ function GreeniesWinnersTable({ greenies }) {
           {winners.map((winner, idx) => (
             <tr key={idx}>
               <td style={{ fontFamily: "cubano" }}>#{winner?.holeNumber}</td>
-              <td style={{ fontFamily: "cubano", textAlign: "start" }}>
+              <td className="font-gothic text-start">
                 {winner.firstName} {winner.lastName}
               </td>
               <td>
@@ -585,7 +577,7 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
           {skinsWinners.map((winner, idx) => (
             <tr key={idx}>
               <th>#{winner?.holeNumber}</th>
-              <th className="text-start">{winner.name}</th>
+              <th className="font-gothic text-start">{winner.name}</th>
               <td>{winner.strokes}</td>
             </tr>
           ))}

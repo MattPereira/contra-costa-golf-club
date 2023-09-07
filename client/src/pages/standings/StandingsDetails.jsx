@@ -145,7 +145,7 @@ export function RankingsTable({ data }) {
               {row.roundId ? (
                 <Link
                   to={`/rounds/${row.roundId}`}
-                  className="text-decoration-none"
+                  className="font-gothic text-start"
                 >
                   {row.firstName} {row.lastName[0]}
                 </Link>

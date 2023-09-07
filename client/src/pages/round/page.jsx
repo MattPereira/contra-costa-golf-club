@@ -63,21 +63,14 @@ export default function RoundDetails() {
   );
 
   if (!round) return <LoadingSpinner />;
-
-  const date = new Date(round.tournamentDate).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
   const formattedName = round.username.split("-").join(" ");
 
   return (
     <Box>
       <PageHero
-        title={round.courseName.split(" ").slice(0, 2).join(" ")}
+        title={formattedName}
         backgroundImage={round.courseImg}
-        date={date}
+        date={round.tournamentDate}
         isRoundHero={true}
       />
 
@@ -96,9 +89,6 @@ export default function RoundDetails() {
       </Box>
 
       <Container sx={{ py: 4 }}>
-        <h3 className="text-3xl font-cubano text-center mb-4">
-          {formattedName}
-        </h3>
         <TabPanel value={value} index={0}>
           <ScoresTab round={round} setRound={setRound} />
         </TabPanel>

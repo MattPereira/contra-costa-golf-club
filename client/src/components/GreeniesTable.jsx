@@ -7,6 +7,8 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 export default function GreeniesTable({ greenies }) {
   const { currentUser } = useContext(UserContext);
 
+  console.log("greenies", greenies);
+
   return (
     <table className="table table-striped table-bordered text-center table-light">
       <thead className="table-dark">
@@ -15,43 +17,23 @@ export default function GreeniesTable({ greenies }) {
           <th>HOLE</th>
           <th>FEET</th>
           <th>INCH</th>
-          {currentUser && (
-            <th className="fw-normal">
-              <BorderColorIcon />
-            </th>
-          )}
         </tr>
       </thead>
       {greenies.length ? (
         <tbody>
           {greenies.map((g) => (
             <tr key={g.id}>
-              <th className="text-start">
+              <td className="text-start">
                 <Link
                   to={`/rounds/${g.roundId}`}
-                  className="text-decoration-none"
+                  className="text-decoration-none font-gothic text-blue-600"
                 >
-                  {`${g.firstName} ${g.lastName[0]}`}
+                  {`${g.firstName} ${g.lastName}`}
                 </Link>
-              </th>
+              </td>
               <td>#{g?.holeNumber}</td>
               <td>{g.feet}'</td>
               <td>{g.inches}"</td>
-              {currentUser && (
-                <td>
-                  <Button
-                    to={`/greenies/update/${g.id}`}
-                    component={Link}
-                    sx={{
-                      p: 0.5,
-                      minWidth: "auto",
-                      "&:hover": { color: "primary.dark" },
-                    }}
-                  >
-                    <BorderColorIcon />
-                  </Button>
-                </td>
-              )}
             </tr>
           ))}
         </tbody>
