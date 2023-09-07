@@ -1,14 +1,13 @@
 import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
 import UserContext from "../../../lib/UserContext";
 import CcgcApi from "../../../api/api";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { useForm } from "react-hook-form";
-
-import { useNavigate } from "react-router-dom";
-
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Modal } from "@mui/material";
 import { Table } from "react-bootstrap";
 
@@ -30,26 +29,19 @@ export default function RoundsTab({ rounds, tournamentDate, setTournament }) {
 
 function RoundsTable({ rounds }) {
   return (
-    <Table
-      responsive
-      bordered
-      striped
-      variant="light"
-      className="text-center"
-      style={{ fontSize: "18px", fontFamily: "cubano" }}
-    >
+    <Table responsive bordered striped variant="light" className="text-center">
       <thead className="table-dark">
         <tr>
-          <th className="text-start fw-normal">PLAYER</th>
+          <th className="text-start">PLAYER</th>
           {Array.from({ length: 18 }, (_, i) => (
             <th key={i + 1} className="d-none d-sm-table-cell">
               {i + 1}
             </th>
           ))}
-          <th className="fw-normal">TOT</th>
-          <th className="fw-normal">HCP</th>
-          <th className="fw-normal">NET</th>
-          <th className="fw-normal">PUT</th>
+          <th>TOT</th>
+          <th>HCP</th>
+          <th>NET</th>
+          <th>PUT</th>
         </tr>
       </thead>
       <tbody>
@@ -60,7 +52,7 @@ function RoundsTable({ rounds }) {
                 to={`/rounds/${r.id}`}
                 className="font-gothic text-blue-600"
               >
-                {r.firstName} {r.lastName}
+                {r.username.split("-").join(" ")}
               </Link>
             </th>
             {Object.values(r.strokes || r.putts).map((s, idx) => (
@@ -81,9 +73,6 @@ function RoundsTable({ rounds }) {
 
 function AddRoundModal({ rounds, date, setTournament }) {
   const { currentUser } = useContext(UserContext); // Only show edit button if user is logged in
-  const navigate = useNavigate();
-
-  console.log("ROUNDS MODAL", rounds);
 
   // modal state
   const [open, setOpen] = useState(false);
@@ -169,9 +158,9 @@ function AddRoundModal({ rounds, date, setTournament }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 rounded bg-blue-600 shadow-lg">
           <button
             onClick={handleClose}
-            className="text-xl text-white font-cubano ml-3 mt-1"
+            className="text-xl text-white font-cubano ml-2 mt-2"
           >
-            X
+            <CancelOutlinedIcon sx={{ fontSize: "35px" }} />
           </button>
           <div className="p-4">
             <h3 className="font-cubano text-3xl text-white text-center mb-4">
@@ -182,7 +171,7 @@ function AddRoundModal({ rounds, date, setTournament }) {
               <div className="mb-4">
                 <select
                   {...register("username")}
-                  className="w-full py-2 px-4 rounded font-gothic text-2xl cursor-pointer"
+                  className="w-full py-2 px-4 rounded font-gothic text-2xl cursor-pointer bg-white"
                   defaultValue=""
                 >
                   <option value="" disabled>

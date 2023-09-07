@@ -160,7 +160,7 @@ function ScoresTable({ round, setRound, handleOpen }) {
 
   return (
     <div className="mb-5">
-      <div className="flex justify-between items-center mb-4 px-2">
+      <div className="flex justify-between items-center my-3 px-2">
         <button
           className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
           onClick={handleOpen}

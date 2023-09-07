@@ -105,6 +105,7 @@ export default function TournamentDetails() {
             greenies={greenies}
             tournamentDate={date}
             rounds={rounds}
+            setTournament={setTournament}
           />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={2}>

@@ -36,7 +36,18 @@ class Greenie {
       [roundId, holeNumber, feet, inches]
     );
 
+    const userRes = await db.query(
+      `SELECT first_name AS "firstName", last_name AS "lastName"
+      FROM users
+      JOIN rounds ON rounds.username = users.username
+      WHERE rounds.id = $1`,
+      [roundId]
+    );
+    const { firstName, lastName } = userRes.rows[0];
+
     const greenie = greenieRes.rows[0];
+    greenie.firstName = firstName;
+    greenie.lastName = lastName;
 
     return greenie;
   }

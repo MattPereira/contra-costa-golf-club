@@ -22,7 +22,7 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <h2 className="font-cubano text-4xl text-white mb-2">{title}</h2>
+        <h2 className="font-cubano text-5xl text-white mb-2">{title}</h2>
         {date && (
           <Link
             to={`/tournaments/${date}`}

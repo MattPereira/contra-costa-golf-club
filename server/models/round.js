@@ -182,7 +182,7 @@ class Round {
 
   /** Search all rounds in database by username or tournament_date.
    *
-   * Returns [{ tournament_date, username, strokes, putts }, ...]
+   * @return [{ tournament_date, username, strokes, putts }, ...]
    *  where strokes is {hole1, hole2, hole3, ...}
    *  and putts is {hole1, hole2, hole3, ...}
    * */
