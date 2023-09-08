@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import CcgcApi from "../../api/api";
 import PageHero from "../../components/PageHero";
+import useQuery from "../../hooks/useQuery";
 
 import { Container, Box, Tab, Tabs } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -42,6 +43,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 
 export default function RoundDetails() {
   const { id } = useParams();
+  const { tab } = useQuery();
 
   const [round, setRound] = useState(null);
   const [value, setValue] = useState(0);
@@ -49,6 +51,16 @@ export default function RoundDetails() {
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    if (tab === "greenies") {
+      setValue(1);
+    } else if (tab === "handicap") {
+      setValue(2);
+    } else {
+      setValue(0);
+    }
+  }, [tab]);
 
   useEffect(
     function getRoundOnMount() {
@@ -63,16 +75,20 @@ export default function RoundDetails() {
   );
 
   if (!round) return <LoadingSpinner />;
+  console.log("round", round);
   const formattedName = round.username.split("-").join(" ");
 
   return (
     <Box>
       <PageHero
-        title={formattedName}
+        title={round.courseName}
         backgroundImage={round.courseImg}
         date={round.tournamentDate}
         isRoundHero={true}
       />
+      <div className="py-2 bg-blue-700 text-white font-cubano text-center text-3xl">
+        {formattedName}
+      </div>
 
       <Box sx={{ py: 1, bgcolor: "black" }}>
         <StyledTabs
@@ -93,7 +109,7 @@ export default function RoundDetails() {
           <ScoresTab round={round} setRound={setRound} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <GreeniesTab {...round} />
+          <GreeniesTab {...round} setRound={setRound} />
         </TabPanel>
         <TabPanel value={value} index={2}>
           <HandicapTab round={round} />

@@ -14,8 +14,10 @@ import { Table } from "react-bootstrap";
 export default function RoundsTab({ rounds, tournamentDate, setTournament }) {
   return (
     <div>
-      <p className="text-center text-xl mb-[35px] font-gothic">
-        Select player by name to update scores!
+      <h3 className="font-cubano text-4xl text-center mb-3">Rounds</h3>
+
+      <p className="text-center text-xl mb-3 font-gothic">
+        Select player by name to update scores
       </p>
       <RoundsTable rounds={rounds} />
       <AddRoundModal
@@ -156,12 +158,6 @@ function AddRoundModal({ rounds, date, setTournament }) {
         aria-describedby="modal-modal-description"
       >
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 rounded bg-blue-600 shadow-lg">
-          <button
-            onClick={handleClose}
-            className="text-xl text-white font-cubano ml-2 mt-2"
-          >
-            <CancelOutlinedIcon sx={{ fontSize: "35px" }} />
-          </button>
           <div className="p-4">
             <h3 className="font-cubano text-3xl text-white text-center mb-4">
               Add Round
@@ -184,7 +180,13 @@ function AddRoundModal({ rounds, date, setTournament }) {
                   ))}
                 </select>
               </div>
-              <div className="flex justify-end">
+              <div className="flex gap-4 justify-between">
+                <button
+                  onClick={handleClose}
+                  className="text-xl border border-white text-white px-4 py-2 rounded font-cubano"
+                >
+                  cancel
+                </button>
                 <input
                   type="submit"
                   className="text-xl border border-white text-white px-4 py-2 rounded font-cubano"

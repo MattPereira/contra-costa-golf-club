@@ -1,8 +1,6 @@
 import { useContext, useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import UserContext from "../../../lib/UserContext";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 import CcgcApi from "../../../api/api";
 
@@ -11,24 +9,33 @@ import { useForm } from "react-hook-form";
 
 import GreeniesTable from "../../../components/GreeniesTable";
 
-export default function GreeniesTab({
-  greenies,
-  tournamentDate,
-  rounds,
-  setTournament,
-}) {
-  console.log("GREENIES FROM GT", greenies);
+export default function GreeniesTab({ tournament, setTournament }) {
+  const { greenies, rounds, course } = tournament;
+
+  // create greenie route expects { roundId, holeNumber, feet, inches}
+  // so we need to create an array of roundIds and usernames to pass to select input
+  const usernames = rounds.map((round) => [round.id, round.username]);
+
+  //array of par 3 hole numbers for select input
+  const par3HoleNums = Object.entries(course.pars)
+    .filter((p) => p[1] === 3)
+    .map((h) => h[0])
+    .map((h) => h.split("e")[1]);
+
   return (
     <div>
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
-          <p className="font-gothic text-center text-xl mb-4">
-            Select player by name to manage greenies
+          <h3 className="font-cubano text-4xl text-center mb-3">Greenies</h3>
+
+          <p className="font-gothic text-center text-xl mb-3">
+            Select player by name to update greenies
           </p>
           <GreeniesTable greenies={greenies} />
           <AddGreenieModal
             rounds={rounds}
-            date={tournamentDate}
+            par3HoleNums={par3HoleNums}
+            usernames={usernames}
             setTournament={setTournament}
           />
         </Grid>
@@ -37,28 +44,13 @@ export default function GreeniesTab({
   );
 }
 
-function AddGreenieModal({ rounds, date }) {
+function AddGreenieModal({ rounds, setTournament, usernames, par3HoleNums }) {
   const { currentUser } = useContext(UserContext); // Only show edit button if user is logged in
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [tournament, setTournament] = useState(null);
   const [submitError, setSubmitError] = useState(null); // For form submission errors
-
-  // Fetch tournament for course data to limit hole number select input to only par 3s
-  useEffect(
-    function getTournamentOnMount() {
-      console.debug("NewGreenie useEffect getRoundOnMount");
-
-      async function fetchTournament() {
-        const tournament = await CcgcApi.getTournament(date);
-        setTournament(tournament);
-      }
-      fetchTournament();
-    },
-    [date]
-  );
 
   // react hook form state
   const {
@@ -70,14 +62,12 @@ function AddGreenieModal({ rounds, date }) {
   } = useForm();
   const onSubmit = async (data) => {
     try {
-      const serializedData = {
-        roundId: parseInt(data.roundId),
-        holeNumber: parseInt(data.holeNumber),
-        feet: parseInt(data.feet),
-        inches: parseInt(data.inches),
-      };
-      const newGreenie = await CcgcApi.createGreenie(serializedData);
-      console.log("newGreenie", newGreenie);
+      const { roundId, holeNumber, feet, inches } = data;
+      data.roundId = parseInt(roundId);
+      data.holeNumber = parseInt(holeNumber);
+      data.feet = parseInt(feet);
+      data.inches = parseInt(inches);
+      const newGreenie = await CcgcApi.createGreenie(data);
       setTournament((t) => ({
         ...t,
         greenies: [...t.greenies, newGreenie],
@@ -90,19 +80,6 @@ function AddGreenieModal({ rounds, date }) {
       setSubmitError(e);
     }
   };
-
-  if (!tournament) return <LoadingSpinner />;
-  console.log("TOURNAMENT FROM GREENIE MODAL", tournament);
-
-  // create greenie route expects { roundId, holeNumber, feet, inches}
-  // so we need to create an array of roundIds and usernames to pass to select input
-  const usernames = rounds.map((round) => [round.id, round.username]);
-
-  //array of par 3 hole numbers for select input
-  const par3HoleNums = Object.entries(tournament.course.pars)
-    .filter((p) => p[1] === 3)
-    .map((h) => h[0])
-    .map((h) => h.split("e")[1]);
 
   return (
     <div>

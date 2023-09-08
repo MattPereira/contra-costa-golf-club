@@ -15,8 +15,6 @@ import CourseUpdate from "../pages/courses/CourseUpdate";
 
 /***** GREENIES *****/
 import GreenieList from "../pages/greenies/GreenieList";
-import GreenieDetails from "../pages/greenies/GreenieDetails";
-import GreenieUpdate from "../pages/greenies/GreenieUpdate";
 
 /***** TOURNAMENTS *****/
 import TournamentList from "../pages/tournaments/page";
@@ -99,8 +97,6 @@ export default function Router({ login, register, logout }) {
       <Route exact path="/rounds/:id" element={<RoundDetails />} />
 
       <Route exact path="/greenies" element={<GreenieList />} />
-      <Route exact path="/greenies/:id" element={<GreenieDetails />} />
-      <Route exact path="/greenies/update/:id" element={<GreenieUpdate />} />
 
       {/* Redirect to homepage if route doesn't exist */}
       <Route path="*" element={<Navigate to="/" replace />} />

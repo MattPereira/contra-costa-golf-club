@@ -156,7 +156,7 @@ class Greenie {
       SET feet=$1, inches=$2
       WHERE id=$3
       RETURNING id, round_id AS "roundId", hole_number AS "holeNumber", feet, inches`,
-      [data.feet, data.inches, id]
+      [+data.feet, +data.inches, +id]
     );
 
     const greenie = greenieRes.rows[0];

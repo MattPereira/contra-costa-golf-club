@@ -112,49 +112,45 @@ const GreenieCard = ({ greenie }) => {
 
   return (
     <Box sx={{ mb: 3 }}>
-      <Link to={`/greenies/${id}`} style={{ textDecoration: "none" }}>
-        <StyledPaper elevation={8}>
-          <StyledCardImage component="img" src={courseImg} />
-          <Box sx={{ p: 3, textAlign: "center" }}>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="h5">
-                {firstName} {lastName}
-              </Typography>
-            </Box>
-
-            <Box>
-              <Table size="small">
-                <TableHead>
-                  <StyledTableHeadRow sx={{ border: "none" }}>
-                    <StyledTableHeadCell align="center">
-                      Course
-                    </StyledTableHeadCell>
-                    <StyledTableHeadCell align="center">
-                      Hole
-                    </StyledTableHeadCell>
-                    <StyledTableHeadCell align="center">
-                      Distance
-                    </StyledTableHeadCell>
-                  </StyledTableHeadRow>
-                </TableHead>
-                <TableBody>
-                  <StyledTableRow>
-                    <StyledTableCell align="center">
-                      {courseName.split(" ").slice(0, 2).join(" ")}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      #{holeNumber}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                      {feet}' {inches}"
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </TableBody>
-              </Table>
-            </Box>
+      <StyledPaper elevation={8}>
+        <StyledCardImage component="img" src={courseImg} />
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Box sx={{ mb: 2 }}>
+            <Typography variant="h5">
+              {firstName} {lastName}
+            </Typography>
           </Box>
-        </StyledPaper>
-      </Link>
+
+          <Box>
+            <Table size="small">
+              <TableHead>
+                <StyledTableHeadRow sx={{ border: "none" }}>
+                  <StyledTableHeadCell align="center">
+                    Course
+                  </StyledTableHeadCell>
+                  <StyledTableHeadCell align="center">Hole</StyledTableHeadCell>
+                  <StyledTableHeadCell align="center">
+                    Distance
+                  </StyledTableHeadCell>
+                </StyledTableHeadRow>
+              </TableHead>
+              <TableBody>
+                <StyledTableRow>
+                  <StyledTableCell align="center">
+                    {courseName.split(" ").slice(0, 2).join(" ")}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    #{holeNumber}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {feet}' {inches}"
+                  </StyledTableCell>
+                </StyledTableRow>
+              </TableBody>
+            </Table>
+          </Box>
+        </Box>
+      </StyledPaper>
     </Box>
   );
 };

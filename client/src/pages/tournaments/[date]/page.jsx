@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import useQuery from "../../../hooks/useQuery";
 
 import CcgcApi from "../../../api/api";
 import LoadingSpinner from "../../../components/LoadingSpinner";
@@ -46,6 +47,7 @@ const StyledTab = styled(Tab)(({ theme }) => ({
 
 export default function TournamentDetails() {
   const { date } = useParams();
+  const { tab } = useQuery();
 
   const [value, setValue] = useState(0);
   const [tournament, setTournament] = useState(null);
@@ -54,7 +56,16 @@ export default function TournamentDetails() {
     setValue(newValue);
   };
 
-  /* On component mount, load tournament from API */
+  useEffect(() => {
+    if (tab === "greenies") {
+      setValue(1);
+    } else if (tab === "winners") {
+      setValue(2);
+    } else {
+      setValue(0);
+    }
+  }, [tab]);
+
   useEffect(
     function getTournamentOnMount() {
       async function getTournament() {
@@ -74,10 +85,13 @@ export default function TournamentDetails() {
   return (
     <>
       <PageHero
-        title={"Tournament"}
+        title={shortCourseName}
         backgroundImage={course.courseImg}
         date={date}
       />
+      <div className="py-2 bg-blue-700 text-white font-cubano text-center text-3xl">
+        Tournament
+      </div>
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
         <StyledTabs
@@ -101,12 +115,7 @@ export default function TournamentDetails() {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <GreeniesTab
-            greenies={greenies}
-            tournamentDate={date}
-            rounds={rounds}
-            setTournament={setTournament}
-          />
+          <GreeniesTab tournament={tournament} setTournament={setTournament} />
         </TabPanel>
         <TabPanel sx={{ px: 0 }} value={value} index={2}>
           <WinnersTab
@@ -212,6 +221,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
   return (
     <section>
       <Box sx={{ mb: 5 }}>
+        <h3 className="font-cubano text-4xl text-center mb-3">Winners</h3>
         {!selectedDetailsTable && (
           <Box>
             <Grid container spacing={2}>

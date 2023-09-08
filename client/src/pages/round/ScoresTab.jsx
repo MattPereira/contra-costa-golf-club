@@ -39,6 +39,7 @@ export default function ScoresTab({ round, setRound }) {
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
+        <h3 className="font-cubano text-4xl text-center mb-4">Scorecard</h3>
         <ScoresTable
           round={round}
           setRound={setRound}
@@ -50,36 +51,29 @@ export default function ScoresTab({ round, setRound }) {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={modalStyles}>
-            <Typography id="modal-modal-title" variant="h4" color="white">
-              Are you Sure?
-            </Typography>
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2 }}
-              color="white"
-            >
-              This action will permanently erase all data associated with this
-              round including greenies. Proceed with caution.
-            </Typography>
-            <Box sx={{ mt: 3, textAlign: "right" }}>
-              <Button
-                variant="contained"
-                onClick={handleClose}
-                sx={{ mr: 2, bgcolor: "gray" }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="dark"
-                sx={{ color: "white" }}
-                onClick={() => handleDelete(round.id)}
-              >
-                Delete
-              </Button>
-            </Box>
-          </Box>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 rounded bg-red-700 shadow-lg">
+            <div className="p-4 text-white">
+              <h5 className="font-cubano text-3xl mb-3">Are you Sure?</h5>
+              <p className="font-gothic text-xl mb-4">
+                This action will permanently erase all data associated with this
+                round including greenies. Proceed with caution.
+              </p>
+              <div className="flex gap-4 justify-end">
+                <button
+                  className="text-xl border border-white text-white px-4 py-2 rounded font-cubano"
+                  onClick={handleClose}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="text-xl border border-white text-white px-4 py-2 rounded font-cubano"
+                  onClick={() => handleDelete(round.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
         </Modal>
       </div>
     </div>
@@ -170,7 +164,7 @@ function ScoresTable({ round, setRound, handleOpen }) {
         {currentUser && !isEditMode && (
           <button
             onClick={() => setEditMode(!isEditMode)}
-            className="text-blue-500 font-cubano bg-blue-500 text-white rounded w-28 py-2 text-xl"
+            className="text-blue-500 font-cubano bg-blue-600 text-white rounded w-28 py-2 text-xl"
           >
             update
           </button>
@@ -189,8 +183,8 @@ function ScoresTable({ round, setRound, handleOpen }) {
           <table className="min-w-full">
             <thead>
               <tr className="text-white bg-[#212529] text-center">
-                <th className="py-2 border-r">#</th>
-                <th className="py-2 w-1/4 border-r text-white">PAR</th>
+                <th className="py-2 border-r">HOLE</th>
+                <th className="py-2 w-1/4 border-r">PAR</th>
                 <th className="py-2 w-1/4 border-r">STR</th>
                 <th className="py-2 w-1/4">PUT</th>
               </tr>
@@ -204,7 +198,7 @@ function ScoresTable({ round, setRound, handleOpen }) {
                   }`}
                 >
                   <th className="py-2 border-r border-t bg-[#212529] text-white">
-                    {hole.holeNumber}
+                    #{hole.holeNumber}
                   </th>
                   <td className="py-2 border-r border-[#212529] border-b w-1/4">
                     {hole.par}

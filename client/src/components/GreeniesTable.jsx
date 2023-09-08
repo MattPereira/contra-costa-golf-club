@@ -4,11 +4,11 @@ import UserContext from "../lib/UserContext";
 import Button from "@mui/material/Button";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 
+/**
+ * Used on tournament detials page greenies tab and winners tab
+ */
+
 export default function GreeniesTable({ greenies }) {
-  const { currentUser } = useContext(UserContext);
-
-  console.log("greenies", greenies);
-
   return (
     <table className="table table-striped table-bordered text-center table-light">
       <thead className="table-dark">
@@ -25,7 +25,7 @@ export default function GreeniesTable({ greenies }) {
             <tr key={g.id}>
               <td className="text-start">
                 <Link
-                  to={`/rounds/${g.roundId}`}
+                  to={`/rounds/${g.roundId}?tab=greenies`}
                   className="text-decoration-none font-gothic text-blue-600"
                 >
                   {`${g.firstName} ${g.lastName}`}
