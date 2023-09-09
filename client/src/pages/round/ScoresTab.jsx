@@ -154,32 +154,34 @@ function ScoresTable({ round, setRound, handleOpen }) {
 
   return (
     <div className="mb-5">
-      <div className="flex justify-between items-center my-3 px-2">
-        <button
-          className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
-          onClick={handleOpen}
-        >
-          Delete
-        </button>
-        {currentUser && !isEditMode && (
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex justify-between items-center my-3 px-2">
           <button
-            onClick={() => setEditMode(!isEditMode)}
-            className="text-blue-500 font-cubano bg-blue-600 text-white rounded w-28 py-2 text-xl"
+            type="button"
+            className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
+            onClick={handleOpen}
           >
-            update
+            Delete
           </button>
-        )}
-        {isEditMode && (
-          <button
-            onClick={handleSubmit(onSubmit)}
-            className=" font-cubano bg-green-600 text-white rounded w-28 py-2 text-xl"
-          >
-            save
-          </button>
-        )}
-      </div>
-      <div className="border rounded-xl overflow-hidden">
-        <form>
+          {currentUser && !isEditMode && (
+            <button
+              type="button"
+              onClick={() => setEditMode(!isEditMode)}
+              className="text-blue-500 font-cubano bg-blue-600 text-white rounded w-28 py-2 text-xl"
+            >
+              update
+            </button>
+          )}
+          {isEditMode && (
+            <button
+              type="submit"
+              className=" font-cubano bg-green-600 text-white rounded w-28 py-2 text-xl"
+            >
+              save
+            </button>
+          )}
+        </div>
+        <div className="border rounded-xl overflow-hidden">
           <table className="min-w-full">
             <thead>
               <tr className="text-white bg-[#212529] text-center">
@@ -233,8 +235,8 @@ function ScoresTable({ round, setRound, handleOpen }) {
               ))}
             </tbody>
           </table>
-        </form>
-      </div>
+        </div>
+      </form>
     </div>
   );
 }
