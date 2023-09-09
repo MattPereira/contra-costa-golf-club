@@ -5,7 +5,7 @@ import useQuery from "../../../hooks/useQuery";
 
 import CcgcApi from "../../../api/api";
 import LoadingSpinner from "../../../components/LoadingSpinner";
-import { RankingsTable } from "../../standings/StandingsDetails";
+import { RankingsTable } from "../../standings/page";
 import PageHero from "../../../components/PageHero";
 
 import RoundsTab from "./RoundsTab";
@@ -51,6 +51,7 @@ export default function TournamentDetails() {
 
   const [value, setValue] = useState(0);
   const [tournament, setTournament] = useState(null);
+  const [members, setMembers] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -66,21 +67,27 @@ export default function TournamentDetails() {
     }
   }, [tab]);
 
-  useEffect(
-    function getTournamentOnMount() {
-      async function getTournament() {
-        setTournament(await CcgcApi.getTournament(date));
-      }
-      getTournament();
-    },
-    [date]
-  );
+  useEffect(() => {
+    async function getTournament() {
+      setTournament(await CcgcApi.getTournament(date));
+      setMembers(await CcgcApi.getMembers());
+    }
+    getTournament();
+  }, [date]);
 
-  if (!tournament) return <LoadingSpinner />;
+  if (!tournament || !members) return <LoadingSpinner />;
 
   const { greenies, rounds, points, course } = tournament;
 
   const shortCourseName = course.courseName.split(" ").slice(0, 2).join(" ");
+
+  //Filter out users who have already submitted a round for this tournament
+  //So they arent added to form select input as an option
+  const usernames = members.map((m) => m.username);
+  const alreadySubmitted = rounds.map((r) => r.username);
+  const usernameOptions = usernames.filter(
+    (u) => !alreadySubmitted.includes(u)
+  );
 
   return (
     <>
@@ -112,6 +119,7 @@ export default function TournamentDetails() {
             rounds={rounds}
             tournamentDate={date}
             setTournament={setTournament}
+            usernameOptions={usernameOptions}
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
@@ -180,8 +188,6 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
     });
 
     const playerName = r.firstName + " " + r.lastName;
-
-    console.log("ROUNDS");
 
     return {
       name: playerName,
@@ -283,13 +289,9 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
 
 /***** EVERYTHING BELOW IS COMPONENTS FOR WinnersTab *****/
 function StrokesWinnersTable({ rounds }) {
-  console.log("rounds", rounds);
-
   const completedRounds = rounds.filter((r) => {
     return Object.values(r.strokes).every((s) => s !== null);
   });
-
-  console.log("completedRounds", completedRounds);
 
   // sort rounds by net strokes
   const sortedRounds = [...completedRounds].sort(
@@ -312,7 +314,6 @@ function StrokesWinnersTable({ rounds }) {
       }
     });
   }
-  console.log("third", strokesWinners[2]);
 
   let position = 1;
 
@@ -324,8 +325,6 @@ function StrokesWinnersTable({ rounds }) {
 
     return { position: position, ...round };
   });
-
-  console.log("winners", winners);
 
   return (
     <Box>
@@ -392,15 +391,11 @@ function PuttsWinnersTable({ rounds }) {
   const winners = puttsWinners.map((round, idx) => {
     // only increment poisition if the previous round's total putts is different
     if (idx > 0 && round.totalPutts !== puttsWinners[idx - 1].totalPutts) {
-      console.log("puttsWinners", puttsWinners[idx - 1].totalPutts);
-
       position++;
     }
 
     return { position: position, ...round };
   });
-
-  console.log("winners", winners);
 
   return (
     <Box>
@@ -445,8 +440,6 @@ function GreeniesWinnersTable({ greenies }) {
 
   const alreadyWonHoles = [];
   const alreadyWonPlayers = [];
-
-  console.log("GREENIES", greenies);
 
   /****** BUG HOTFIX AREA*****/
   // somehow the winners array was getting an undefined item in it
@@ -535,15 +528,12 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
   }
 
   // scoresByHoleNum looks like: [[{name: "Dennis", strokes: 5, holeNumber: 1},{name: "Matt", strokes: 3, holeNumber: 1} ], [...], [...]]
-  // console.log(`SCORES BY HOLE`, scoresByHoleNum);
 
   const skinsWinners = [];
   //step 2: figure out if there is a holeScore that is lower than the rest
   // if there is, push that object onto skinsWinners
   // mabye make an array from just the strokes values and use Math.min() to find the lowest score and then check if its unique using a set
   // if it is unique, find it from original array of objects and push onto skinsWinners
-
-  console.log("SCORES BY HOLE", scoresByHoleNum);
 
   scoresByHoleNum.forEach((hole) => {
     // make array of just hole scores i.e. [5,7,3,4]
@@ -561,8 +551,6 @@ function SkinsWinnersTable({ adjustedSkinsScores }) {
       skinsWinners.push(winner);
     }
   });
-
-  // console.log("SKINS WINNERS", skinsWinners);s
 
   return (
     <Box>

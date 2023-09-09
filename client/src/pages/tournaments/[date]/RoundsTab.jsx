@@ -4,14 +4,16 @@ import { useForm } from "react-hook-form";
 
 import UserContext from "../../../lib/UserContext";
 import CcgcApi from "../../../api/api";
-import LoadingSpinner from "../../../components/LoadingSpinner";
-
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Modal } from "@mui/material";
 import { Table } from "react-bootstrap";
 
-export default function RoundsTab({ rounds, tournamentDate, setTournament }) {
+export default function RoundsTab({
+  rounds,
+  tournamentDate,
+  setTournament,
+  usernameOptions,
+}) {
   return (
     <div>
       <h3 className="font-cubano text-4xl text-center mb-3">Rounds</h3>
@@ -24,6 +26,7 @@ export default function RoundsTab({ rounds, tournamentDate, setTournament }) {
         rounds={rounds}
         date={tournamentDate}
         setTournament={setTournament}
+        usernameOptions={usernameOptions}
       />
     </div>
   );
@@ -73,7 +76,7 @@ function RoundsTable({ rounds }) {
   );
 }
 
-function AddRoundModal({ rounds, date, setTournament }) {
+function AddRoundModal({ rounds, date, setTournament, usernameOptions }) {
   const { currentUser } = useContext(UserContext); // Only show edit button if user is logged in
 
   // modal state
@@ -104,39 +107,16 @@ function AddRoundModal({ rounds, date, setTournament }) {
 
     try {
       const newRound = await CcgcApi.createRound(roundData);
-
       // add new round to state so no page refresh necessary!
       setTournament((t) => ({
         ...t,
         rounds: [...t.rounds, newRound],
       }));
-      console.log("newRound", newRound);
       handleClose();
     } catch (e) {
       console.error(e);
     }
   };
-
-  const [members, setMembers] = useState(null);
-
-  // Fetch the members data first to set the available player options for select input
-  useEffect(function getMembersOnMount() {
-    async function fetchAllMembers() {
-      let members = await CcgcApi.getMembers();
-      setMembers(members);
-    }
-    fetchAllMembers();
-  }, []);
-
-  if (!members) return <LoadingSpinner />;
-
-  //Filter out users who have already submitted a round for this tournament
-  //So they arent added to form select input as an option
-  const usernames = members.map((m) => m.username);
-  const alreadySubmitted = rounds.map((r) => r.username);
-  const availableUsernames = usernames.filter(
-    (u) => !alreadySubmitted.includes(u)
-  );
 
   return (
     <div>
@@ -173,7 +153,7 @@ function AddRoundModal({ rounds, date, setTournament }) {
                   <option value="" disabled>
                     Choose Player...
                   </option>
-                  {availableUsernames.map((username) => (
+                  {usernameOptions.map((username) => (
                     <option key={username} value={username}>
                       {username}
                     </option>

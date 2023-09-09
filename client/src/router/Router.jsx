@@ -31,7 +31,7 @@ import RegisterForm from "../pages/auth/RegisterForm";
 import ProfileForm from "../pages/auth/ProfileForm";
 
 /***** MISC *****/
-import Standings from "../pages/standings/StandingsDetails";
+import Standings from "../pages/standings/page";
 import Dashboard from "../pages/dashboard/DashboardDetails";
 import Information from "../pages/information/InformationDetails";
 import Homepage from "../pages/Homepage";
