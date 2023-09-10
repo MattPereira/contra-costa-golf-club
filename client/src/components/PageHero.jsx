@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 export default function PageHero({ title, backgroundImage, position, date }) {
   console.log("date", date);
   const isoDate = new Date(date);
-  const options = { year: "numeric", month: "numeric", day: "numeric" };
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    timeZone: "UTC",
+  };
   const compactDate = isoDate.toLocaleDateString("en-US", options);
   return (
     <Box>
