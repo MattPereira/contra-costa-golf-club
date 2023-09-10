@@ -2,6 +2,7 @@ import { Paper, Typography, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function PageHero({ title, backgroundImage, position, date }) {
+  console.log("date", date);
   const isoDate = new Date(date);
   const options = { year: "numeric", month: "numeric", day: "numeric" };
   const compactDate = isoDate.toLocaleDateString("en-US", options);
