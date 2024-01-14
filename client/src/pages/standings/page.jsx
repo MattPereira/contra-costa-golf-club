@@ -21,7 +21,7 @@ import { Table } from "react-bootstrap";
 
 export default function StandingsDetails() {
   const [standings, setStandings] = useState(null);
-  const [tourYear, setTourYear] = useState("2022-23");
+  const [tourYear, setTourYear] = useState("2023-24");
   const [tournaments, setTournaments] = useState(null);
   const [numberOfRounds, setNumberOfRounds] = useState(3);
 
