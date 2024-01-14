@@ -16,11 +16,8 @@ export default function RoundsTab({
 }) {
   return (
     <div>
-      <h3 className="font-cubano text-4xl text-center mb-3">Rounds</h3>
+      {/* <h3 className="font-cubano text-4xl text-center mb-3">Rounds</h3> */}
 
-      <p className="text-center text-xl mb-3 font-gothic">
-        Select player by name to update scores
-      </p>
       <RoundsTable rounds={rounds} />
       <AddRoundModal
         rounds={rounds}
@@ -34,45 +31,66 @@ export default function RoundsTab({
 
 function RoundsTable({ rounds }) {
   return (
-    <Table responsive bordered striped variant="light" className="text-center">
-      <thead className="table-dark">
-        <tr>
-          <th className="text-start">PLAYER</th>
-          {Array.from({ length: 18 }, (_, i) => (
-            <th key={i + 1} className="d-none d-sm-table-cell">
-              {i + 1}
-            </th>
-          ))}
-          <th>TOT</th>
-          <th>HCP</th>
-          <th>NET</th>
-          <th>PUT</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rounds.map((r, idx) => (
-          <tr key={r.id}>
-            <th className="text-start">
-              <Link
-                to={`/rounds/${r.id}`}
-                className="font-gothic text-blue-600"
-              >
-                {r.username.split("-").join(" ")}
-              </Link>
-            </th>
-            {Object.values(r.strokes || r.putts).map((s, idx) => (
-              <td key={idx} className="d-none d-sm-table-cell">
-                {s}
-              </td>
+    <div className="border rounded-xl overflow-hidden mb-3">
+      <table className="min-w-full">
+        <thead>
+          <tr className="text-white bg-[#212529] border-black text-center">
+            <th className="py-2 border-r">PLAYER</th>
+            {Array.from({ length: 18 }, (_, i) => (
+              <th key={i + 1} className="d-none d-sm-table-cell py-2 border-r">
+                {i + 1}
+              </th>
             ))}
-            <td>{r.totalStrokes}</td>
-            <td style={{ color: "red" }}>{r.courseHandicap}</td>
-            <td>{r.netStrokes}</td>
-            <td>{r.totalPutts}</td>
+            <th className="py-2 border-r">TOT</th>
+            <th className="py-2 border-r">HCP</th>
+            <th className="py-2 border-r">NET</th>
+            <th className="py-2 border-r">PUT</th>
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {rounds.map((r, idx) => (
+            <tr
+              key={r.id}
+              className={`text-gray-700 text-center ${
+                idx % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
+              }`}
+            >
+              <th className="py-2 border-r border-b border-l border-[#212529] text-start pl-3">
+                <Link
+                  to={`/rounds/${r.id}`}
+                  className="font-gothic text-blue-600"
+                >
+                  {r.username.split("-").join(" ")}
+                </Link>
+              </th>
+              {Object.values(r.strokes || r.putts).map((s, idx) => (
+                <td
+                  key={idx}
+                  className="d-none d-sm-table-cell py-2 border-r border-[#212529] border-b min-w-[25px]"
+                >
+                  {s}
+                </td>
+              ))}
+              <td className="py-2 border-r border-[#212529] border-b">
+                {r.totalStrokes}
+              </td>
+              <td
+                className="py-2 border-r border-[#212529] border-b"
+                style={{ color: "red" }}
+              >
+                {r.courseHandicap}
+              </td>
+              <td className="py-2 border-r border-[#212529] border-b">
+                {r.netStrokes}
+              </td>
+              <td className="py-2 border-r border-[#212529] border-b">
+                {r.totalPutts}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

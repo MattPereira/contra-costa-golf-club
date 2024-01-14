@@ -26,11 +26,11 @@ export default function GreeniesTab({ tournament, setTournament }) {
     <div>
       <Grid container justifyContent="center">
         <Grid item xs={12} md={8} lg={6}>
-          <h3 className="font-cubano text-4xl text-center mb-3">Greenies</h3>
+          {/* <h3 className="font-cubano text-4xl text-center mb-3">Greenies</h3> */}
 
-          <p className="font-gothic text-center text-xl mb-3">
+          {/* <p className="font-gothic text-center text-xl mb-3">
             Select player by name to update greenies
-          </p>
+          </p> */}
           <GreeniesTable greenies={greenies} />
           <AddGreenieModal
             rounds={rounds}

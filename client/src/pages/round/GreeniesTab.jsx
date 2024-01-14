@@ -41,7 +41,7 @@ export default function GreeniesTab({ tournamentDate, greenies, setRound }) {
 
   return (
     <div>
-      <h3 className="font-cubano text-4xl text-center mb-4">Greenies</h3>
+      {/* <h3 className="font-cubano text-4xl text-center mb-4">Greenies</h3> */}
 
       {greenies.length ? (
         <RoundGreeniesTable greenies={greenies} handleOpen={handleOpen} />
@@ -52,7 +52,7 @@ export default function GreeniesTab({ tournamentDate, greenies, setRound }) {
             to={`/tournaments/${tournamentDate}?tab=greenies`}
             className="text-blue-600 underline"
           >
-            tournament page.
+            tournament greenies tab.
           </Link>
         </div>
       )}

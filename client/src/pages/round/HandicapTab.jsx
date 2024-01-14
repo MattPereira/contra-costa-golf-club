@@ -30,7 +30,7 @@ export default function HandicapTab({ round }) {
 
   return (
     <div>
-      <h3 className="font-cubano text-4xl text-center mb-4">Calculations</h3>
+      {/* <h3 className="font-cubano text-4xl text-center mb-4">Calculations</h3> */}
 
       <Grid
         container

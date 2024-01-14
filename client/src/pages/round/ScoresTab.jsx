@@ -39,7 +39,7 @@ export default function ScoresTab({ round, setRound }) {
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
-        <h3 className="font-cubano text-4xl text-center mb-4">Scorecard</h3>
+        {/* <h3 className="font-cubano text-4xl text-center mb-4">Scorecard</h3> */}
         <ScoresTable
           round={round}
           setRound={setRound}
@@ -155,14 +155,14 @@ function ScoresTable({ round, setRound, handleOpen }) {
   return (
     <div className="mb-5">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex justify-between items-center my-3 px-2">
-          <button
+        <div className="flex justify-end items-center mb-4 px-2">
+          {/* <button
             type="button"
             className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
             onClick={handleOpen}
           >
             Delete
-          </button>
+          </button> */}
           {currentUser && !isEditMode && (
             <button
               type="button"

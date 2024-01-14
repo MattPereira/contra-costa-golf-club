@@ -81,14 +81,11 @@ export default function RoundDetails() {
   return (
     <Box>
       <PageHero
-        title={round.courseName}
+        title={formattedName}
         backgroundImage={round.courseImg}
         date={round.tournamentDate}
         isRoundHero={true}
       />
-      <div className="py-2 bg-blue-700 text-white font-cubano text-center text-3xl">
-        {formattedName}
-      </div>
 
       <Box sx={{ py: 1, bgcolor: "black" }}>
         <StyledTabs

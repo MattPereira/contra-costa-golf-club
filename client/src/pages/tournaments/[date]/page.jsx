@@ -96,9 +96,6 @@ export default function TournamentDetails() {
         backgroundImage={course.courseImg}
         date={date}
       />
-      <div className="py-2 bg-blue-700 text-white font-cubano text-center text-3xl">
-        Tournament
-      </div>
 
       <Box sx={{ bgcolor: "black", py: 1 }}>
         <StyledTabs
@@ -227,7 +224,7 @@ function WinnersTab({ rounds, points, handicaps, greenies, setValue }) {
   return (
     <section>
       <Box sx={{ mb: 5 }}>
-        <h3 className="font-cubano text-4xl text-center mb-3">Winners</h3>
+        {/* <h3 className="font-cubano text-4xl text-center mb-3">Winners</h3> */}
         {!selectedDetailsTable && (
           <Box>
             <Grid container spacing={2}>
