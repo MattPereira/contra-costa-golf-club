@@ -1,22 +1,12 @@
 import React, { useContext, useState } from "react";
-import { Button, Typography, Box, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CcgcApi from "../../api/api";
+import { useEffect } from "react";
 
 import { useNavigate } from "react-router-dom";
 import UserContext from "../../lib/UserContext";
-
-const modalStyles = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "rgb(211, 47, 47)",
-  borderRadius: "20px",
-  boxShadow: 24,
-  p: 4,
-};
+import { Link } from "react-router-dom";
 
 /** Scores tab of "round page"
  *
@@ -29,6 +19,7 @@ export default function ScoresTab({ round, setRound }) {
 
   // State & functions for modal that allows round deletion
   const [open, setOpen] = useState(false);
+  const [players, setPlayers] = useState(undefined);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleDelete = async (id) => {
@@ -36,14 +27,33 @@ export default function ScoresTab({ round, setRound }) {
     navigate(`/tournaments/${round.tournamentDate}`);
   };
 
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      const res = await CcgcApi.getRoundsByDate(round.tournamentDate);
+
+      const players = res.map((round) => ({
+        roundId: round.id,
+        username: round.username,
+      }));
+
+      setPlayers(players);
+    };
+
+    fetchPlayers();
+  }, [round]);
+
+  console.log("players", players);
+
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
-        {/* <h3 className="font-cubano text-4xl text-center mb-4">Scorecard</h3> */}
+        <div className="flex"></div>
         <ScoresTable
           round={round}
           setRound={setRound}
           handleOpen={handleOpen}
+          players={players}
+          key={round.id}
         />
         <Modal
           open={open}
@@ -80,9 +90,10 @@ export default function ScoresTab({ round, setRound }) {
   );
 }
 
-function ScoresTable({ round, setRound, handleOpen }) {
+function ScoresTable({ round, setRound, handleOpen, players }) {
   const { currentUser } = useContext(UserContext);
   const [isEditMode, setEditMode] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const strokes = Object.values(round.strokes);
   const putts = Object.values(round.putts);
@@ -153,34 +164,57 @@ function ScoresTable({ round, setRound, handleOpen }) {
   }
 
   return (
-    <div className="mb-5">
+    <div className="mb-3">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex justify-end items-center mb-4 px-2">
-          {/* <button
-            type="button"
-            className="bg-red-600 text-white rounded py-2 font-cubano text-xl w-28"
-            onClick={handleOpen}
-          >
-            Delete
-          </button> */}
-          {currentUser && !isEditMode && (
-            <button
-              type="button"
-              onClick={() => setEditMode(!isEditMode)}
-              className="text-blue-500 font-cubano bg-blue-600 text-white rounded w-28 py-2 text-xl"
+        <div className="grid grid-cols-2 gap-10">
+          <div className="dropdown w-full mb-4">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-outline btn-secondary w-full text-xl font-cubano font-normal"
+              onClick={() => setDropdownOpen(!isDropdownOpen)}
             >
-              update
-            </button>
-          )}
-          {isEditMode && (
-            <button
-              type="submit"
-              className=" font-cubano bg-green-600 text-white rounded w-28 py-2 text-xl"
-            >
-              save
-            </button>
-          )}
+              Player
+            </div>
+            {isDropdownOpen && (
+              <ul className="dropdown-content z-[1] menu p-2 shadow bg-white border border-black rounded-box w-72 mt-2">
+                {players && players.length > 0
+                  ? players.map((player) => (
+                      <li key={player.roundId} className="my-1 text-xl">
+                        <Link
+                          to={`/rounds/${player.roundId}`}
+                          className="font-cubano font-normal text-blue-600"
+                          onClick={() => setDropdownOpen(false)} // Close dropdown on click
+                        >
+                          {player.username.split("-").join(" ")}
+                        </Link>
+                      </li>
+                    ))
+                  : null}
+              </ul>
+            )}
+          </div>
+          <div>
+            {currentUser && !isEditMode && (
+              <button
+                type="button"
+                onClick={() => setEditMode(!isEditMode)}
+                className="font-cubano font-normal w-full btn btn-primary text-xl"
+              >
+                update
+              </button>
+            )}
+            {isEditMode && (
+              <button
+                type="submit"
+                className="font-cubano btn btn-success font-normal w-full text-xl text-white"
+              >
+                save
+              </button>
+            )}
+          </div>
         </div>
+
         <div className="border rounded-xl overflow-hidden">
           <table className="min-w-full">
             <thead>
@@ -207,6 +241,7 @@ function ScoresTable({ round, setRound, handleOpen }) {
                   </td>
                   <td
                     className={`px-2 border-r border-[#212529] border-b w-1/4`}
+                    onClick={() => setEditMode(true)}
                   >
                     {isEditMode ? (
                       <input
@@ -214,18 +249,23 @@ function ScoresTable({ round, setRound, handleOpen }) {
                         {...register(`strokes${hole.holeNumber}`)}
                         type="number"
                         className="w-full rounded"
+                        onBlur={handleSubmit(onSubmit)} // Submit form on blur
                       />
                     ) : (
                       hole.strokes
                     )}
                   </td>
-                  <td className={`px-2 border-r border-b border-black w-1/4`}>
+                  <td
+                    className={`px-2 border-r border-b border-black w-1/4`}
+                    onClick={() => setEditMode(true)}
+                  >
                     {isEditMode ? (
                       <input
                         defaultValue={hole.putts}
                         {...register(`putts${hole.holeNumber}`)}
                         type="number"
                         className="w-full rounded"
+                        onBlur={handleSubmit(onSubmit)} // Submit form on blur
                       />
                     ) : (
                       hole.putts
@@ -235,6 +275,16 @@ function ScoresTable({ round, setRound, handleOpen }) {
               ))}
             </tbody>
           </table>
+        </div>
+
+        <div className="flex justify-between items-center mt-32 px-2">
+          <button
+            type="button"
+            className="bg-red-600 w-full text-white rounded py-2 font-cubano text-xl"
+            onClick={handleOpen}
+          >
+            Delete
+          </button>
         </div>
       </form>
     </div>

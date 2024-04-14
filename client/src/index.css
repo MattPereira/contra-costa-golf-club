@@ -26,3 +26,10 @@ label {
   font-family: cubano;
   font-size: 20px;
 }
+
+html,
+body,
+#root {
+  min-height: 100vh; /* Ensure minimum height of the viewport */
+  background-color: white; /* Set background color to white */
+}

@@ -115,32 +115,22 @@ function App() {
             }}
           >
             <ScrollToTop>
-              <Box
-                sx={{
-                  display: { xs: "block", md: "flex" },
-                  height: "100vh",
-                }}
-              >
-                <Box>
-                  <Navigation logout={logout} />
-                </Box>
-                <Box
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Box>
-                    <Router login={login} register={register} />
-                  </Box>
-                  <Box>
-                    <Footer />
-                  </Box>
-                </Box>
-              </Box>
+              <div className="flex flex-col min-h-screen">
+                <div className="flex-grow lg:flex">
+                  <div>
+                    <Navigation logout={logout} />
+                  </div>
+
+                  <div className="flex flex-col w-full flex-grow min-h-screen">
+                    <div className="flex-grow">
+                      <Router login={login} register={register} />
+                    </div>
+                    <div className="mt-auto">
+                      <Footer />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </ScrollToTop>
           </UserContext.Provider>
         </BrowserRouter>

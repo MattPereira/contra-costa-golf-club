@@ -1,10 +1,14 @@
 // vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import pluginRewriteAll from "vite-plugin-rewrite-all";
+
+// Asynchronously import the ESM plugin
+const pluginRewriteAll = import("vite-plugin-rewrite-all").then(
+  (m) => m.default
+);
 
 export default defineConfig({
-  plugins: [react(), pluginRewriteAll()],
+  plugins: [react(), pluginRewriteAll],
   server: {
     port: 3000,
   },
