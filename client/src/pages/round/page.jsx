@@ -81,7 +81,7 @@ export default function RoundDetails() {
   return (
     <Box>
       <PageHero
-        title={formattedName}
+        // title={formattedName}
         backgroundImage={round.courseImg}
         date={round.tournamentDate}
         isRoundHero={true}
@@ -101,7 +101,7 @@ export default function RoundDetails() {
         </StyledTabs>
       </Box>
 
-      <Container sx={{ py: 4 }}>
+      <Container sx={{ py: 3 }}>
         <TabPanel value={value} index={0}>
           <ScoresTab round={round} setRound={setRound} />
         </TabPanel>

@@ -50,7 +50,6 @@ export default function ScoresTab({ round, setRound }) {
   return (
     <div className="flex justify-center">
       <div className="w-full md:w-3/4 xl:w-1/2">
-        <div className="flex"></div>
         <ScoresTable
           round={round}
           setRound={setRound}
@@ -58,6 +57,7 @@ export default function ScoresTab({ round, setRound }) {
           players={players}
           key={round.id}
         />
+
         <Modal
           open={open}
           onClose={handleClose}
@@ -183,11 +183,11 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
     <div className="mb-3">
       <form ref={formRef} onBlur={handleBlur} onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
-          <div className="dropdown dropdown-end w-full mb-4">
+          <div className="dropdown dropdown-end w-full mb-3">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-lg btn-primary w-full text-xl font-cubano font-normal flex justify-between"
+              className="btn btn-lg btn-outline border-4 border-black text-black w-full text-xl font-cubano font-normal flex justify-between"
               onClick={() => {
                 if (isEditMode) handleSubmit(onSubmit)();
                 setDropdownOpen(!isDropdownOpen);
@@ -196,19 +196,19 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               Select Player{" "}
               <ArrowDropDownCircleOutlinedIcon
                 fontSize="large"
-                sx={{ color: "white" }}
+                className="text-black"
               />
             </div>
             {isDropdownOpen && (
-              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-80 mt-3">
+              <ul className="dropdown-content z-[1] menu p-2 shadow bg-white text-black rounded-box w-80 mt-3 border-4 border-black">
                 {players && players.length > 0
                   ? players.map((player, idx) => (
                       <li key={player.roundId}>
                         <Link
                           to={`/rounds/${player.roundId}`}
-                          className={`font-cubano font-normal text-primary-content py-[12px] text-xl flex justify-between  rounded-sm ${
+                          className={`font-cubano font-normal text-black py-[12px] text-xl flex justify-between  rounded-none ${
                             idx !== players.length - 1 &&
-                            "border-b border-white"
+                            "border-b border-black"
                           }`}
                           onClick={() => setDropdownOpen(false)} // Close dropdown on click
                         >
@@ -240,6 +240,10 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               </button>
             )}
           </div> */}
+        </div>
+
+        <div className="text-center mb-3 font-cubano font-normal text-3xl">
+          {round.username.split("-").join(" ")}
         </div>
 
         <div className="border rounded-xl overflow-hidden">
