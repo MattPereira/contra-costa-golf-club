@@ -254,7 +254,9 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
             <thead>
               <tr className="text-white bg-[#212529] text-center">
                 <th className="py-2 border-r">HOLE</th>
-                <th className="py-2 w-1/4 border-r">PAR</th>
+                <th className="py-2 w-1/4 border-r border-b bg-[#212529]">
+                  PAR
+                </th>
                 <th className="py-2 w-1/4 border-r">STR</th>
                 <th className="py-2 w-1/4">PUT</th>
               </tr>
@@ -270,7 +272,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                   <th className="py-2 border-r border-t bg-[#212529] text-white">
                     #{hole.holeNumber}
                   </th>
-                  <td className="py-2 border-r border-[#212529] border-b w-1/4">
+                  <td className="py-2 bg-zinc-600 border-r border-white text-white border-b w-1/4">
                     {hole.par}
                   </td>
                   <td
