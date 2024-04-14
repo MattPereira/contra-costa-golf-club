@@ -187,7 +187,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-primary w-full text-xl font-cubano font-normal flex justify-between"
+              className="btn btn-lg btn-primary w-full text-xl font-cubano font-normal flex justify-between"
               onClick={() => {
                 if (isEditMode) handleSubmit(onSubmit)();
                 setDropdownOpen(!isDropdownOpen);
@@ -200,13 +200,16 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               />
             </div>
             {isDropdownOpen && (
-              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-80 mt-2">
+              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-80 mt-3">
                 {players && players.length > 0
-                  ? players.map((player) => (
+                  ? players.map((player, idx) => (
                       <li key={player.roundId}>
                         <Link
                           to={`/rounds/${player.roundId}`}
-                          className="font-cubano font-normal text-primary-content py-2 text-2xl flex justify-between"
+                          className={`font-cubano font-normal text-primary-content py-[12px] text-xl flex justify-between  rounded-sm ${
+                            idx !== players.length - 1 &&
+                            "border-b border-white"
+                          }`}
                           onClick={() => setDropdownOpen(false)} // Close dropdown on click
                         >
                           <div>{player.username.split("-").join(" ")}</div>
