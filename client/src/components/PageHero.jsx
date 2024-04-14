@@ -1,4 +1,4 @@
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export default function PageHero({ title, backgroundImage, position, date }) {
@@ -28,11 +28,13 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <h2 className="font-cubano text-5xl text-white mb-2">{title}</h2>
+        <h2 className="font-cubano text-4xl md:text-5xl xl:text-6xl text-white mb-3">
+          {title}
+        </h2>
         {date && (
           <Link
             to={`/tournaments/${date}`}
-            className="bg-white px-2 py-[3px] rounded-md"
+            className="border-2 hover:bg-whit border-white text-white px-3 py-[5px] rounded-md"
           >
             <p className="font-cubano text-xl">{compactDate}</p>
           </Link>
