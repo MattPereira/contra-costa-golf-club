@@ -221,7 +221,14 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               </ul>
             )}
           </div>
-          {/* <div>
+        </div>
+
+        <div className="flex justify-between items-center mb-3">
+          <div className="text-center font-cubano font-normal text-3xl">
+            {round.username.split("-").join(" ")}
+          </div>
+
+          <div>
             {currentUser && !isEditMode && (
               <button
                 type="button"
@@ -239,11 +246,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                 save
               </button>
             )}
-          </div> */}
-        </div>
-
-        <div className="text-center mb-3 font-cubano font-normal text-3xl">
-          {round.username.split("-").join(" ")}
+          </div>
         </div>
 
         <div className="border rounded-xl overflow-hidden">
