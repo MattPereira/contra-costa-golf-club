@@ -15,7 +15,7 @@ export default function PageHero({ title, backgroundImage, position, date }) {
     <Box>
       <Paper
         sx={{
-          height: { xs: "175px", sm: "275px" },
+          height: { xs: "150px", sm: "275px" },
           display: "flex",
           borderRadius: "0px",
           flexDirection: "column",
@@ -28,15 +28,15 @@ export default function PageHero({ title, backgroundImage, position, date }) {
             : "black",
         }}
       >
-        <h2 className="font-cubano text-5xl text-white mb-2">{title}</h2>
-        {date && (
+        {/* {date && (
           <Link
             to={`/tournaments/${date}`}
             className="bg-white px-2 py-[3px] rounded-md"
           >
             <p className="font-cubano text-xl">{compactDate}</p>
           </Link>
-        )}
+        )} */}
+        <h2 className="font-cubano text-5xl text-white">{title}</h2>
       </Paper>
     </Box>
   );

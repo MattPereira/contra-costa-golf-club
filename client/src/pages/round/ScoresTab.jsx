@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import CcgcApi from "../../api/api";
@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../../lib/UserContext";
 import { Link } from "react-router-dom";
+import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined";
 
 /** Scores tab of "round page"
  *
@@ -41,8 +42,6 @@ export default function ScoresTab({ round, setRound }) {
 
     fetchPlayers();
   }, [round]);
-
-  console.log("players", players);
 
   return (
     <div className="flex justify-center">
@@ -92,8 +91,10 @@ export default function ScoresTab({ round, setRound }) {
 
 function ScoresTable({ round, setRound, handleOpen, players }) {
   const { currentUser } = useContext(UserContext);
+  console.log("currentUser", currentUser);
   const [isEditMode, setEditMode] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const formRef = useRef(null); // Ref for the form element
 
   const strokes = Object.values(round.strokes);
   const putts = Object.values(round.putts);
@@ -163,27 +164,45 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
     });
   }
 
+  const handleBlur = (event) => {
+    // Check if the new focused element is outside the form
+    if (!formRef.current.contains(event.relatedTarget)) {
+      if (isEditMode) {
+        console.log("here!!!!");
+        setEditMode(false);
+        handleSubmit(onSubmit)();
+      }
+    }
+  };
+
   return (
     <div className="mb-3">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-2 gap-10">
-          <div className="dropdown w-full mb-4">
+      <form ref={formRef} onBlur={handleBlur} onSubmit={handleSubmit(onSubmit)}>
+        <div className="w-full">
+          <div className="dropdown dropdown-end w-full mb-4">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-outline btn-secondary w-full text-xl font-cubano font-normal"
-              onClick={() => setDropdownOpen(!isDropdownOpen)}
+              className="btn btn-primary w-full text-xl font-cubano font-normal flex justify-between"
+              onClick={() => {
+                if (isEditMode) handleSubmit(onSubmit)();
+                setDropdownOpen(!isDropdownOpen);
+              }}
             >
-              Player
+              Select Player{" "}
+              <ArrowDropDownCircleOutlinedIcon
+                fontSize="large"
+                sx={{ color: "white" }}
+              />
             </div>
             {isDropdownOpen && (
-              <ul className="dropdown-content z-[1] menu p-2 shadow bg-white border border-black rounded-box w-72 mt-2">
+              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-72 mt-2">
                 {players && players.length > 0
                   ? players.map((player) => (
-                      <li key={player.roundId} className="my-1 text-xl">
+                      <li key={player.roundId}>
                         <Link
                           to={`/rounds/${player.roundId}`}
-                          className="font-cubano font-normal text-blue-600"
+                          className="font-cubano font-normal text-primary-content py-2 text-xl"
                           onClick={() => setDropdownOpen(false)} // Close dropdown on click
                         >
                           {player.username.split("-").join(" ")}
@@ -194,7 +213,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               </ul>
             )}
           </div>
-          <div>
+          {/* <div>
             {currentUser && !isEditMode && (
               <button
                 type="button"
@@ -212,7 +231,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                 save
               </button>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="border rounded-xl overflow-hidden">
@@ -249,7 +268,6 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                         {...register(`strokes${hole.holeNumber}`)}
                         type="number"
                         className="w-full rounded"
-                        onBlur={handleSubmit(onSubmit)} // Submit form on blur
                       />
                     ) : (
                       hole.strokes
@@ -265,7 +283,6 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                         {...register(`putts${hole.holeNumber}`)}
                         type="number"
                         className="w-full rounded"
-                        onBlur={handleSubmit(onSubmit)} // Submit form on blur
                       />
                     ) : (
                       hole.putts
@@ -277,15 +294,17 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
           </table>
         </div>
 
-        <div className="flex justify-between items-center mt-32 px-2">
-          <button
-            type="button"
-            className="bg-red-600 w-full text-white rounded py-2 font-cubano text-xl"
-            onClick={handleOpen}
-          >
-            Delete
-          </button>
-        </div>
+        {currentUser && (
+          <div className="flexitems-center mt-28">
+            <button
+              type="button"
+              className="bg-red-600 w-full text-white rounded py-2 font-cubano text-xl"
+              onClick={handleOpen}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );
