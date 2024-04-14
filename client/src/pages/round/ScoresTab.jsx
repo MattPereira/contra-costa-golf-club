@@ -31,11 +31,15 @@ export default function ScoresTab({ round, setRound }) {
   useEffect(() => {
     const fetchPlayers = async () => {
       const res = await CcgcApi.getRoundsByDate(round.tournamentDate);
+      console.log("res", res);
 
       const players = res.map((round) => ({
         roundId: round.id,
         username: round.username,
+        totalStrokes: round.totalStrokes,
       }));
+
+      console.log("players", players);
 
       setPlayers(players);
     };
@@ -196,16 +200,17 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               />
             </div>
             {isDropdownOpen && (
-              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-72 mt-2">
+              <ul className="dropdown-content z-[1] menu p-2 shadow bg-primary rounded-box w-80 mt-2">
                 {players && players.length > 0
                   ? players.map((player) => (
                       <li key={player.roundId}>
                         <Link
                           to={`/rounds/${player.roundId}`}
-                          className="font-cubano font-normal text-primary-content py-2 text-xl"
+                          className="font-cubano font-normal text-primary-content py-2 text-2xl flex justify-between"
                           onClick={() => setDropdownOpen(false)} // Close dropdown on click
                         >
-                          {player.username.split("-").join(" ")}
+                          <div>{player.username.split("-").join(" ")}</div>
+                          <div>{player.totalStrokes}</div>
                         </Link>
                       </li>
                     ))
