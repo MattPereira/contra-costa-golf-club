@@ -204,8 +204,8 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                 {players && players.length > 0
                   ? players.map((player, idx) => (
                       <li key={player.roundId}>
-                        <Link
-                          to={`/rounds/${player.roundId}`}
+                        <a
+                          href={`/rounds/${player.roundId}`}
                           className={`font-cubano font-normal text-black py-[12px] text-xl flex justify-between  rounded-none ${
                             idx !== players.length - 1 &&
                             "border-b border-black"
@@ -214,7 +214,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
                         >
                           <div>{player.username.split("-").join(" ")}</div>
                           <div>{player.totalStrokes}</div>
-                        </Link>
+                        </a>
                       </li>
                     ))
                   : null}
