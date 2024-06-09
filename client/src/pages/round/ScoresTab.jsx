@@ -182,7 +182,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
   return (
     <div className="mb-3">
       <form ref={formRef} onBlur={handleBlur} onSubmit={handleSubmit(onSubmit)}>
-        <div className="w-full">
+        {/* <div className="w-full">
           <div className="dropdown dropdown-end w-full mb-3">
             <div
               tabIndex={0}
@@ -221,7 +221,7 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               </ul>
             )}
           </div>
-        </div>
+        </div> */}
 
         <div className="flex justify-between items-center mb-3">
           <div className="text-center font-cubano font-normal text-3xl">
@@ -265,9 +265,8 @@ function ScoresTable({ round, setRound, handleOpen, players }) {
               {mobileRows.map((hole, index) => (
                 <tr
                   key={hole.holeNumber}
-                  className={`text-gray-700 text-center ${
-                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
-                  }`}
+                  className={`text-gray-700 text-center ${index % 2 === 0 ? "bg-gray-200" : "bg-gray-100"
+                    }`}
                 >
                   <th className="py-2 border-r border-t bg-[#212529] text-white">
                     #{hole.holeNumber}
