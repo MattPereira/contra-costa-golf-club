@@ -200,11 +200,13 @@ const TournamentForm = ({ courseHandles, tournament }) => {
                       sx={{ width: "100%", bgcolor: "white" }}
                       required
                     >
-                      {["2021-22", "2022-23", "2023-24"].map((year) => (
-                        <MenuItem key={year} value={year}>
-                          {year}
-                        </MenuItem>
-                      ))}
+                      {["2021-22", "2022-23", "2023-24", "2024-25"].map(
+                        (year) => (
+                          <MenuItem key={year} value={year}>
+                            {year}
+                          </MenuItem>
+                        )
+                      )}
                     </Select>
                   ) : (
                     <Select
