@@ -107,6 +107,7 @@ const TournamentForm = ({ courseHandles, tournament }) => {
 
   console.log(tournament);
   console.log(formData);
+  console.log("courseHandles", courseHandles);
 
   return (
     <Box>
@@ -178,7 +179,9 @@ const TournamentForm = ({ courseHandles, tournament }) => {
                       <MenuItem key={handle} value={handle}>
                         {handle
                           .split("-")
-                          .map((word) => word[0].toUpperCase() + word.slice(1))
+                          .map(
+                            (word) => word[0]?.toUpperCase() + word?.slice(1)
+                          )
                           .join(" ")}
                       </MenuItem>
                     ))}
