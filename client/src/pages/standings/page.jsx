@@ -26,7 +26,7 @@ export default function StandingsDetails() {
   const currentTourYear = `${seasonStart}-${String(seasonStart + 1).slice(-2)}`;
   const [tourYear, setTourYear] = useState(currentTourYear);
   const [tournaments, setTournaments] = useState(null);
-  const [numberOfRounds, setNumberOfRounds] = useState(3);
+  const [numberOfRounds, setNumberOfRounds] = useState(10);
 
   const handleYearChange = (event) => {
     setTourYear(event.target.value);
