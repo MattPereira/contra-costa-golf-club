@@ -16,6 +16,17 @@ import {
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import PageHero from "../../components/PageHero";
 
+function getTourYears(startYear = 2021) {
+  const now = new Date();
+  // Season "YYYY-YY" starts in the fall; use July as the cutover
+  const currentSeasonStart = now.getMonth() >= 6 ? now.getFullYear() : now.getFullYear() - 1;
+  const years = [];
+  for (let y = startYear; y <= currentSeasonStart; y++) {
+    years.push(`${y}-${String(y + 1).slice(-2)}`);
+  }
+  return years;
+}
+
 /** Form to create a new tournament
  *
  *
@@ -203,13 +214,11 @@ const TournamentForm = ({ courseHandles, tournament }) => {
                       sx={{ width: "100%", bgcolor: "white" }}
                       required
                     >
-                      {["2021-22", "2022-23", "2023-24", "2024-25"].map(
-                        (year) => (
-                          <MenuItem key={year} value={year}>
-                            {year}
-                          </MenuItem>
-                        )
-                      )}
+                      {getTourYears(2021).map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
                     </Select>
                   ) : (
                     <Select
@@ -221,7 +230,7 @@ const TournamentForm = ({ courseHandles, tournament }) => {
                       sx={{ width: "100%", bgcolor: "white" }}
                       required
                     >
-                      {["2022-23", "2023-24", "2024-25"].map((year) => (
+                      {getTourYears(2022).map((year) => (
                         <MenuItem key={year} value={year}>
                           {year}
                         </MenuItem>
