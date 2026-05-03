@@ -3,15 +3,15 @@
 .PHONY: dump-prod-db populate-locale-db
 
 dump-prod-db:
-	PGPASSWORD=$(PG_PASSWORD) pg_dump -U postgres -h containers-us-west-43.railway.app -p 7601 -F c railway > prod.dump
+	@PGPASSWORD="$(PGPASSWORD)" pg_dump -U "$(PGUSER)" -h "$(PGHOST)" -p "$(PGPORT)" -F c --schema=public "$(PGDATABASE)" > prod.dump
 
 populate-local-db:
 	@echo "Dropping old database..."
-	psql -c "DROP DATABASE IF EXISTS ccgc;"
+	psql -d postgres -c "DROP DATABASE IF EXISTS ccgc;"
 	@echo "Creating new database..."
-	psql -c "CREATE DATABASE ccgc;"
+	psql -d postgres -c "CREATE DATABASE ccgc;"
 	@echo "Populating new database from dump..."
-	pg_restore -U postgres -d ccgc prod.dump
+	pg_restore --clean --if-exists --no-owner --no-acl -d ccgc prod.dump
 
 # Copy dump file into docker container
 docker-dump-db:
